@@ -148,7 +148,7 @@ public class CssBuilder
 			sb.a("\n{\n\t").a(p.getName()).a(": ").a(p.getValue()).a(";");
 			break;
 		default:
-			throw new Error("unexpected property: " + p);
+			throw new Error("unexpected state: " + state);
 		}
 	}
 	
@@ -181,6 +181,9 @@ public class CssBuilder
 		if(colon || semicolon)
 		{
 			// it's a property
+			
+			// FIX no it is not! pseudostyle
+			
 			switch(state)
 			{
 			case PROPERTY:
@@ -202,6 +205,10 @@ public class CssBuilder
 				throw new Error("unexpected property: " + s);
 			}
 			
+			if(state == State.SELECTOR)
+			{
+				return state;
+			}
 			return semicolon ? State.PROPERTY : State.VALUE;
 		}
 		else

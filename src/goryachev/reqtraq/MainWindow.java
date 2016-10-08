@@ -6,6 +6,7 @@ import goryachev.fx.CMenuItem;
 import goryachev.fx.CPane;
 import goryachev.fx.CPopupMenu;
 import goryachev.fx.FX;
+import goryachev.fx.FxDump;
 import goryachev.fx.FxWindow;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
@@ -26,6 +27,9 @@ public class MainWindow
 	public MainWindow()
 	{
 		super("MainWindow");
+		
+		// FIX
+		FxDump.attach(this);
 		
 		setTitle("ReqTraq © 2016 Andy Goryachev");
 		setSize(650, 300);

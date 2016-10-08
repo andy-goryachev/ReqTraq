@@ -73,4 +73,10 @@ public class CssTools
 			return x.toString();
 		}
 	}
+	
+	
+	public static String toValue(double x)
+	{
+		return String.valueOf(x);
+	}
 }

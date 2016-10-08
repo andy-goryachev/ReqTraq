@@ -1,6 +1,8 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
 import goryachev.fx.CPane;
+import goryachev.fx.CssStyle;
+import goryachev.fx.FX;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -17,14 +19,53 @@ public class TreeTablePane
 {
 	public final TreeTableView<Page> tree;
 	public final TreeHandler<Page> handler;
+	
+	public static final CssStyle STYLE_DISABLED_HOR_SCROLL_BAR = new CssStyle("ConstraintResizeTable");
 
 
 	public TreeTablePane()
 	{
 		tree = new TreeTableView<>();
 		tree.setShowRoot(false);
-		tree.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
 		tree.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		
+		// disable horizontal scroll bar
+		tree.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
+		FX.style(tree, STYLE_DISABLED_HOR_SCROLL_BAR);
+		/*
+		tree.skinProperty().addListener((s) -> 
+		{
+			// FIX this can be done only with a stylesheet
+			
+			for(Node n: tree.lookupAll(".scroll-bar"))
+			{
+				if(n instanceof ScrollBar)
+				{
+					ScrollBar b = (ScrollBar)n;
+					if(b.getOrientation() == Orientation.HORIZONTAL)
+					{
+						b.setMaxHeight(0);
+						b.setPrefHeight(0);
+						b.setDisable(true);
+//						b.setOpacity(0);
+						b.setPadding(Insets.EMPTY);
+					
+						for(Node ch: b.getChildrenUnmodifiable())
+						{
+							D.print("ch", ch);
+							
+	//						if(n instanceof Region)
+	//						{
+	//							Region r = (Region)n;
+	//							r.setPadding(Insets.EMPTY);
+	//							r.setMaxHeight(0);
+	//						}
+						}
+					}
+				}
+			}
+		});
+		*/
 		
 		handler = new TreeHandler<Page>(tree);
 		

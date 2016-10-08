@@ -4,7 +4,7 @@ import goryachev.fx.CssGenerator;
 
 
 /**
- * Style sheet.
+ * Application style sheet.
  */
 public class Styles
 	extends CssGenerator
@@ -15,6 +15,13 @@ public class Styles
 		{
 			EditorPane.ID_TITLE,
 				fontSize("150%"),
+				
+			TreeTablePane.STYLE_DISABLED_HOR_SCROLL_BAR, "scroll-bar:horizontal",
+				maxHeight(0),
+				padding(0),
+			TreeTablePane.STYLE_DISABLED_HOR_SCROLL_BAR, "scroll-bar:horizontal *",
+				maxHeight(0),
+				padding(0),
 		};
 	}
 }

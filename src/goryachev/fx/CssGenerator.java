@@ -36,6 +36,7 @@ public abstract class CssGenerator
 	public static CssProperty backgroundInsets(Object x) { return p("-fx-background-insets", CssTools.toValue(x)); }
 	public static CssProperty backgroundRadius(Object x) { return p("-fx-background-radius", CssTools.toValue(x)); }
 	public static CssProperty fontSize(Object x) { return p("-fx-font-size", x); }
+	public static CssProperty maxHeight(double x) { return p("-fx-max-height", x); }
 	public static CssProperty padding(Object x) { return p("-fx-padding", CssTools.toValue(x)); }
 	public static CssProperty regionBackground(Object x) { return p("-fx-region-background", CssTools.toValue(x)); }
 	public static CssProperty textFill(Object x) { return p("-fx-text-fill", CssTools.toColor(x)); }

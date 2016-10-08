@@ -19,7 +19,8 @@ import javafx.application.Platform;
  */
 public class CssLoader
 {
-	public static final String CONTINUOUS_REFRESH_PROPERTY = "CssLoader.ContinuousRefresh";
+	public static final String CONTINUOUS_REFRESH_PROPERTY = "css.continuous.refresh";
+	public static final String DUMP_CSS_PROPERTY = "css.dump";
 	public static final String PREFIX = "embeddedcss";
 	private static CssLoader instance;
 	private String url;
@@ -141,9 +142,16 @@ public class CssLoader
 				}
 				else
 				{
+					// stderr is ok here
 					System.err.println("reloading css");
 					
 					Platform.runLater(() -> update(old, url));
+				}
+				
+				if(Boolean.getBoolean(CONTINUOUS_REFRESH_PROPERTY))
+				{
+					// stderr is ok here
+					System.err.println(css);
 				}
 			}
 		}
