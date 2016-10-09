@@ -1,6 +1,7 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import goryachev.common.util.SB;
+import javafx.scene.control.ScrollPane;
 
 
 /**
@@ -65,6 +66,7 @@ public abstract class CssGenerator
 	}
 	
 	
+	/** starts a new selector or adds to an existing selector */
 	public void sel(Object x)
 	{
 		switch(state)
@@ -85,6 +87,7 @@ public abstract class CssGenerator
 	}
 	
 	
+	/** starts a new selector or adds to an existing selector */
 	public void sel(Object a, Object b)
 	{
 		switch(state)
@@ -110,6 +113,7 @@ public abstract class CssGenerator
 	}
 	
 	
+	/** starts a new selector or adds to an existing selector */
 	public void sel(Object ... ss)
 	{
 		switch(state)
@@ -188,6 +192,7 @@ public abstract class CssGenerator
 	}
 	
 	
+	/** adds a property to an existing selector */
 	public void prop(String name, Object x)
 	{
 		switch(state)
@@ -210,12 +215,34 @@ public abstract class CssGenerator
 	}
 	
 	
+	// B
 	public void backgroundColor(Object x) { prop("-fx-background-color", CssTools.toColor(x)); }
+	public void backgroundImage(Object x) { prop("-fx-background-image", CssTools.toValue(x)); }
 	public void backgroundInsets(Object x) { prop("-fx-background-insets", CssTools.toValue(x)); }
 	public void backgroundRadius(Object x) { prop("-fx-background-radius", CssTools.toValue(x)); }
+	// F
+	public void fitToHeight(boolean x) { prop("-fx-fit-to-height", x); }
+	public void fitToWidth(boolean x) { prop("-fx-fit-to-width", x); }
 	public void fontSize(Object x) { prop("-fx-font-size", x); }
+	// H
+	public void hBarPolicy(ScrollPane.ScrollBarPolicy x) { prop("-fx-hbar-policy", CssTools.toValue(x)); }
+	// M
 	public void maxHeight(double x) { prop("-fx-max-height", x); }
+	public void maxWidth(double x) { prop("-fx-max-width", x); }
+	public void minHeight(double x) { prop("-fx-min-height", x); }
+	public void minWidth(double x) { prop("-fx-min-width", x); }
+	// O
+	public void opacity(double x) { prop("-fx-opacity", x); }
+	// P
 	public void padding(Object x) { prop("-fx-padding", CssTools.toValue(x)); }
+	public void prefHeight(double x) { prop("-fx-pref-height", x); }
+	public void prefWidth(double x) { prop("-fx-pref-width", x); }
+	// R
 	public void regionBackground(Object x) { prop("-fx-region-background", CssTools.toValue(x)); }
+	// S
+	public void shape(Object x) { prop("-fx-shape", x); }
+	// T
 	public void textFill(Object x) { prop("-fx-text-fill", CssTools.toColor(x)); }
+	// V
+	public void vBarPolicy(ScrollPane.ScrollBarPolicy x) { prop("-fx-vbar-policy", CssTools.toValue(x)); }
 }

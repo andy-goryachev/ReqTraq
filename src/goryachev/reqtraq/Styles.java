@@ -1,6 +1,7 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
 import goryachev.fx.CssGenerator;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 
 
 /**
@@ -16,9 +17,21 @@ public class Styles
 				
 		sel(TreeTablePane.STYLE_DISABLED_HOR_SCROLL_BAR, "scroll-bar:horizontal");
 		maxHeight(0);
+		prefHeight(0);
 		padding(0);
+		opacity(0);
+		backgroundColor(TRANSPARENT);
+		backgroundInsets(0);
+		backgroundImage(null);
+		shape(null);
 		sel(TreeTablePane.STYLE_DISABLED_HOR_SCROLL_BAR, "scroll-bar:horizontal *");
 		maxHeight(0);
+		prefHeight(0);
 		padding(0);
+		opacity(0);
+		backgroundColor(TRANSPARENT);
+		backgroundInsets(0);
+		backgroundImage(null);
+		shape(null);
 	}
 }

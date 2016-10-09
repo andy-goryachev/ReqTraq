@@ -6,6 +6,10 @@ import goryachev.fx.FX;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
+import javafx.scene.Node;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
@@ -35,8 +39,6 @@ public class TreeTablePane
 		/*
 		tree.skinProperty().addListener((s) -> 
 		{
-			// FIX this can be done only with a stylesheet
-			
 			for(Node n: tree.lookupAll(".scroll-bar"))
 			{
 				if(n instanceof ScrollBar)
@@ -49,18 +51,6 @@ public class TreeTablePane
 						b.setDisable(true);
 //						b.setOpacity(0);
 						b.setPadding(Insets.EMPTY);
-					
-						for(Node ch: b.getChildrenUnmodifiable())
-						{
-							D.print("ch", ch);
-							
-	//						if(n instanceof Region)
-	//						{
-	//							Region r = (Region)n;
-	//							r.setPadding(Insets.EMPTY);
-	//							r.setMaxHeight(0);
-	//						}
-						}
 					}
 				}
 			}
