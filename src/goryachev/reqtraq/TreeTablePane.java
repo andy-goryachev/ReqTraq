@@ -6,10 +6,6 @@ import goryachev.fx.FX;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
-import javafx.scene.Node;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
@@ -24,7 +20,7 @@ public class TreeTablePane
 	public final TreeTableView<Page> tree;
 	public final TreeHandler<Page> handler;
 	
-	public static final CssStyle STYLE_DISABLED_HOR_SCROLL_BAR = new CssStyle("ConstraintResizeTable");
+	public static final CssStyle STYLE_NO_HORIZONTAL_SCROLL_BAR = new CssStyle("NoHorizontalScrollBar");
 
 
 	public TreeTablePane()
@@ -35,27 +31,7 @@ public class TreeTablePane
 		
 		// disable horizontal scroll bar
 		tree.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
-		FX.style(tree, STYLE_DISABLED_HOR_SCROLL_BAR);
-		/*
-		tree.skinProperty().addListener((s) -> 
-		{
-			for(Node n: tree.lookupAll(".scroll-bar"))
-			{
-				if(n instanceof ScrollBar)
-				{
-					ScrollBar b = (ScrollBar)n;
-					if(b.getOrientation() == Orientation.HORIZONTAL)
-					{
-						b.setMaxHeight(0);
-						b.setPrefHeight(0);
-						b.setDisable(true);
-//						b.setOpacity(0);
-						b.setPadding(Insets.EMPTY);
-					}
-				}
-			}
-		});
-		*/
+		FX.style(tree, STYLE_NO_HORIZONTAL_SCROLL_BAR);
 		
 		handler = new TreeHandler<Page>(tree);
 		

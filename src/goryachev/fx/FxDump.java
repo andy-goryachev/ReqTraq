@@ -8,7 +8,10 @@ import goryachev.common.util.SB;
 import javafx.css.CssMetaData;
 import javafx.css.PseudoClass;
 import javafx.css.Styleable;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -103,8 +106,64 @@ public class FxDump
 			if(n != null)
 			{
 				dump(n);
+				
+//				Scene s = n.getScene();
+//				if(s != null)
+//				{
+//					Parent p = s.getRoot();
+//					Node hit = findHit(p);
+//					if(hit != null)
+//					{
+//						dump(hit);
+//					}
+//				}
 			}
 		}
+	}
+	
+	
+	/** finds the top level Node under the mouse pointer */
+	protected Node findHit(Node parent)
+	{
+		if(parent == null)
+		{
+			return null;
+		}
+		else if(parent instanceof Parent)
+		{
+			Node hit = null;
+			
+			for(Node ch: ((Parent)parent).getChildrenUnmodifiable())
+			{
+				Node h = findHit(ch);
+				if(h != null)
+				{
+					if(hit == null)
+					{
+						hit = h;
+					}
+					else
+					{
+						if(FX.isParent(hit, h))
+						{
+							hit = h;
+						}
+					}
+				}
+			}
+			
+			if(hit != null)
+			{
+				return hit;
+			}
+		}
+		
+		Point2D p = parent.screenToLocal(x, y);
+		if(parent.contains(p))
+		{
+			return parent;
+		}
+		return null;
 	}
 	
 	

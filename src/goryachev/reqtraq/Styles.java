@@ -14,24 +14,15 @@ public class Styles
 	{
 		sel(EditorPane.ID_TITLE);
 		fontSize("150%");
-				
-		sel(TreeTablePane.STYLE_DISABLED_HOR_SCROLL_BAR, "scroll-bar:horizontal");
+			
+		// disables horizontal scroll bar
+		sel(TreeTablePane.STYLE_NO_HORIZONTAL_SCROLL_BAR, ".scroll-bar:horizontal");
 		maxHeight(0);
-		prefHeight(0);
 		padding(0);
 		opacity(0);
-		backgroundColor(TRANSPARENT);
-		backgroundInsets(0);
-		backgroundImage(null);
-		shape(null);
-		sel(TreeTablePane.STYLE_DISABLED_HOR_SCROLL_BAR, "scroll-bar:horizontal *");
+		sel(TreeTablePane.STYLE_NO_HORIZONTAL_SCROLL_BAR, ".scroll-bar:horizontal *");
 		maxHeight(0);
-		prefHeight(0);
 		padding(0);
 		opacity(0);
-		backgroundColor(TRANSPARENT);
-		backgroundInsets(0);
-		backgroundImage(null);
-		shape(null);
 	}
 }
