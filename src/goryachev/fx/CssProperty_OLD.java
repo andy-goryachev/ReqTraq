@@ -5,13 +5,14 @@ package goryachev.fx;
 /**
  * CssProperty.
  */
-public class CssProperty
+@Deprecated
+public class CssProperty_OLD
 {
 	private final String name;
 	private final Object value;
 	
 	
-	public CssProperty(String name, Object val)
+	public CssProperty_OLD(String name, Object val)
 	{
 		this.name = name;
 		this.value = val;

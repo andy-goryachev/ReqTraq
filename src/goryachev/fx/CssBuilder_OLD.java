@@ -6,7 +6,8 @@ import goryachev.common.util.SB;
 /**
  * CssBuilder.
  */
-public class CssBuilder
+@Deprecated
+public class CssBuilder_OLD
 {
 	enum State
 	{
@@ -21,7 +22,7 @@ public class CssBuilder
 	private SB sb;
 	
 	
-	public CssBuilder(Object[] items)
+	public CssBuilder_OLD(Object[] items)
 	{
 		this.items = items;
 	}
@@ -40,9 +41,9 @@ public class CssBuilder
 				writeID((CssID)x);
 				state = State.SELECTOR;
 			}
-			else if(x instanceof CssProperty)
+			else if(x instanceof CssProperty_OLD)
 			{
-				writeProperty((CssProperty)x);
+				writeProperty((CssProperty_OLD)x);
 				state = State.PROPERTY;
 			}
 			else if(x instanceof CssPseudo)
@@ -137,7 +138,7 @@ public class CssBuilder
 	}
 	
 	
-	protected void writeProperty(CssProperty p)
+	protected void writeProperty(CssProperty_OLD p)
 	{
 		switch(state)
 		{

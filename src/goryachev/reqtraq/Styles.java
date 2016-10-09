@@ -9,19 +9,16 @@ import goryachev.fx.CssGenerator;
 public class Styles
 	extends CssGenerator
 {
-	protected Object[] generate()
+	protected void generate()
 	{
-		return new Object[] 
-		{
-			EditorPane.ID_TITLE,
-				fontSize("150%"),
+		sel(EditorPane.ID_TITLE);
+		fontSize("150%");
 				
-			TreeTablePane.STYLE_DISABLED_HOR_SCROLL_BAR, "scroll-bar:horizontal",
-				maxHeight(0),
-				padding(0),
-			TreeTablePane.STYLE_DISABLED_HOR_SCROLL_BAR, "scroll-bar:horizontal *",
-				maxHeight(0),
-				padding(0),
-		};
+		sel(TreeTablePane.STYLE_DISABLED_HOR_SCROLL_BAR, "scroll-bar:horizontal");
+		maxHeight(0);
+		padding(0);
+		sel(TreeTablePane.STYLE_DISABLED_HOR_SCROLL_BAR, "scroll-bar:horizontal *");
+		maxHeight(0);
+		padding(0);
 	}
 }
