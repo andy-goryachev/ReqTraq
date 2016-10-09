@@ -1,5 +1,6 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
+import goryachev.common.util.Parsers;
 import goryachev.fx.CPane;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
@@ -20,6 +21,7 @@ public class TreeTablePane
 	public final TreeTableView<Page> tree;
 	public final TreeHandler<Page> handler;
 	
+	// TODO move to standard place later, including the stylesheet generator
 	public static final CssStyle STYLE_NO_HORIZONTAL_SCROLL_BAR = new CssStyle("NoHorizontalScrollBar");
 
 
@@ -29,7 +31,6 @@ public class TreeTablePane
 		tree.setShowRoot(false);
 		tree.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		
-		// disable horizontal scroll bar
 		tree.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
 		FX.style(tree, STYLE_NO_HORIZONTAL_SCROLL_BAR);
 		
@@ -54,12 +55,10 @@ public class TreeTablePane
 		column.setPrefWidth(150);
 		column.setCellValueFactory((TreeTableColumn.CellDataFeatures<Page,String> param) ->
 		{
-			ObservableValue<String> result = new ReadOnlyStringWrapper("");
-			if(param.getValue().getValue() != null)
-			{
-				result = new ReadOnlyStringWrapper("" + param.getValue().getValue().getField(f));
-			}
-			return result;
+			Page p = param.getValue().getValue();
+			Object v = (p == null ? null : p.getField(f));
+			String s = Parsers.parseString(v);
+			return new ReadOnlyStringWrapper(s);
 		});
 		tree.getColumns().add(column);
 	}
