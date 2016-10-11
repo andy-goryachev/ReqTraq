@@ -80,23 +80,11 @@ public class MainWindow
 		tree.setRoot(createTree());
 	}
 
-
-	private TreeItem<Page> createTree()
-	{
-		TreeItem<Page> root = new TreeItem<Page>();
-		TreeItem<Page> ch;
-		ch = ch(root, "Chapter 1", "First Chapter\n\n1.\n2.");
-		ch(ch, "1.1", null);
-		ch(ch, "1.2", null);
-		ch(ch, "1.3", null);
-		ch(root, "Chapter 2", "Second Chapter\n\n1.\n2.");
-		return root;
-	}
-	
 	
 	protected Node createMenu()
 	{
 		CMenuBar b = new CMenuBar();
+		// app
 		CMenu m = b.addMenu("ReqTraq");
 		m.add(new CMenuItem("Quit", FX.exitAction()));
 		// file
@@ -122,6 +110,19 @@ public class MainWindow
 		return b;
 	}
 
+
+	private TreeItem<Page> createTree()
+	{
+		TreeItem<Page> root = new TreeItem<Page>();
+		TreeItem<Page> ch;
+		ch = ch(root, "Chapter 1", "First Chapter\n\n1.\n2.");
+		ch(ch, "1.1", null);
+		ch(ch, "1.2", null);
+		ch(ch, "1.3", null);
+		ch(root, "Chapter 2", "Second Chapter\n\n1.\n2.");
+		return root;
+	}
+	
 
 	private TreeItem<Page> ch(TreeItem<Page> parent, String title, String text)
 	{

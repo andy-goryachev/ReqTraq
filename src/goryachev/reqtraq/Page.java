@@ -1,6 +1,9 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 
 /**
  * Page.
@@ -16,8 +19,9 @@ public class Page
 	
 	//
 	
-	private String title;
-	private String text;
+	public final SimpleStringProperty title = new SimpleStringProperty();
+	public final SimpleStringProperty text = new SimpleStringProperty();
+	private ObservableValue<String> synopsis;
 	
 	
 	public Page()
@@ -27,62 +31,85 @@ public class Page
 	
 	public Page(String title, String text)
 	{
-		this.title = title;
-		this.text = text;
+		setTitle(title);
+		setText(text);
 	}
 	
 	
-	public Object getField(Field f)
+	public ObservableValue<String> getField(Field f)
 	{
 		switch(f)
 		{
 		case SYNOPSIS:
-			return getSynopsis();
+			return synopsisProperty();
 		case TEXT:
 			return text;
 		case TITLE:
 			return title;
 		default:
-			return "?" + f;
+			return null;
 		}
 	}
 	
 	
-	public String getSynopsis()
+	public ObservableValue<String> synopsisProperty()
 	{
-		if(text == null)
+		if(synopsis == null)
+		{
+			synopsis = Bindings.createStringBinding(() -> computeSynopsis(), text);
+		}
+		return synopsis;
+	}
+	
+	
+	protected String computeSynopsis()
+	{
+		String s = getText();
+		if(s == null)
 		{
 			return null;
 		}
 		
 		int max = 128;
-		int sz = text.length();
+		int sz = s.length();
 		
-		String s;
+		String rv;
 		if(sz > max)
 		{
-			s = text.substring(0, max);
+			rv = s.substring(0, max);
 		}
 		else
 		{
-			s = text;
+			rv = s;
 		}
 		
-		s = s.replace("\n", " ");
-		s = s.replace("\t", " ");
-		return s;
+		rv = rv.replace("\n", " ");
+		rv = rv.replace("\t", " ");
+		return rv;
 	}
 	
 	
 	public String getTitle()
 	{
-		return title;
+		return title.get();
+	}
+	
+	
+	public void setTitle(String s)
+	{
+		title.set(s);
 	}
 	
 	
 	public String getText()
 	{
-		return text;
+		return text.get();
+	}
+	
+	
+	public void setText(String s)
+	{
+		text.set(s);
 	}
 	
 	

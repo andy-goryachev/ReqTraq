@@ -56,9 +56,10 @@ public class TreeTablePane
 		column.setCellValueFactory((TreeTableColumn.CellDataFeatures<Page,String> param) ->
 		{
 			Page p = param.getValue().getValue();
-			Object v = (p == null ? null : p.getField(f));
-			String s = Parsers.parseString(v);
-			return new ReadOnlyStringWrapper(s);
+			ObservableValue<String> v = (p == null ? null : p.getField(f));
+			return v;
+//			String s = Parsers.parseString(v);
+//			return new ReadOnlyStringWrapper(s);
 		});
 		tree.getColumns().add(column);
 	}

@@ -1,5 +1,6 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
+import goryachev.common.util.D;
 import javafx.beans.Observable;
 
 
@@ -18,6 +19,9 @@ public class MainController
 		this.editor = editor;
 		
 		tree.tree.getSelectionModel().getSelectedItems().addListener((Observable s) -> updatePage());
+		
+		editor.titleField.textProperty().addListener((s,p,c) -> updatePageTitle(c));
+		editor.textField.textProperty().addListener((s,p,c) -> updatePageText(c));
 	}
 	
 	
@@ -31,5 +35,19 @@ public class MainController
 	protected void setDetail(Page p)
 	{
 		editor.setPage(p);
+	}
+	
+	
+	protected void updatePageTitle(String s)
+	{
+		// TODO
+		D.print(s);
+	}
+	
+	
+	protected void updatePageText(String s)
+	{
+		// TODO
+		D.print(s);
 	}
 }
