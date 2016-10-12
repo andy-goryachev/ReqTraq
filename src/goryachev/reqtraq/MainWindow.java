@@ -63,6 +63,10 @@ public class MainWindow
 				D.print();
 			}
 		};
+		openFileController.addFileFilter("txt", "*.txt Text Files");
+		openFileController.addFileFilter("*", "*.* All Files");
+		// TODO
+		// bind("FILE", openFileController);
 		
 		tree = new TreeTablePane();
 		

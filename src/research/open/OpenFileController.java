@@ -8,6 +8,8 @@ import goryachev.fx.CAction;
 import goryachev.fx.CMenu;
 import goryachev.fx.CMenuItem;
 import java.io.File;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.Menu;
@@ -36,14 +38,14 @@ public abstract class OpenFileController
 	public final CAction saveAsAction = new CAction(this::saveFileAsPrivate);
 	public final CAction clearRecentAction = new CAction(this::clearRecentFiles);
 	
+	public final SimpleObjectProperty<File> file = new SimpleObjectProperty<>();
+	public final SimpleBooleanProperty modified = new SimpleBooleanProperty();
+	private CList<File> recent;
+	private CList<FileChooser.ExtensionFilter> filters;
 	protected final Window parent;
 	protected final String lastDirKey;
 	protected final String recentFilesKey;
 	protected int maxRecentFiles = 10;
-	private File file;
-	private Boolean modified;
-	private CList<File> recent;
-	private CList<FileChooser.ExtensionFilter> filters;
 
 	
 	public OpenFileController(Window parent, String lastDirKey, String recentFilesKey)
@@ -68,21 +70,21 @@ public abstract class OpenFileController
 	
 	public File getFile()
 	{
-		return file;
+		return file.get();
 	}
 	
 	
 	public boolean isModified()
 	{
-		return modified == null ? false : modified;
+		return modified.get();
 	}
 	
 	
 	public void setModified(boolean on)
 	{
-		if(!Boolean.valueOf(on).equals(modified))
+		if(modified.get() != on)
 		{
-			modified = on;
+			modified.set(on);
 			delegateRefresh();
 		}
 	}
@@ -204,7 +206,7 @@ public abstract class OpenFileController
 				{
 				case 0:
 					// save
-					delegateSaveFile(file);
+					delegateSaveFile(getFile());
 					return true;
 				case 1:
 					// discard
@@ -232,7 +234,7 @@ public abstract class OpenFileController
 		{
 			if(checkModified())
 			{
-				file = null;
+				file.set(null);
 				delegateNewFile();
 			}
 		}
@@ -313,7 +315,7 @@ public abstract class OpenFileController
 	{
 		delegateOpenFile(f);
 		
-		file = f;
+		file.set(f);
 		addRecentFile(f);
 		setModified(false);
 		delegateRefresh();
@@ -327,7 +329,7 @@ public abstract class OpenFileController
 			if(file != null)
 			{
 				delegateCommit();
-				delegateSaveFile(file);
+				delegateSaveFile(getFile());
 				setModified(false);
 				delegateRefresh();
 			}
@@ -405,7 +407,7 @@ public abstract class OpenFileController
 			{
 				delegateSaveFile(f);
 				
-				file = f;
+				file.set(f);
 				setModified(false);
 				addRecentFile(f);
 				delegateRefresh();
