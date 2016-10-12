@@ -1,5 +1,6 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
+import goryachev.common.util.D;
 import goryachev.fx.CMenu;
 import goryachev.fx.CMenuBar;
 import goryachev.fx.CMenuItem;
@@ -8,9 +9,11 @@ import goryachev.fx.CPopupMenu;
 import goryachev.fx.FX;
 import goryachev.fx.FxDump;
 import goryachev.fx.FxWindow;
+import java.io.File;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TreeItem;
+import research.open.OpenFileController;
 
 
 /**
@@ -22,6 +25,7 @@ public class MainWindow
 	public final TreeTablePane tree;
 	public final EditorPane editor;
 	public final MainController control;
+	public final OpenFileController openFileController;
 	
 	
 	public MainWindow()
@@ -33,6 +37,32 @@ public class MainWindow
 		
 		setTitle("ReqTraq © 2016 Andy Goryachev");
 		setSize(650, 300);
+		
+		openFileController = new OpenFileController(this)
+		{
+			protected void delegateSaveFile(File f) throws Exception
+			{
+				D.print();
+			}
+
+
+			protected void delegateOpenFile(File f) throws Exception
+			{
+				D.print();
+			}
+
+
+			protected void delegateNewFile() throws Exception
+			{
+				D.print();
+			}
+
+
+			protected void delegateCommit()
+			{
+				D.print();
+			}
+		};
 		
 		tree = new TreeTablePane();
 		
@@ -89,14 +119,12 @@ public class MainWindow
 		m.add(new CMenuItem("Quit", FX.exitAction()));
 		// file
 		m = b.addMenu("File");
-		m.add("New");
-		m.add("Open");
-		m.add("Open Recent");
+		m.add("New", openFileController.newFileAction);
+		m.add("Open", openFileController.openFileAction);
+		m.add(openFileController.recentFilesMenu());
 		m.separator();
-		m.add("Close");
-		m.separator();
-		m.add("Save");
-		m.add("Save As...");
+		m.add("Save", openFileController.saveAction);
+		m.add("Save As...", openFileController.saveAsAction);
 		m.separator();
 		m.add("Print");
 		// view
