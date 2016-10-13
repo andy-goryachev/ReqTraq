@@ -63,8 +63,8 @@ public class MainWindow
 				D.print();
 			}
 		};
-		openFileController.addFileFilter("txt", "*.txt Text Files");
 		openFileController.addFileFilter("*", "*.* All Files");
+		openFileController.addFileFilter("txt", "*.txt Text Files");
 		// TODO
 		// bind("FILE", openFileController);
 		

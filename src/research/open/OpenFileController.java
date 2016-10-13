@@ -4,24 +4,30 @@ import goryachev.common.util.CList;
 import goryachev.common.util.GlobalSettings;
 import goryachev.common.util.SStream;
 import goryachev.common.util.html.HtmlTools;
+import goryachev.fx.Binder;
 import goryachev.fx.CAction;
 import goryachev.fx.CMenu;
 import goryachev.fx.CMenuItem;
+import goryachev.fx.FX;
+import goryachev.fx.FxCtl;
+import goryachev.fx.HasSettings;
 import java.io.File;
+import java.util.List;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.scene.control.Menu;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
+import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
 
 /** Standard open file controller with recent files */
 public abstract class OpenFileController
+	implements HasSettings
 {
-	protected void delegateRefresh() { } // FIX
-	
 	protected abstract void delegateCommit();
 	
 	protected abstract void delegateNewFile() throws Exception;
@@ -40,7 +46,7 @@ public abstract class OpenFileController
 	
 	public final SimpleObjectProperty<File> file = new SimpleObjectProperty<>();
 	public final SimpleBooleanProperty modified = new SimpleBooleanProperty();
-	private CList<File> recent;
+	public final ObservableList<File> recentFiles = FXCollections.observableArrayList();
 	private CList<FileChooser.ExtensionFilter> filters;
 	protected final Window parent;
 	protected final String lastDirKey;
@@ -85,7 +91,6 @@ public abstract class OpenFileController
 		if(modified.get() != on)
 		{
 			modified.set(on);
-			delegateRefresh();
 		}
 	}
 	
@@ -110,28 +115,26 @@ public abstract class OpenFileController
 	
 	public void clearRecentFiles()
 	{
+		recentFiles.clear();
 		GlobalSettings.setString(recentFilesKey, null);
-		recent = null;
 	}
 	
 	
-	protected CList<File> recentFiles()
+	protected void loadRecentFiles()
 	{
-		if(recent == null)
+		CList<File> list = new CList<>();
+		try
 		{
-			recent = new CList<>();
-			try
+			SStream ss = GlobalSettings.getStream(recentFilesKey);
+			for(String s: ss)
 			{
-				SStream ss = GlobalSettings.getStream(recentFilesKey);
-				for(String s: ss)
-				{
-					recent.add(new File(s));
-				}
+				list.add(new File(s));
 			}
-			catch(Exception e)
-			{ }
 		}
-		return recent;
+		catch(Exception e)
+		{ }
+		
+		recentFiles.setAll(list);
 	}
 	
 	
@@ -139,7 +142,7 @@ public abstract class OpenFileController
 	{
 		if(f != null)
 		{
-			CList<File> fs = recentFiles();
+			List<File> fs = recentFiles;
 			int sz = fs.size();
 			for(int i=sz-1; i>=0; --i)
 			{
@@ -168,7 +171,7 @@ public abstract class OpenFileController
 	
 	public File getRecentFile()
 	{
-		CList<File> fs = recentFiles();
+		List<File> fs = recentFiles;
 		if(fs.size() > 0)
 		{
 			return fs.get(0);
@@ -177,15 +180,9 @@ public abstract class OpenFileController
 	}
 	
 	
-	public CList<File> getRecentFiles()
-	{
-		return new CList(recentFiles());
-	}
-	
-	
 	public int getRecentFileCount()
 	{
-		return recentFiles().size();
+		return recentFiles.size();
 	}
 	
 	
@@ -318,7 +315,6 @@ public abstract class OpenFileController
 		file.set(f);
 		addRecentFile(f);
 		setModified(false);
-		delegateRefresh();
 	}
 	
 	
@@ -331,7 +327,6 @@ public abstract class OpenFileController
 				delegateCommit();
 				delegateSaveFile(getFile());
 				setModified(false);
-				delegateRefresh();
 			}
 		}
 		catch(Exception e)
@@ -410,7 +405,6 @@ public abstract class OpenFileController
 				file.set(f);
 				setModified(false);
 				addRecentFile(f);
-				delegateRefresh();
 			}
 			catch(Exception e)
 			{
@@ -426,49 +420,52 @@ public abstract class OpenFileController
 	}
 	
 	
+	public void storeSettings(String prefix)
+	{
+		// TODO store
+	}
+	
+	
+	public void restoreSettings(String prefix)
+	{
+		// TODO restore		
+	}
+	
+	
 	//
 	
 	
 	public class RecentFilesMenu 
 		extends CMenu
-		implements EventHandler<Event>
 	{
 		public RecentFilesMenu()
 		{
 			super("Open Recent");
-			addEventHandler(Event.ANY, this);
+			
+			disableProperty().bind(Bindings.createBooleanBinding(() -> (getRecentFileCount() == 0), recentFiles));
+			
+			Binder.bind(this::rebuild, recentFiles);
 		}
-
-
-//		public String getText()
-//		{
-//			boolean old = super.isEnabled();
-//			boolean on = getRecentFileCount() > 0;
-//			if(old != on)
-//			{
-//				super.setEnabled(on);
-//			}
-//
-//			return super.getText();
-//		}
 
 
 		protected void rebuild()
 		{
 			clear();
 
-			for(final File f: recentFiles())
+			for(final File f: recentFiles)
 			{
 				String name = f.getName();
 				String path = f.getAbsolutePath();
-
+				Node icon = null;
+				
 				if(path.endsWith(name))
 				{
 					path = path.substring(0, path.length() - name.length());
-					path = "<html>" + HtmlTools.safe(path) + "<b>" + HtmlTools.safe(name) + "</b>";
+					icon = new TextFlow(FX.text(path), FX.text(name, FxCtl.BOLD));
+					path = null;
 				}
 
-				add(new CMenuItem(path, new CAction()
+				add(new CMenuItem(path, icon, new CAction()
 				{
 					public void action()
 					{
@@ -483,15 +480,6 @@ public abstract class OpenFileController
 			}
 			
 			add(new CMenuItem("Clear Recent Files", clearRecentAction));
-		}
-
-
-		public void handle(Event ev)
-		{
-			if(ev.getEventType() == Menu.ON_SHOWING)
-			{
-				rebuild();
-			}
 		}
 	}
 }

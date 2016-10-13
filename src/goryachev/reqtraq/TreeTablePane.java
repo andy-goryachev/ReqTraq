@@ -1,10 +1,8 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
-import goryachev.common.util.Parsers;
 import goryachev.fx.CPane;
-import goryachev.fx.CssStyle;
+import goryachev.fx.CommonStyles;
 import goryachev.fx.FX;
-import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.scene.control.SelectionMode;
@@ -21,9 +19,6 @@ public class TreeTablePane
 	public final TreeTableView<Page> tree;
 	public final TreeHandler<Page> handler;
 	
-	// TODO move to standard place later, including the stylesheet generator
-	public static final CssStyle STYLE_NO_HORIZONTAL_SCROLL_BAR = new CssStyle("NoHorizontalScrollBar");
-
 
 	public TreeTablePane()
 	{
@@ -32,7 +27,7 @@ public class TreeTablePane
 		tree.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		
 		tree.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
-		FX.style(tree, STYLE_NO_HORIZONTAL_SCROLL_BAR);
+		FX.style(tree, CommonStyles.NO_HORIZONTAL_SCROLL_BAR);
 		
 		handler = new TreeHandler<Page>(tree);
 		
