@@ -9,14 +9,14 @@ import javafx.stage.Window;
  */
 public class Dialogs
 {
-	public static int choice(Window parent, String string, String string2, String[] strings)
+	public static int choice(Window parent, String title, String text, String ... choices)
 	{
 		D.print();
 		return -1;
 	}
 	
 
-	public static void error(Window parent, Exception e)
+	public static void error(Window parent, Throwable e)
 	{
 		D.print();
 	}

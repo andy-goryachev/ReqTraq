@@ -67,6 +67,12 @@ public abstract class OpenFileController
 	}
 	
 	
+	public void setFile(File f)
+	{
+		file.set(f);
+	}
+	
+	
 	public File getFile()
 	{
 		return file.get();
@@ -204,13 +210,13 @@ public abstract class OpenFileController
 	
 	protected void newFilePrivate()
 	{
-		delegateCommit();
-		
 		try
 		{
+			delegateCommit();
+
 			if(checkModified())
 			{
-				file.set(null);
+				setFile(null);
 				delegateNewFile();
 			}
 		}
@@ -223,10 +229,10 @@ public abstract class OpenFileController
 	
 	protected void openFilePrivate()
 	{
-		delegateCommit();
-		
 		try
 		{
+			delegateCommit();
+			
 			if(checkModified())
 			{
 				FileChooser fc = fileChooser();
@@ -237,6 +243,8 @@ public abstract class OpenFileController
 					lastFolder.set(dir);
 					
 					openFilePrivate(f);
+					
+					FX.storeSettings();
 				}
 			}
 		}
@@ -280,10 +288,10 @@ public abstract class OpenFileController
 
 	public void doOpenFile(File f)
 	{
-		delegateCommit();
-		
 		try
 		{
+			delegateCommit();
+
 			if(checkModified())
 			{
 				openFilePrivate(f);
@@ -300,7 +308,7 @@ public abstract class OpenFileController
 	{
 		delegateOpenFile(f);
 		
-		file.set(f);
+		setFile(f);
 		addRecentFile(f);
 		setModified(false);
 	}
@@ -310,9 +318,10 @@ public abstract class OpenFileController
 	{
 		try
 		{
-			if(file != null)
+			if(getFile() != null)
 			{
 				delegateCommit();
+				
 				delegateSaveFile(getFile());
 				setModified(false);
 			}
@@ -360,45 +369,47 @@ public abstract class OpenFileController
 	
 	protected void saveFileAsPrivate()
 	{
-		delegateCommit();
-		
-		FileChooser fc = fileChooser();
-		fc.setInitialFileName(getFileName());
-		File f = fc.showSaveDialog(parent);
-		if(f != null)
+		try
 		{
-			f = fixExtension(f);
+			delegateCommit();
 			
-			if(f.exists())
+			FileChooser fc = fileChooser();
+			fc.setInitialFileName(getFileName());
+			File f = fc.showSaveDialog(parent);
+			if(f != null)
 			{
-				int rv = Dialogs.choice
-				(
-					parent, 
-					"Overwrite?", // FIX
-					"File exists.  Do you want to overwrite it?",
-					new String[] { "Overwrite", "Cancel" }
-				);
-				if(rv != 0)
+				f = fixExtension(f);
+				
+				if(f.exists())
 				{
-					return;
+					int rv = Dialogs.choice
+					(
+						parent, 
+						"Overwrite?", // FIX
+						"File exists.  Do you want to overwrite it?",
+						new String[] { "Overwrite", "Cancel" }
+					);
+					if(rv != 0)
+					{
+						return;
+					}
 				}
-			}
+				
+				File dir = f.getParentFile();
+				lastFolder.set(dir);
 			
-			File dir = f.getParentFile();
-			lastFolder.set(dir);
-			
-			try
-			{
 				delegateSaveFile(f);
 				
-				file.set(f);
+				setFile(f);
 				setModified(false);
 				addRecentFile(f);
+				
+				FX.storeSettings();
 			}
-			catch(Exception e)
-			{
-				Dialogs.error(parent, e);
-			}
+		}
+		catch(Exception e)
+		{
+			Dialogs.error(parent, e);
 		}
 	}
 

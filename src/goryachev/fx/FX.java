@@ -657,4 +657,10 @@ public final class FX
 			n.setTooltip(new Tooltip(tooltip.toString()));
 		}
 	}
+	
+	
+	public static void storeSettings()
+	{
+		windowsFx.storeSettings();
+	}
 }
