@@ -42,13 +42,13 @@ public class MainWindow
 		{
 			protected void delegateSaveFile(File f) throws Exception
 			{
-				D.print();
+				D.print(f);
 			}
 
 
 			protected void delegateOpenFile(File f) throws Exception
 			{
-				D.print();
+				D.print(f);
 			}
 
 
@@ -64,9 +64,8 @@ public class MainWindow
 			}
 		};
 		openFileController.addFileFilter("*", "*.* All Files");
-		openFileController.addFileFilter("txt", "*.txt Text Files");
-		// TODO
-		// bind("FILE", openFileController);
+		//openFileController.addFileFilter("txt", "*.txt Text Files");
+		bind("FILE", openFileController);
 		
 		tree = new TreeTablePane();
 		

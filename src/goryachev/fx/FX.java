@@ -487,6 +487,13 @@ public final class FX
 	}
 	
 	
+	/** bind an object with settings to be saved as part of FxWindow settings using the specified subkey */
+	public static <T> void bind(Node n, String subKey, HasSettings x)
+	{
+		windowsFx.bindings(n, true).add(subKey, x);
+	}
+	
+	
 	/** bind a property to be saved as part of FxWindow settings using the specified subkey */
 	public static <T> void bind(Node n, String subKey, Property<T> p, StringConverter<T> c)
 	{

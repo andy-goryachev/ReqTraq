@@ -3,7 +3,6 @@ package research.open;
 import goryachev.common.util.CList;
 import goryachev.common.util.GlobalSettings;
 import goryachev.common.util.SStream;
-import goryachev.common.util.html.HtmlTools;
 import goryachev.fx.Binder;
 import goryachev.fx.CAction;
 import goryachev.fx.CMenu;
@@ -19,6 +18,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
@@ -47,26 +47,19 @@ public abstract class OpenFileController
 	public final SimpleObjectProperty<File> file = new SimpleObjectProperty<>();
 	public final SimpleBooleanProperty modified = new SimpleBooleanProperty();
 	public final ObservableList<File> recentFiles = FXCollections.observableArrayList();
+	private final SimpleObjectProperty<File> lastFolder = new SimpleObjectProperty<>();
 	private CList<FileChooser.ExtensionFilter> filters;
 	protected final Window parent;
-	protected final String lastDirKey;
-	protected final String recentFilesKey;
 	protected int maxRecentFiles = 10;
+	public static final String KEY_DIR = "DIR";
+	public static final String KEY_RECENT_FILES = "RECENT";
 
-	
-	public OpenFileController(Window parent, String lastDirKey, String recentFilesKey)
-	{
-		this.parent = parent;
-		this.lastDirKey = lastDirKey;
-		this.recentFilesKey = recentFilesKey;
-	}
-	
 	
 	public OpenFileController(Window parent)
 	{
-		this(parent, "last.dir", "recent.files");
+		this.parent = parent;
 	}
-
+	
 	
 	public void setMaxRecentFiles(int n)
 	{
@@ -77,6 +70,13 @@ public abstract class OpenFileController
 	public File getFile()
 	{
 		return file.get();
+	}
+	
+	
+	public String getFileName()
+	{
+		File f = getFile();
+		return (f == null ? null : f.getName());
 	}
 	
 	
@@ -116,25 +116,6 @@ public abstract class OpenFileController
 	public void clearRecentFiles()
 	{
 		recentFiles.clear();
-		GlobalSettings.setString(recentFilesKey, null);
-	}
-	
-	
-	protected void loadRecentFiles()
-	{
-		CList<File> list = new CList<>();
-		try
-		{
-			SStream ss = GlobalSettings.getStream(recentFilesKey);
-			for(String s: ss)
-			{
-				list.add(new File(s));
-			}
-		}
-		catch(Exception e)
-		{ }
-		
-		recentFiles.setAll(list);
 	}
 	
 	
@@ -163,8 +144,6 @@ public abstract class OpenFileController
 			{
 				ss.add(ch.getAbsolutePath());
 			}
-			
-			GlobalSettings.setStream(recentFilesKey, ss);
 		}
 	}
 	
@@ -250,13 +229,13 @@ public abstract class OpenFileController
 		{
 			if(checkModified())
 			{
-				FileChooser fc = new FileChooser();
-				//parent, lastDirKey);
-				configureFileFilter(fc);
-				//fc.setApproveButtonText(openButtonText);
+				FileChooser fc = fileChooser();
 				File f = fc.showOpenDialog(parent);
 				if(f != null)
 				{
+					File dir = f.getParentFile();
+					lastFolder.set(dir);
+					
 					openFilePrivate(f);
 				}
 			}
@@ -284,9 +263,18 @@ public abstract class OpenFileController
 	}
 
 
-	protected void configureFileFilter(FileChooser fc)
+	protected FileChooser fileChooser()
 	{
+		FileChooser fc = new FileChooser();
+		fc.setInitialDirectory(getLastFolder());
 		fc.getExtensionFilters().setAll(filters());
+		return fc;
+	}
+	
+	
+	protected File getLastFolder()
+	{
+		return lastFolder.get();
 	}
 
 
@@ -374,10 +362,8 @@ public abstract class OpenFileController
 	{
 		delegateCommit();
 		
-		FileChooser fc = new FileChooser();
-		//parent, lastDirKey);
-		configureFileFilter(fc);
-		//fc.setApproveButtonText(saveButtonText);
+		FileChooser fc = fileChooser();
+		fc.setInitialFileName(getFileName());
 		File f = fc.showSaveDialog(parent);
 		if(f != null)
 		{
@@ -397,6 +383,9 @@ public abstract class OpenFileController
 					return;
 				}
 			}
+			
+			File dir = f.getParentFile();
+			lastFolder.set(dir);
 			
 			try
 			{
@@ -422,13 +411,15 @@ public abstract class OpenFileController
 	
 	public void storeSettings(String prefix)
 	{
-		// TODO store
+		GlobalSettings.setFile(KEY_DIR, lastFolder.get());
+		GlobalSettings.setFiles(KEY_RECENT_FILES, recentFiles);
 	}
 	
 	
 	public void restoreSettings(String prefix)
 	{
-		// TODO restore		
+		lastFolder.set(GlobalSettings.getFile(KEY_DIR));
+		recentFiles.setAll(GlobalSettings.getFiles(KEY_RECENT_FILES));
 	}
 	
 	
@@ -451,7 +442,7 @@ public abstract class OpenFileController
 		protected void rebuild()
 		{
 			clear();
-
+			
 			for(final File f: recentFiles)
 			{
 				String name = f.getName();
@@ -461,17 +452,19 @@ public abstract class OpenFileController
 				if(path.endsWith(name))
 				{
 					path = path.substring(0, path.length() - name.length());
-					icon = new TextFlow(FX.text(path), FX.text(name, FxCtl.BOLD));
+					// FIX right alignment
+					icon = new TextFlow(FX.text(path, TextAlignment.RIGHT), FX.text(name, FxCtl.BOLD, TextAlignment.RIGHT));
 					path = null;
 				}
 
-				add(new CMenuItem(path, icon, new CAction()
+				CMenuItem mi = new CMenuItem(path, icon, new CAction()
 				{
 					public void action()
 					{
 						doOpenFile(f);
 					}
-				}));
+				});
+				add(mi);
 			}
 
 			if(getRecentFileCount() > 0)
