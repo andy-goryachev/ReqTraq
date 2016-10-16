@@ -26,17 +26,17 @@ public class ReqDocJsonReader
 		while(inObject())
 		{
 			String s = nextName();
-			if(Schema.KEY_PAGES.equals(s))
+			switch(s)
 			{
+			case Schema.KEY_PAGES:
 				pages = parsePages();
-			}
-			else if(Schema.KEY_ID.equals(s))
-			{
+				break;
+			case Schema.KEY_ID:
 				id = nextString();
-			}
-			else if(Schema.KEY_VERSION.equals(s))
-			{
+				break;
+			case Schema.KEY_VERSION:
 				ver = nextString();
+				break;
 			}
 		}
 		endObject();
@@ -66,22 +66,26 @@ public class ReqDocJsonReader
 		String id = null;
 		String title = null;
 		String text = null;
+		int level = -1;
 		
 		beginObject();
 		while(inObject())
 		{
 			String s = nextName();
-			if(Schema.KEY_ID.equals(s))
+			switch(s)
 			{
+			case Schema.KEY_ID:
 				id = nextString();
-			}
-			else if(Schema.KEY_TITLE.equals(s))
-			{
+				break;
+			case Schema.KEY_PAGE_LEVEL:
+				level = nextInt();
+				break;
+			case Schema.KEY_PAGE_TITLE:
 				title = nextString();
-			}
-			else if(Schema.KEY_TEXT.equals(s))
-			{
+				break;
+			case Schema.KEY_PAGE_TEXT:
 				text = nextString();
+				break;
 			}
 		}
 		endObject();

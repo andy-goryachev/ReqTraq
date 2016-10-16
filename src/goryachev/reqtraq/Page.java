@@ -70,6 +70,12 @@ public class Page
 	}
 	
 	
+	public int getNestingLevel()
+	{
+		return 0; // TODO
+	}
+	
+	
 	public ObservableValue<String> synopsisProperty()
 	{
 		if(synopsis == null)
