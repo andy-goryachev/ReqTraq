@@ -1,9 +1,10 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
-
+import goryachev.common.util.GUID256;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
+
 
 /**
  * Page.
@@ -21,16 +22,27 @@ public class Page
 	
 	public final SimpleStringProperty title = new SimpleStringProperty();
 	public final SimpleStringProperty text = new SimpleStringProperty();
+	private final String id;
 	private ObservableValue<String> synopsis;
 	
 	
 	public Page()
 	{
+		id = GUID256.get();
+	}
+	
+	
+	public Page(String id, String title, String text)
+	{
+		this.id = id;
+		setTitle(title);
+		setText(text);
 	}
 	
 	
 	public Page(String title, String text)
 	{
+		this.id = GUID256.get();
 		setTitle(title);
 		setText(text);
 	}
@@ -49,6 +61,12 @@ public class Page
 		default:
 			return null;
 		}
+	}
+	
+	
+	public String getID()
+	{
+		return id;
 	}
 	
 	
