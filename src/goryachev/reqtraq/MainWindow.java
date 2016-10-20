@@ -9,7 +9,11 @@ import goryachev.fx.CPopupMenu;
 import goryachev.fx.FX;
 import goryachev.fx.FxDump;
 import goryachev.fx.FxWindow;
+import goryachev.reqtraq.data.ReqDoc;
+import goryachev.reqtraq.data.ReqDocJsonReader;
+import goryachev.reqtraq.data.ReqDocJsonWriter;
 import java.io.File;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TreeItem;
@@ -26,6 +30,7 @@ public class MainWindow
 	public final EditorPane editor;
 	public final MainController control;
 	public final OpenFileController openFileController;
+	public final SimpleObjectProperty<ReqDoc> document = new SimpleObjectProperty();
 	
 	
 	public MainWindow()
@@ -38,29 +43,30 @@ public class MainWindow
 		setTitle("ReqTraq © 2016 Andy Goryachev");
 		setSize(650, 300);
 		
+		// TODO use method references
 		openFileController = new OpenFileController(this)
 		{
 			protected void delegateSaveFile(File f) throws Exception
 			{
-				D.print(f);
+				saveFile(f);
 			}
 
 
 			protected void delegateOpenFile(File f) throws Exception
 			{
-				D.print(f);
+				openFile(f);
 			}
 
 
 			protected void delegateNewFile() throws Exception
 			{
-				D.print();
+				newFile();
 			}
 
 
 			protected void delegateCommit()
 			{
-				D.print();
+				commit();
 			}
 		};
 		openFileController.addFileFilter("*", "*.* All Files");
@@ -110,7 +116,7 @@ public class MainWindow
 			}
 		};
 		
-		tree.setRoot(createTree());
+		setDocument(Demo.create());
 	}
 
 	
@@ -141,26 +147,45 @@ public class MainWindow
 		return b;
 	}
 
-
-	private TreeItem<Page> createTree()
+	
+	public void setDocument(ReqDoc d)
 	{
-		TreeItem<Page> root = new TreeItem<Page>();
-		TreeItem<Page> ch;
-		ch = ch(root, "Chapter 1", "First Chapter\n\n1.\n2.");
-		ch(ch, "1.1", null);
-		ch(ch, "1.2", null);
-		ch(ch, "1.3", null);
-		ch(root, "Chapter 2", "Second Chapter\n\n1.\n2.");
-		return root;
+		document.set(d);
+		tree.setRoot(d.getTreeRoot());
 	}
 	
-
-	private TreeItem<Page> ch(TreeItem<Page> parent, String title, String text)
+	
+	public ReqDoc getDocument()
 	{
-		Page p = new Page(title, text);
-		
-		TreeItem<Page> ch = new TreeItem<Page>(p);
-		parent.getChildren().add(ch);
-		return ch;
+		ReqDoc d = document.get();
+		TreeItem<Page> root = tree.getRoot();
+		d.setTreeRoot(d);
+		return d;
+	}
+	
+	
+	protected void commit()
+	{
+		D.print(); // FIX
+	}
+	
+	
+	protected void newFile()
+	{
+		setDocument(new ReqDoc());
+	}
+	
+	
+	protected void openFile(File f) throws Exception
+	{
+		ReqDoc d = ReqDocJsonReader.readJSON(f);
+		setDocument(d);
+	}
+	
+	
+	protected void saveFile(File f) throws Exception
+	{
+		ReqDoc d = getDocument();
+		ReqDocJsonWriter.saveJSON(d, f);
 	}
 }

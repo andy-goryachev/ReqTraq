@@ -23,6 +23,7 @@ public class Page
 	public final SimpleStringProperty title = new SimpleStringProperty();
 	public final SimpleStringProperty text = new SimpleStringProperty();
 	private final String id;
+	private transient int level;
 	private ObservableValue<String> synopsis;
 	
 	
@@ -35,14 +36,6 @@ public class Page
 	public Page(String id, String title, String text)
 	{
 		this.id = id;
-		setTitle(title);
-		setText(text);
-	}
-	
-	
-	public Page(String title, String text)
-	{
-		this.id = GUID256.get();
 		setTitle(title);
 		setText(text);
 	}
@@ -70,9 +63,16 @@ public class Page
 	}
 	
 	
+	/** nesting level 0 corresponds to the root not (invisible).  visible pages start at level 1 */
 	public int getNestingLevel()
 	{
-		return 0; // TODO
+		return level;
+	}
+	
+	
+	public void setNestingLevel(int x)
+	{
+		level = x;
 	}
 	
 	

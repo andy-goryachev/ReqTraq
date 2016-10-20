@@ -42,6 +42,12 @@ public class TreeTablePane
 	{
 		tree.setRoot(r);
 	}
+	
+	
+	public TreeItem<Page> getRoot()
+	{
+		return tree.getRoot();
+	}
 
 
 	protected void addColumn(String label, Page.Field f)

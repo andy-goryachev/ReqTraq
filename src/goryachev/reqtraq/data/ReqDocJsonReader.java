@@ -1,8 +1,11 @@
 // Copyright (c) 2013 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq.data;
+import goryachev.common.io.CReader;
+import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.json.JsonDecoder;
 import goryachev.reqtraq.Page;
+import java.io.File;
 import java.io.Reader;
 
 
@@ -13,6 +16,20 @@ public class ReqDocJsonReader
 	public ReqDocJsonReader(Reader rd)
 	{
 		super(rd);
+	}
+	
+	
+	public static ReqDoc readJSON(File f) throws Exception
+	{
+		ReqDocJsonReader rd = new ReqDocJsonReader(new CReader(f));
+		try
+		{
+			return rd.parse();
+		}
+		finally
+		{
+			CKit.close(rd);
+		}
 	}
 	
 	
