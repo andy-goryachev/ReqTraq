@@ -1,0 +1,70 @@
+General
+		
+Main Window
+	Menu
+		Export
+			html
+			pdf
+			plain text
+			csv
+			MS Word
+		Import
+			MS Word
+			CSV
+			plain text
+			html
+	
+	Tree Pane
+		Columns:
+			title
+			scheduled release
+			% done
+			eta
+			gantt
+			completed
+			entered
+			started
+			req number (decimal)
+		Context Menu
+			expand all
+			add child
+			add
+			move left right up down
+			cut 
+			copy 
+			paste
+	Detail Pane
+		View
+			single page
+			list of immediate children
+			document with all descendants
+	Right Pane ?
+		comments or links
+		sidepanel with browser?
+
+Miscellaneous
+	templates
+	questionnaires
+	split requirements
+	combine requirements
+	split paragraphs
+	
+Future Ideas
+	Document Types
+		types
+		text with indents
+		code with syntax hl
+		image
+		table
+		spreadsheet
+		visio
+	Releases
+		planned date
+		features
+		descr
+	Git
+		json file format
+		multi-user
+		supports auto-merging of git conflicts
+	Command Line Tool
+		command to generate html for build scripts

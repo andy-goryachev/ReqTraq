@@ -12,6 +12,7 @@ import goryachev.fx.FxWindow;
 import goryachev.reqtraq.data.ReqDoc;
 import goryachev.reqtraq.data.ReqDocJsonReader;
 import goryachev.reqtraq.data.ReqDocJsonWriter;
+import goryachev.reqtraq.demo.Demo;
 import java.io.File;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
