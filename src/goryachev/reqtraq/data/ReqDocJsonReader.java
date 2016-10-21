@@ -83,7 +83,7 @@ public class ReqDocJsonReader
 		String id = null;
 		String title = null;
 		String text = null;
-		int level = -1;
+		int level = 1;
 		
 		beginObject();
 		while(inObject())
@@ -107,6 +107,6 @@ public class ReqDocJsonReader
 		}
 		endObject();
 		
-		return new Page(id, title, text);
+		return new Page(id, level, title, text);
     }
 }

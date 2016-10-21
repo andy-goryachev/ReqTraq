@@ -38,9 +38,7 @@ public class Demo
 					int lev = countLeadingTabs(s);
 					String title = s.trim();
 					String id = GUID256.get();
-					Page p = new Page(id, title, null);
-					p.setNestingLevel(lev);
-					ps.add(p);
+					ps.add(new Page(id, lev, title, null));
 				}
 			}
 		}

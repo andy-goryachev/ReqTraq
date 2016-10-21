@@ -33,9 +33,10 @@ public class Page
 	}
 	
 	
-	public Page(String id, String title, String text)
+	public Page(String id, int level, String title, String text)
 	{
 		this.id = id;
+		this.level = level;
 		setTitle(title);
 		setText(text);
 	}

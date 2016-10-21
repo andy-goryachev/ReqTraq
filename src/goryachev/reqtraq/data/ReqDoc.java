@@ -106,6 +106,7 @@ public class ReqDoc
 		}
 		
 		level++;
+		
 		for(TreeItem<Page> ch: item.getChildren())
 		{
 			collectPages(ps, ch, level);
