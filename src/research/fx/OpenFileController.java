@@ -1,9 +1,8 @@
 // Copyright © 2007-2016 Andy Goryachev <andy@goryachev.com>
-package research.open;
+package research.fx;
 import goryachev.common.util.CList;
 import goryachev.common.util.GlobalSettings;
 import goryachev.common.util.SStream;
-import goryachev.fx.Binder;
 import goryachev.fx.CAction;
 import goryachev.fx.CMenu;
 import goryachev.fx.CMenuItem;

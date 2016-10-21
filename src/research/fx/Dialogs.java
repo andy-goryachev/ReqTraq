@@ -1,5 +1,5 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
-package research.open;
+package research.fx;
 import goryachev.common.util.D;
 import goryachev.common.util.Log;
 import javafx.stage.Window;

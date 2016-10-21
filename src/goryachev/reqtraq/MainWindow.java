@@ -18,7 +18,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TreeItem;
-import research.open.OpenFileController;
+import research.fx.OpenFileController;
 
 
 /**
