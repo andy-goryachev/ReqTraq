@@ -107,6 +107,9 @@ public class MainWindow
 				add("Insert Child");
 				separator();
 				
+				add("Expand All", tree.expandAllAction);
+				separator();
+				
 				add("Delete");
 				separator();
 				
@@ -118,6 +121,7 @@ public class MainWindow
 		};
 		
 		setDocument(Demo.create());
+		tree.expandAll();
 	}
 
 	

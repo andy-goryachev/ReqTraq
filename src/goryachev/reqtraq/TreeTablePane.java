@@ -1,5 +1,6 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
+import goryachev.fx.CAction;
 import goryachev.fx.CPane;
 import goryachev.fx.CommonStyles;
 import goryachev.fx.FX;
@@ -16,6 +17,8 @@ import javafx.scene.control.TreeTableView;
 public class TreeTablePane
 	extends CPane
 {
+	public final CAction expandAllAction = new CAction(this::expandAll);
+	
 	public final TreeTableView<Page> tree;
 	public final TreeHandler<Page> handler;
 	
@@ -59,8 +62,6 @@ public class TreeTablePane
 			Page p = param.getValue().getValue();
 			ObservableValue<String> v = (p == null ? null : p.getField(f));
 			return v;
-//			String s = Parsers.parseString(v);
-//			return new ReadOnlyStringWrapper(s);
 		});
 		tree.getColumns().add(column);
 	}
@@ -75,5 +76,22 @@ public class TreeTablePane
 		}
 
 		return null;
+	}
+	
+	
+	public void expandAll()
+	{
+		expandRecursive(tree.getRoot());
+	}
+
+
+	protected void expandRecursive(TreeItem<Page> p)
+	{
+		p.setExpanded(true);
+		
+		for(TreeItem<Page> ch: p.getChildren())
+		{
+			expandRecursive(ch);
+		}
 	}
 }
