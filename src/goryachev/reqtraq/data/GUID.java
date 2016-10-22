@@ -10,6 +10,6 @@ public class GUID
 {
 	public static String create()
 	{
-		return GUID256.generateDecimalString();
+		return GUID256.generateHexString();
 	}
 }

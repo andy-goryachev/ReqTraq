@@ -28,7 +28,7 @@ public class GUID256
 	
 	
 	/** generates GUID as a hex string */
-	public static String generateString()
+	public static String generateHexString()
 	{
 		return Hex.toHexString(generateBytes());
 	}
