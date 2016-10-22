@@ -35,7 +35,7 @@ public class TreeTablePane
 		handler = new TreeHandler<Page>(tree);
 		
 		addColumn("Title", Page.Field.TITLE);
-		addColumn("Text", Page.Field.SYNOPSIS);
+		addColumn("ID", Page.Field.ID);
 		
 		setCenter(tree);
 	}
@@ -60,8 +60,16 @@ public class TreeTablePane
 		column.setCellValueFactory((TreeTableColumn.CellDataFeatures<Page,String> param) ->
 		{
 			Page p = param.getValue().getValue();
-			ObservableValue<String> v = (p == null ? null : p.getField(f));
-			return v;
+			return FX.toObservableValue(p == null ? null : p.getField(f));
+//			ObservableValue<String> v = (
+//			if(v != null)
+//			{
+//				if(!(v instanceof ObservableValue))
+//				{
+//					v = new ObservableValue
+//				}
+//			}
+//			return v;
 		});
 		tree.getColumns().add(column);
 	}

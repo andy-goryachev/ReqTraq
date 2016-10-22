@@ -34,7 +34,7 @@ public class GUID256
 	/** generates GUID as a decimal string */
 	public static String generateDecimalString()
 	{
-		return new BigInteger(generateBytes()).toString();
+		return new BigInteger(1, generateBytes()).toString();
 	}
 	
 	

@@ -13,6 +13,7 @@ public class Page
 {
 	public static enum Field
 	{
+		ID,
 		SYNOPSIS,
 		TITLE,
 		TEXT
@@ -42,10 +43,14 @@ public class Page
 	}
 	
 	
-	public ObservableValue<String> getField(Field f)
+	public Object 
+	//ObservableValue<String> 
+	getField(Field f)
 	{
 		switch(f)
 		{
+		case ID:
+			return getID();
 		case SYNOPSIS:
 			return synopsisProperty();
 		case TEXT:

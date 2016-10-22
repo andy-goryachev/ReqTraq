@@ -4,6 +4,8 @@ import goryachev.common.util.GlobalSettings;
 import goryachev.fx.internal.WindowsFx;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -662,5 +664,22 @@ public final class FX
 	public static void storeSettings()
 	{
 		windowsFx.storeSettings();
+	}
+	
+	
+	public static ObservableValue toObservableValue(Object x)
+	{
+		if(x == null)
+		{
+			return null;
+		}
+		else if(x instanceof ObservableValue)
+		{
+			return (ObservableValue)x;
+		}
+		else
+		{
+			return new SimpleObjectProperty(x);
+		}
 	}
 }
