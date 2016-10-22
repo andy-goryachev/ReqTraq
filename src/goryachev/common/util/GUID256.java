@@ -5,6 +5,9 @@ import java.security.SecureRandom;
 import java.util.concurrent.atomic.AtomicLong;
 
 
+/** 
+ * A globally unique identifier generator.
+ */
 public class GUID256
 {
 	private static final int INITIAL_RANDOMNESS_BYTES = 32;
