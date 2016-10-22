@@ -103,8 +103,8 @@ public class MainWindow
 				add("Redo");
 				separator();
 
-				add("Insert Row");
-				add("Insert Child");
+				add("Insert After", tree.insertAfterAction);
+				add("Insert Child", tree.insertChildAction);
 				separator();
 				
 				add("Expand All", tree.expandAllAction);
@@ -120,7 +120,9 @@ public class MainWindow
 			}
 		};
 		
+		// FIX remove
 		setDocument(Demo.create());
+		// TODO memorize expanded state?
 		tree.expandAll();
 	}
 

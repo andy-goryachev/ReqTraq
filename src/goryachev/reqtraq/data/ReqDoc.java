@@ -2,6 +2,7 @@
 package goryachev.reqtraq.data;
 import goryachev.common.util.CList;
 import goryachev.reqtraq.Page;
+import goryachev.reqtraq.util.Tools;
 import java.util.List;
 import javafx.scene.control.TreeItem;
 
@@ -51,11 +52,11 @@ public class ReqDoc
 
 	
 	/** reconstructs the tree from a list of pages based on the nesting level property */
-	public PageTreeItem getTreeRoot()
+	public TreeItem<Page> getTreeRoot()
 	{
-		CList<PageTreeItem> stack = new CList<>();
+		CList<TreeItem<Page>> stack = new CList<>();
 		
-		PageTreeItem root = new PageTreeItem(null);
+		TreeItem<Page> root = new TreeItem<Page>(null);
 		stack.add(root);
 		
 		for(Page p: pages)
@@ -71,19 +72,19 @@ public class ReqDoc
 			if(lev >= (cur + 1))
 			{
 				// a child
-				PageTreeItem ch = stack.get(cur).addPage(p);
+				TreeItem<Page> ch = Tools.addPage(stack.get(cur), p);
 				stack.add(ch);
 			}
 			else if(lev == cur)
 			{
 				// a sibling
-				PageTreeItem ch = stack.get(cur - 1).addPage(p);
+				TreeItem<Page> ch = Tools.addPage(stack.get(cur - 1), p);
 				stack.set(lev, ch);
 			}
 			else
 			{
 				// a parent's sibling
-				PageTreeItem ch = stack.get(lev - 1).addPage(p);
+				TreeItem<Page> ch = Tools.addPage(stack.get(lev - 1), p);
 				stack.set(lev, ch);
 				for(int i=cur; i>lev; --i)
 				{
