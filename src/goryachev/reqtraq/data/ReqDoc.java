@@ -1,7 +1,6 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq.data;
 import goryachev.common.util.CList;
-import goryachev.common.util.GUID256;
 import goryachev.reqtraq.Page;
 import java.util.List;
 import javafx.scene.control.TreeItem;
@@ -18,7 +17,7 @@ public class ReqDoc
 	
 	public ReqDoc()
 	{
-		id = GUID256.get();
+		id = GUID.create();
 		pages = new CList<>();
 	}
 	

@@ -1,6 +1,6 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
-import goryachev.common.util.GUID256;
+import goryachev.reqtraq.data.GUID;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -29,7 +29,7 @@ public class Page
 	
 	public Page()
 	{
-		id = GUID256.get();
+		id = GUID.create();
 	}
 	
 	

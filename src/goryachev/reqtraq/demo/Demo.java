@@ -3,10 +3,9 @@ package goryachev.reqtraq.demo;
 import goryachev.common.io.CReader;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
-import goryachev.common.util.GUID256;
 import goryachev.common.util.Log;
-import goryachev.common.util.Parsers;
 import goryachev.reqtraq.Page;
+import goryachev.reqtraq.data.GUID;
 import goryachev.reqtraq.data.ReqDoc;
 
 
@@ -18,7 +17,7 @@ public class Demo
 	public static ReqDoc create()
 	{
 		String s = CKit.readStringQuiet(Demo.class, "requirements.txt");
-		String id = GUID256.get();
+		String id = GUID.create();
 		return new ReqDoc(id, parse(s));
 	}
 	
@@ -37,7 +36,7 @@ public class Demo
 				{
 					int lev = countLeadingTabs(s);
 					String title = s.trim();
-					String id = GUID256.get();
+					String id = GUID.create();
 					ps.add(new Page(id, lev, title, null));
 				}
 			}
