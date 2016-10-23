@@ -1,18 +1,19 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
-import goryachev.common.util.D;
 import goryachev.fx.CAction;
 import goryachev.fx.CPane;
 import goryachev.fx.CommonStyles;
 import goryachev.fx.FX;
 import goryachev.reqtraq.util.Tools;
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableCell;
-import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
+import research.fx.FxFormatter;
+import research.fx.FxTreeTableColumn;
 
 
 // TODO drop zone indicator
@@ -42,9 +43,7 @@ public class TreeTablePane
 		// set up actions
 		insertAfterAction.disabledProperty().bind(Bindings.createBooleanBinding(() ->
 		{
-			boolean d = tree.getSelectionModel().getSelectedItems().size() != 1;
-			D.print(d);
-			return d;
+			return tree.getSelectionModel().getSelectedItems().size() != 1;
 		}, tree.getSelectionModel().getSelectedItems()));
 		
 		insertChildAction.disabledProperty().bind(Bindings.createBooleanBinding(() ->
@@ -52,8 +51,8 @@ public class TreeTablePane
 			return tree.getSelectionModel().getSelectedItems().size() != 1;
 		}, tree.getSelectionModel().getSelectedItems()));
 		
-		addColumn("Title", Page.Field.TITLE);
-		addColumn("Created", Page.Field.TIME_CREATED);
+		addColumn(Page.Field.TITLE, "Title");
+		addColumn(Page.Field.TIME_CREATED, "Created");
 		
 		setCenter(tree);
 	}
@@ -72,25 +71,47 @@ public class TreeTablePane
 
 
 	// TODO format, alignment, width
-	protected void addColumn(String label, Page.Field f)
+	protected void addColumn(Page.Field f, String label)
 	{
-		TreeTableColumn<Page,String> column = new TreeTableColumn<>(label);
-		column.setPrefWidth(150);
-		column.setCellValueFactory((TreeTableColumn.CellDataFeatures<Page,String> param) ->
+		FxTreeTableColumn<Page> c = new FxTreeTableColumn<Page>(label, true)
 		{
-			Page p = param.getValue().getValue();
-			return FX.toObservableValue(p == null ? null : p.getField(f));
-		});
-
-//		column.setCellFactory((x) ->
-//		{
-//			return new TreeTableCell()
-//			{
-//				
-//			};
-//		});
+			protected ObservableValue getCellValueProperty(Page p)
+			{
+				return FX.toObservableValue(p.getField(f));
+			}
+		};
+		c.setAlignment(getAlignment(f));
+		c.setFormatter(getFormatter(f));
+		c.setPrefWidth(150);
 		
-		tree.getColumns().add(column);
+		tree.getColumns().add(c);
+	}
+	
+	
+	protected Pos getAlignment(Page.Field f)
+	{
+		switch(f)
+		{
+//		case TIME_CREATED:
+//			return Pos.CENTER_RIGHT;
+		default:
+			return Pos.CENTER_LEFT;
+		}
+	}
+	
+	
+	protected FxFormatter getFormatter(Page.Field f)
+	{
+		switch(f)
+		{
+		case ID:
+			return Formatters.ID;
+		case TIME_CREATED:
+		case TIME_MODIFIED:
+			return Formatters.DATE_TIME;
+		default:
+			return null;
+		}
 	}
 
 

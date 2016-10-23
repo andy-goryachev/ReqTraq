@@ -14,7 +14,13 @@ public class Page
 {
 	public static enum Field
 	{
+		// ETA,
+		// GANTT,
 		ID,
+		// IMAGES,
+		// PERCENT_COMPLETED,
+		// RELEASE,
+		// STATUS,
 		SYNOPSIS,
 		TITLE,
 		TIME_CREATED,
@@ -174,6 +180,6 @@ public class Page
 	
 	public String toString()
 	{
-		return getTitle();
+		return "Page:" + getTitle();
 	}
 }

@@ -41,7 +41,7 @@ public class MainWindow
 		// FIX
 		FxDump.attach(this);
 		
-		setTitle("ReqTraq © 2016 Andy Goryachev");
+		setTitle("ReqTraq");
 		setSize(650, 300);
 		
 		// TODO use method references
@@ -141,10 +141,40 @@ public class MainWindow
 		m.add("Save As...", openFileController.saveAsAction);
 		m.separator();
 		m.add("Print");
+		// edit
+		m = b.addMenu("Edit");
+		m.add("Undo");
+		m.add("Redo");
+		m.separator();
+		m.add("Cut");
+		m.add("Copy");
+		m.add("Paste");
+		m.separator();
+		m.add("Insert After");
+		m.add("Insert Child");
+		m.separator();
+		m.add("Move Left");
+		m.add("Move Right");
+		m.add("Move Up");
+		m.add("Move Down");
+		m.separator();
+		m.add("Select All");
+		m.separator();
+		m.add("Delete");
+		m.separator();
+		m.add("Find");
+		// search
+		m = b.addMenu("Search");
 		// reports
 		m = b.addMenu("Reports");
 		// view
 		m = b.addMenu("View");
+		m.add("Dashboard");
+		m.add("Requirements");
+		m.add("Releases");
+		m.add("Search");
+		m.add("Reports");
+		m.separator();
 		m.add("Layout");
 		// window
 		m = b.addMenu("Window");
