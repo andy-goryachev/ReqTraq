@@ -141,8 +141,12 @@ public class MainWindow
 		m.add("Save As...", openFileController.saveAsAction);
 		m.separator();
 		m.add("Print");
+		// reports
+		m = b.addMenu("Reports");
 		// view
 		m = b.addMenu("View");
+		m.add("Layout");
+		// window
 		m = b.addMenu("Window");
 		// help
 		m = b.addMenu("Help");

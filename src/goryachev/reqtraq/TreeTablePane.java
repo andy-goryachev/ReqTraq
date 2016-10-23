@@ -53,7 +53,6 @@ public class TreeTablePane
 		}, tree.getSelectionModel().getSelectedItems()));
 		
 		addColumn("Title", Page.Field.TITLE);
-		addColumn("ID", Page.Field.ID);
 		addColumn("Created", Page.Field.TIME_CREATED);
 		
 		setCenter(tree);
@@ -72,6 +71,7 @@ public class TreeTablePane
 	}
 
 
+	// TODO format, alignment, width
 	protected void addColumn(String label, Page.Field f)
 	{
 		TreeTableColumn<Page,String> column = new TreeTableColumn<>(label);
@@ -81,11 +81,15 @@ public class TreeTablePane
 			Page p = param.getValue().getValue();
 			return FX.toObservableValue(p == null ? null : p.getField(f));
 		});
-//		column.setCellFactory((TreeTableColumn c, TreeTableCell v) ->
+
+//		column.setCellFactory((x) ->
 //		{
-//			return null;
+//			return new TreeTableCell()
+//			{
+//				
+//			};
 //		});
-		// TODO format and alignment
+		
 		tree.getColumns().add(column);
 	}
 
@@ -134,7 +138,9 @@ public class TreeTablePane
 	
 	public void insertChild()
 	{
-		TreeItem<Page> created = Tools.addPage(getSelectedItem(), new Page());
+		TreeItem<Page> sel = getSelectedItem();
+		sel.setExpanded(true);
+		TreeItem<Page> created = Tools.addPage(sel, 0, new Page());
 		edit(created);
 	}
 	
