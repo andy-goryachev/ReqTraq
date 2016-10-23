@@ -70,8 +70,8 @@ public class MainWindow
 				commit();
 			}
 		};
+		openFileController.addFileFilter("json", "*.json Text Files");
 		openFileController.addFileFilter("*", "*.* All Files");
-		//openFileController.addFileFilter("txt", "*.txt Text Files");
 		bind("FILE", openFileController);
 		
 		tree = new TreeTablePane();

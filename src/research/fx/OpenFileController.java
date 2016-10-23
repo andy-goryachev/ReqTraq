@@ -1,5 +1,6 @@
 // Copyright © 2007-2016 Andy Goryachev <andy@goryachev.com>
 package research.fx;
+import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.common.util.GlobalSettings;
 import goryachev.common.util.SStream;
@@ -358,11 +359,27 @@ public abstract class OpenFileController
 		{
 			for(FileChooser.ExtensionFilter f: filters)
 			{
-				// TODO logic?
-				return f.getExtensions().get(0);
+				String ext = f.getExtensions().get(0);
+				if(!isWildcard(ext))
+				{
+					return ext;
+				}
 			}
 		}
 		return null;
+	}
+	
+	
+	protected boolean isWildcard(String s)
+	{
+		if(s != null)
+		{
+			if(CKit.containsAny(s, "*?"))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	
@@ -379,20 +396,21 @@ public abstract class OpenFileController
 			{
 				f = fixExtension(f);
 				
-				if(f.exists())
-				{
-					int rv = Dialogs.choice
-					(
-						parent, 
-						"Overwrite?", // FIX
-						"File exists.  Do you want to overwrite it?",
-						new String[] { "Overwrite", "Cancel" }
-					);
-					if(rv != 0)
-					{
-						return;
-					}
-				}
+				// new FX file chooser seems to ask this question...
+//				if(f.exists())
+//				{
+//					int rv = Dialogs.choice
+//					(
+//						parent, 
+//						"Overwrite?", // FIX
+//						"File exists.  Do you want to overwrite it?",
+//						new String[] { "Overwrite", "Cancel" }
+//					);
+//					if(rv != 0)
+//					{
+//						return;
+//					}
+//				}
 				
 				File dir = f.getParentFile();
 				lastFolder.set(dir);

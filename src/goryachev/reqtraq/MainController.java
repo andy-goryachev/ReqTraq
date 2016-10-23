@@ -1,7 +1,7 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
-import goryachev.common.util.D;
 import javafx.beans.Observable;
+import javafx.beans.property.SimpleObjectProperty;
 
 
 /**
@@ -11,6 +11,8 @@ public class MainController
 {
 	public final TreeTablePane tree;
 	public final EditorPane editor;
+	private final SimpleObjectProperty<Page> page = new SimpleObjectProperty<>();
+	private boolean handleEvents = true;
 	
 	
 	public MainController(TreeTablePane tree, EditorPane editor)
@@ -21,33 +23,68 @@ public class MainController
 		tree.tree.getSelectionModel().getSelectedItems().addListener((Observable s) -> updatePage());
 		
 		editor.titleField.textProperty().addListener((s,p,c) -> updatePageTitle(c));
-		editor.textField.textProperty().addListener((s,p,c) -> updatePageText(c));
+		editor.textField.textProperty().addListener((s,p,c) -> updatePageText());
 	}
 	
 	
 	protected void updatePage()
-	{
+	{		
 		Page p = tree.getSelectedPage();
-		setDetail(p);
+		if(p != getPage())
+		{
+			commit();
+
+			setPage(p);
+		}
 	}
 
 
-	protected void setDetail(Page p)
+	protected void setPage(Page p)
 	{
+		handleEvents = false;
+		
 		editor.setPage(p);
+		page.set(p);
+		
+		handleEvents = true;
+	}
+	
+	
+	public Page getPage()
+	{
+		return page.get();
+	}
+	
+	
+	protected void commit()
+	{
+		Page p = getPage();
+		if(p != null)
+		{
+			String text = editor.getText();
+			p.setText(text);
+		}
 	}
 	
 	
 	protected void updatePageTitle(String s)
 	{
-		// TODO
-		D.print(s);
+		if(handleEvents)
+		{
+			Page p = getPage();
+			if(p != null)
+			{
+				p.setTitle(s);
+			}
+		}
 	}
 	
 	
-	protected void updatePageText(String s)
+	protected void updatePageText()
 	{
-		// TODO
-		D.print(s);
+		if(handleEvents)
+		{
+			// TODO set modified only
+		}
 	}
 }

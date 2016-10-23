@@ -51,4 +51,10 @@ public class EditorPane
 			textField.setText(p.getText());
 		}
 	}
+
+
+	public String getText()
+	{
+		return textField.getText();
+	}
 }
