@@ -21,6 +21,7 @@ import research.fx.FxTreeTableColumn;
 public class TreeTablePane
 	extends CPane
 {
+	public final CAction collapseAllAction = new CAction(this::collapseAll);
 	public final CAction expandAllAction = new CAction(this::expandAll);
 	public final CAction insertAfterAction = new CAction(this::insertAfter);
 	public final CAction insertChildAction = new CAction(this::insertChild);
@@ -149,17 +150,38 @@ public class TreeTablePane
 	}
 	
 	
-	public void expandAll()
-	{
-		expandRecursive(tree.getRoot());
-	}
-	
-	
 	public void selectFirst()
 	{
 		tree.getSelectionModel().selectFirst();
 	}
 
+	
+	public void collapseAll()
+	{
+		TreeItem<Page> root = tree.getRoot();
+		collapseRecursive(root, root);
+	}
+	
+	
+	protected void collapseRecursive(TreeItem<Page> root, TreeItem<Page> p)
+	{
+		if(p != root)
+		{
+			p.setExpanded(false);
+		}
+		
+		for(TreeItem<Page> ch: p.getChildren())
+		{
+			collapseRecursive(root, ch);
+		}
+	}
+	
+	
+	public void expandAll()
+	{
+		expandRecursive(tree.getRoot());
+	}
+	
 
 	protected void expandRecursive(TreeItem<Page> p)
 	{

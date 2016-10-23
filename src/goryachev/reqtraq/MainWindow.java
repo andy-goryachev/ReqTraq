@@ -108,6 +108,7 @@ public class MainWindow
 				separator();
 				
 				add("Expand All", tree.expandAllAction);
+				add("Collapse All", tree.collapseAllAction);
 				separator();
 				
 				add("Delete");

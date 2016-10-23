@@ -62,11 +62,11 @@ public class ReqDoc
 		for(Page p: pages)
 		{
 			int cur = stack.size() - 1;
-			int lev = p.getNestingLevel();
-			if(lev < 1)
+			int lev = p.getNestingLevel() + 1;
+			if(lev < 0)
 			{
-				// safety measure to prevent from adding to the root or AIOOBE
-				lev = 1;
+				// safety
+				lev = 0;
 			}
 			
 			if(lev >= (cur + 1))

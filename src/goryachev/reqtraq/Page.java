@@ -104,7 +104,7 @@ public class Page
 	}
 	
 	
-	/** nesting level 0 corresponds to the root not (invisible).  visible pages start at level 1 */
+	/** nesting level 0 corresponds to the root's children */
 	public int getNestingLevel()
 	{
 		return level;
