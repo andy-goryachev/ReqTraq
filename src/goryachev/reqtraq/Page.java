@@ -2,6 +2,7 @@
 package goryachev.reqtraq;
 import goryachev.reqtraq.data.GUID;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 
@@ -16,6 +17,8 @@ public class Page
 		ID,
 		SYNOPSIS,
 		TITLE,
+		TIME_CREATED,
+		TIME_MODIFIED,
 		TEXT
 	}
 	
@@ -23,7 +26,9 @@ public class Page
 	
 	public final SimpleStringProperty title = new SimpleStringProperty();
 	public final SimpleStringProperty text = new SimpleStringProperty();
-	private final String id;
+	public final SimpleLongProperty modified = new SimpleLongProperty();
+	private final String id; // DKey to make it smaller?
+	private final long created;
 	private transient int level;
 	private ObservableValue<String> synopsis;
 	
@@ -31,21 +36,23 @@ public class Page
 	public Page()
 	{
 		id = GUID.create();
+		created = System.currentTimeMillis();
+		setTimeModified(created);
 	}
 	
 	
-	public Page(String id, int level, String title, String text)
+	public Page(String id, long created, long modified, int level, String title, String text)
 	{
 		this.id = id;
+		this.created = created;
 		this.level = level;
+		setTimeModified(modified);
 		setTitle(title);
 		setText(text);
 	}
 	
 	
-	public Object 
-	//ObservableValue<String> 
-	getField(Field f)
+	public Object getField(Field f)
 	{
 		switch(f)
 		{
@@ -55,6 +62,10 @@ public class Page
 			return synopsisProperty();
 		case TEXT:
 			return text;
+		case TIME_CREATED:
+			return getTimeCreated();
+		case TIME_MODIFIED:
+			return modified;
 		case TITLE:
 			return title;
 		default:
@@ -66,6 +77,24 @@ public class Page
 	public String getID()
 	{
 		return id;
+	}
+	
+	
+	public long getTimeCreated()
+	{
+		return created;
+	}
+	
+	
+	public long getTimeModified()
+	{
+		return modified.get();
+	}
+	
+	
+	public void setTimeModified(long t)
+	{
+		modified.set(t);
 	}
 	
 	

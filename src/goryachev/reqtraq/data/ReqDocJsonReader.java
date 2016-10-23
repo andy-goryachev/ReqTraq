@@ -81,6 +81,8 @@ public class ReqDocJsonReader
 	protected Page parsePage() throws Exception
     {
 		String id = null;
+		long created = 0;
+		long modified = 0;
 		String title = null;
 		String text = null;
 		int level = 1;
@@ -93,6 +95,12 @@ public class ReqDocJsonReader
 			{
 			case Schema.KEY_ID:
 				id = nextString();
+				break;
+			case Schema.KEY_PAGE_TIME_CREATED:
+				created = nextLong();
+				break;
+			case Schema.KEY_PAGE_TIME_MODIFIED:
+				modified = nextLong();
 				break;
 			case Schema.KEY_PAGE_LEVEL:
 				level = nextInt();
@@ -107,6 +115,6 @@ public class ReqDocJsonReader
 		}
 		endObject();
 		
-		return new Page(id, level, title, text);
+		return new Page(id, created, modified, level, title, text);
     }
 }

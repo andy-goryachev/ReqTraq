@@ -20,6 +20,8 @@ public class ReqDocJsonWriter
 		wr.beginObject();
 		{
 			wr.write(Schema.KEY_ID, p.getID());
+			wr.write(Schema.KEY_PAGE_TIME_CREATED, p.getTimeCreated());
+			wr.write(Schema.KEY_PAGE_TIME_MODIFIED, p.getTimeModified());
 			wr.write(Schema.KEY_PAGE_LEVEL, p.getNestingLevel());
 			wr.write(Schema.KEY_PAGE_TITLE, p.getTitle());
 			wr.write(Schema.KEY_PAGE_TEXT, p.getText());

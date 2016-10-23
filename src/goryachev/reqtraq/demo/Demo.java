@@ -22,11 +22,11 @@ public class Demo
 	}
 	
 
-	private static CList<Page> parse(String text)
+	private static CList<Page> parse(String spec)
 	{
 		CList<Page> ps = new CList<>();
 		
-		CReader rd = new CReader(text);
+		CReader rd = new CReader(spec);
 		try
 		{
 			String s;
@@ -34,10 +34,27 @@ public class Demo
 			{
 				if(CKit.isNotBlank(s))
 				{
-					int lev = countLeadingTabs(s);
-					String title = s.trim();
 					String id = GUID.create();
-					ps.add(new Page(id, lev, title, null));
+					long time = System.currentTimeMillis();
+					int lev = countLeadingTabs(s);
+					
+					s = s.trim();
+					
+					String title;
+					String text;
+					int ix = s.indexOf('|');
+					if(ix < 0)
+					{
+						title = s;
+						text = null;
+					}
+					else
+					{
+						title = s.substring(0, ix);
+						text = s.substring(ix + 1);
+						text = text.replace("\\n", "\n");
+					}
+					ps.add(new Page(id, time, time, lev, title, text));
 				}
 			}
 		}

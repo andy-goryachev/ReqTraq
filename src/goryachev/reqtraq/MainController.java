@@ -56,7 +56,7 @@ public class MainController
 	}
 	
 	
-	protected void commit()
+	public void commit()
 	{
 		Page p = getPage();
 		if(p != null)

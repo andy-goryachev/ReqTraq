@@ -15,6 +15,10 @@ public class Schema
 	public static final String KEY_PAGE_LEVEL = "level";
 	/** page text */
 	public static final String KEY_PAGE_TEXT = "text";
+	/** page creation timestamp */
+	public static final String KEY_PAGE_TIME_CREATED = "created";
+	/** page modification timestamp */
+	public static final String KEY_PAGE_TIME_MODIFIED = "modified";	
 	/** page title */
 	public static final String KEY_PAGE_TITLE = "title";
 	/** document file version */

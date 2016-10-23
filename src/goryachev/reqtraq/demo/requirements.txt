@@ -1,4 +1,4 @@
-General
+General|1.\n2.\n3.
 		
 Main Window
 	Menu

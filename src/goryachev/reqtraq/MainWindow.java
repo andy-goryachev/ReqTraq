@@ -122,8 +122,6 @@ public class MainWindow
 		
 		// FIX remove
 		setDocument(Demo.create());
-		// TODO memorize expanded state?
-		tree.expandAll();
 	}
 
 	
@@ -159,6 +157,9 @@ public class MainWindow
 	{
 		document.set(d);
 		tree.setRoot(d.getTreeRoot());
+		// TODO memorize expanded state?
+		tree.expandAll();
+		tree.selectFirst();
 	}
 	
 	
@@ -173,7 +174,7 @@ public class MainWindow
 	
 	protected void commit()
 	{
-		D.print(); // FIX
+		control.commit();
 	}
 	
 	

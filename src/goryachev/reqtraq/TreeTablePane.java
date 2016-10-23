@@ -10,6 +10,7 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 
@@ -53,6 +54,7 @@ public class TreeTablePane
 		
 		addColumn("Title", Page.Field.TITLE);
 		addColumn("ID", Page.Field.ID);
+		addColumn("Created", Page.Field.TIME_CREATED);
 		
 		setCenter(tree);
 	}
@@ -79,6 +81,11 @@ public class TreeTablePane
 			Page p = param.getValue().getValue();
 			return FX.toObservableValue(p == null ? null : p.getField(f));
 		});
+//		column.setCellFactory((TreeTableColumn c, TreeTableCell v) ->
+//		{
+//			return null;
+//		});
+		// TODO format and alignment
 		tree.getColumns().add(column);
 	}
 
@@ -99,6 +106,12 @@ public class TreeTablePane
 	public void expandAll()
 	{
 		expandRecursive(tree.getRoot());
+	}
+	
+	
+	public void selectFirst()
+	{
+		tree.getSelectionModel().selectFirst();
 	}
 
 
