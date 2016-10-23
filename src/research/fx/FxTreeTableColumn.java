@@ -28,11 +28,6 @@ public abstract class FxTreeTableColumn<T>
 	protected StringConverter<Object> formatter = Converters.OBJECT();
 	protected Pos alignment = Pos.CENTER_LEFT;
 
-	// TODO value generator: T -> Object
-	// TODO formatter: Object -> String
-	// TODO alignment
-	// TODO sorting
-	
 	
 	public FxTreeTableColumn(String text, boolean sortable)
 	{
@@ -63,7 +58,6 @@ public abstract class FxTreeTableColumn<T>
 	
 	
 	/** sets renderer node generator which creates a Node to represent a value */
-	// TODO value object
 	public void setRenderer(Function<Object,Node> r)
 	{
 		renderer = r;
@@ -82,7 +76,6 @@ public abstract class FxTreeTableColumn<T>
 	}
 	
 	
-	// TODO value, alignment
 	private TreeTableCell<T,Object> getCellFactory(TreeTableColumn<T,Object> f)
 	{
 		return new TreeTableCell<T,Object>()

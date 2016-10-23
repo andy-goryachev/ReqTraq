@@ -70,7 +70,6 @@ public class TreeTablePane
 	}
 
 
-	// TODO format, alignment, width
 	protected void addColumn(Page.Field f, String label)
 	{
 		FxTreeTableColumn<Page> c = new FxTreeTableColumn<Page>(label, true)
@@ -82,7 +81,7 @@ public class TreeTablePane
 		};
 		c.setAlignment(getAlignment(f));
 		c.setFormatter(getFormatter(f));
-		c.setPrefWidth(150);
+		c.setPrefWidth(getPreferredWidth(f));
 		
 		tree.getColumns().add(c);
 	}
@@ -111,6 +110,28 @@ public class TreeTablePane
 			return Formatters.DATE_TIME;
 		default:
 			return null;
+		}
+	}
+	
+	
+	protected int getPreferredWidth(Page.Field f)
+	{
+		switch(f)
+		{
+		case ID:
+			return 100;
+		case SYNOPSIS:
+			return 500;
+		case TEXT:
+			return 500;
+		case TIME_CREATED:
+			return 100;
+		case TIME_MODIFIED:
+			return 100;
+		case TITLE:
+			return 500;
+		default:
+			return 100;
 		}
 	}
 
