@@ -4,7 +4,7 @@ import javafx.util.StringConverter;
 
 
 /**
- * FxFormatter - unidirectional StringConverter.
+ * A StringConverter extension.
  */
 public abstract class FxFormatter
 	extends StringConverter<Object>

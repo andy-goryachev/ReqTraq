@@ -12,6 +12,9 @@ import javafx.geometry.Pos;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableView;
+import javafx.scene.control.cell.TextFieldTreeTableCell;
+import javafx.util.StringConverter;
+import javafx.util.converter.DefaultStringConverter;
 import research.fx.FxFormatter;
 import research.fx.FxTreeTableColumn;
 
@@ -35,6 +38,7 @@ public class TreeTablePane
 		tree = new TreeTableView<>();
 		tree.setShowRoot(false);
 		tree.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		tree.setEditable(true);
 		
 		tree.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
 		FX.style(tree, CommonStyles.NO_HORIZONTAL_SCROLL_BAR);
@@ -80,9 +84,11 @@ public class TreeTablePane
 				return FX.toObservableValue(p.getField(f));
 			}
 		};
+		c.setCellFactory((tc) -> new TextFieldTreeTableCell(c.getConverter()));
 		c.setAlignment(getAlignment(f));
-		c.setFormatter(getFormatter(f));
+		c.setConverter(getFormatter(f));
 		c.setPrefWidth(getPreferredWidth(f));
+		c.setEditable(isColumnEditable(f));
 		
 		tree.getColumns().add(c);
 	}
@@ -133,6 +139,18 @@ public class TreeTablePane
 			return 500;
 		default:
 			return 100;
+		}
+	}
+	
+	
+	protected boolean isColumnEditable(Page.Field f)
+	{
+		switch(f)
+		{
+		case TITLE:
+			return true;
+		default:
+			return false;
 		}
 	}
 
@@ -229,6 +247,10 @@ public class TreeTablePane
 			return;
 		}
 		
-		FX.later(() -> tree.edit(ix, tree.getColumns().get(0)));
+		FX.later(() -> 
+		{
+			tree.edit(ix, tree.getColumns().get(0));
+			// FIX focus the cell!
+		});
 	}
 }

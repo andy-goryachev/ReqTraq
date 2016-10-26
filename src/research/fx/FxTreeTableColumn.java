@@ -70,13 +70,19 @@ public abstract class FxTreeTableColumn<T>
 	}
 	
 	
-	public void setFormatter(StringConverter c)
+	public void setConverter(FxFormatter c)
 	{
 		formatter = (c == null ? Converters.OBJECT() : c);
 	}
 	
 	
-	private TreeTableCell<T,Object> getCellFactory(TreeTableColumn<T,Object> f)
+	public StringConverter<Object> getConverter()
+	{
+		return formatter;
+	}
+	
+	
+	private TreeTableCell<T,Object> getCellFactory(TreeTableColumn<T,Object> tc)
 	{
 		return new TreeTableCell<T,Object>()
 		{
