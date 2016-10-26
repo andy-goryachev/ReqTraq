@@ -1,4 +1,7 @@
-General|1.\n2.\n3.
+General
+	Requirements
+	Releases
+	Tags
 		
 Main Window
 	Menu
@@ -24,7 +27,8 @@ Main Window
 			completed
 			entered
 			started
-			req number (decimal)
+			req id 999-999-999
+			effort
 		Context Menu
 			expand all
 			add child
@@ -33,6 +37,7 @@ Main Window
 			cut 
 			copy 
 			paste
+			add tag
 	Detail Pane
 		View
 			single page
@@ -48,6 +53,9 @@ Miscellaneous
 	split requirements
 	combine requirements
 	split paragraphs
+	
+Settings
+	accelerators
 	
 Future Ideas
 	Document Types
