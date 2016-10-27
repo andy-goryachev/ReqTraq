@@ -52,6 +52,12 @@ public class GUID256
 			CDigest d = new CDigest.SHA256();
 			d.update(b);
 			
+			// java runtime
+			Runtime r = Runtime.getRuntime();
+			d.update(r.availableProcessors());
+			d.update(r.freeMemory());
+			d.update(r.hashCode());
+			
 			// machine-specific parameters
 			d.update(System.getProperty("java.runtime.version"));
 			d.update(System.getProperty("java.class.path"));
