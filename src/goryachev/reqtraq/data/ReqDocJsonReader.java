@@ -1,6 +1,7 @@
 // Copyright (c) 2013 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq.data;
 import goryachev.common.io.CReader;
+import goryachev.common.util.BKey;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.json.JsonDecoder;
@@ -36,7 +37,7 @@ public class ReqDocJsonReader
 	public ReqDoc parse() throws Exception
 	{
 		CList<Page> pages = null;
-		String id = null;
+		BKey id = null;
 		String ver = null;
 		
 		beginObject();
@@ -49,7 +50,7 @@ public class ReqDocJsonReader
 				pages = parsePages();
 				break;
 			case Schema.KEY_ID:
-				id = nextString();
+				id = BKey.parse(nextString());
 				break;
 			case Schema.KEY_VERSION:
 				ver = nextString();
@@ -80,7 +81,7 @@ public class ReqDocJsonReader
 	
 	protected Page parsePage() throws Exception
     {
-		String id = null;
+		BKey id = null;
 		long created = 0;
 		long modified = 0;
 		String title = null;
@@ -94,7 +95,7 @@ public class ReqDocJsonReader
 			switch(s)
 			{
 			case Schema.KEY_ID:
-				id = nextString();
+				id = BKey.parse(nextString());
 				break;
 			case Schema.KEY_PAGE_TIME_CREATED:
 				created = nextLong();

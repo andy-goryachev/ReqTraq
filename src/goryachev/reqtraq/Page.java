@@ -1,5 +1,7 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
+import goryachev.common.util.Assert;
+import goryachev.common.util.BKey;
 import goryachev.reqtraq.data.GUID;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleLongProperty;
@@ -33,7 +35,7 @@ public class Page
 	public final SimpleStringProperty title = new SimpleStringProperty();
 	public final SimpleStringProperty text = new SimpleStringProperty();
 	public final SimpleLongProperty modified = new SimpleLongProperty();
-	private final String id; // DKey to make it smaller?
+	private final BKey id;
 	private final long created;
 	private transient int level;
 	private ObservableValue<String> synopsis;
@@ -47,8 +49,10 @@ public class Page
 	}
 	
 	
-	public Page(String id, long created, long modified, int level, String title, String text)
+	public Page(BKey id, long created, long modified, int level, String title, String text)
 	{
+		Assert.notNull(id, "id");
+		
 		this.id = id;
 		this.created = created;
 		this.level = level;
@@ -80,7 +84,7 @@ public class Page
 	}
 	
 	
-	public String getID()
+	public BKey getID()
 	{
 		return id;
 	}

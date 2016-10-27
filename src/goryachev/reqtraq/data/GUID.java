@@ -1,5 +1,6 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq.data;
+import goryachev.common.util.BKey;
 import goryachev.common.util.GUID256;
 
 
@@ -8,8 +9,8 @@ import goryachev.common.util.GUID256;
  */
 public class GUID
 {
-	public static String create()
+	public static BKey create()
 	{
-		return GUID256.generateHexString();
+		return GUID256.generateKey();
 	}
 }

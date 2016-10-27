@@ -1,5 +1,7 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq.data;
+import goryachev.common.util.Assert;
+import goryachev.common.util.BKey;
 import goryachev.common.util.CList;
 import goryachev.reqtraq.Page;
 import goryachev.reqtraq.util.Tools;
@@ -12,7 +14,7 @@ import javafx.scene.control.TreeItem;
  */
 public class ReqDoc
 {
-	private String id;
+	private BKey id;
 	private CList<Page> pages;
 	
 	
@@ -23,14 +25,16 @@ public class ReqDoc
 	}
 	
 	
-	public ReqDoc(String id, CList<Page> pages)
+	public ReqDoc(BKey id, CList<Page> pages)
 	{
+		Assert.notNull(id, "id");
+		
 		this.id = id;
 		this.pages = pages;
 	}
 
 	
-	public String getID()
+	public BKey getID()
 	{
 		return id;
 	}

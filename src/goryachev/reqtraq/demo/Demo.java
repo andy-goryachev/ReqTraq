@@ -1,6 +1,7 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq.demo;
 import goryachev.common.io.CReader;
+import goryachev.common.util.BKey;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.common.util.Log;
@@ -17,7 +18,7 @@ public class Demo
 	public static ReqDoc create()
 	{
 		String s = CKit.readStringQuiet(Demo.class, "requirements.txt");
-		String id = GUID.create();
+		BKey id = GUID.create();
 		return new ReqDoc(id, parse(s));
 	}
 	
@@ -34,7 +35,7 @@ public class Demo
 			{
 				if(CKit.isNotBlank(s))
 				{
-					String id = GUID.create();
+					BKey id = GUID.create();
 					long time = System.currentTimeMillis();
 					int lev = countLeadingTabs(s);
 					

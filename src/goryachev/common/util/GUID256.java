@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 
 /** 
- * A globally unique identifier generator.
+ * Generates globally unique identifiers (one hopes).
  */
 public class GUID256
 {
@@ -15,7 +15,13 @@ public class GUID256
 	private static AtomicLong seq = new AtomicLong();
 	
 
-	/** generates globally uniqueue (hopefully) */
+	public static BKey generateKey()
+	{
+		return new BKey(generateBytes());
+	}
+	
+	
+	/** generates globally uniqueue byte array */
 	public static byte[] generateBytes()
 	{
 		CDigest d = new CDigest.SHA256();

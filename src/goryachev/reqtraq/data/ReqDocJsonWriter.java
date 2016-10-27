@@ -19,7 +19,7 @@ public class ReqDocJsonWriter
 	{
 		wr.beginObject();
 		{
-			wr.write(Schema.KEY_ID, p.getID());
+			wr.write(Schema.KEY_ID, p.getID().toString());
 			wr.write(Schema.KEY_PAGE_TIME_CREATED, p.getTimeCreated());
 			wr.write(Schema.KEY_PAGE_TIME_MODIFIED, p.getTimeModified());
 			wr.write(Schema.KEY_PAGE_LEVEL, p.getNestingLevel());
@@ -44,7 +44,7 @@ public class ReqDocJsonWriter
 				{
 					// file attributes
 					wr.write(Schema.KEY_VERSION, Schema.VERSION);
-					wr.write(Schema.KEY_ID, d.getID());
+					wr.write(Schema.KEY_ID, d.getID().toString());
 
 					// pages
 					wr.name(Schema.KEY_PAGES);
