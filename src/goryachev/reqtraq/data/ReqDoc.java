@@ -3,7 +3,6 @@ package goryachev.reqtraq.data;
 import goryachev.common.util.Assert;
 import goryachev.common.util.BKey;
 import goryachev.common.util.CList;
-import goryachev.common.util.D;
 import goryachev.reqtraq.Page;
 import goryachev.reqtraq.util.Tools;
 import java.util.List;
@@ -107,7 +106,6 @@ public class ReqDoc
 		if(p != null)
 		{
 			p.setNestingLevel(level);
-			D.print(level, p.getTitle()); // FIX
 			ps.add(p);
 		}
 		
