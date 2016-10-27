@@ -9,6 +9,7 @@ import java.util.Arrays;
 
 
 /** Byte array based database identifier (key) */
+@Deprecated // use BKey
 public class DKey
 {
 	public static final int SIZE_IN_BYTES = 64;
