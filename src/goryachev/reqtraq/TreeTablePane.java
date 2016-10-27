@@ -1,20 +1,21 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
+import goryachev.common.util.CList;
 import goryachev.fx.CAction;
 import goryachev.fx.CPane;
 import goryachev.fx.CommonStyles;
 import goryachev.fx.FX;
 import goryachev.reqtraq.util.Tools;
+import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
-import javafx.util.StringConverter;
-import javafx.util.converter.DefaultStringConverter;
 import research.fx.FxFormatter;
 import research.fx.FxTreeTableColumn;
 
@@ -25,6 +26,7 @@ public class TreeTablePane
 	extends CPane
 {
 	public final CAction collapseAllAction = new CAction(this::collapseAll);
+	public final CAction deleteSelectionAction = new CAction(this::deleteSelection);
 	public final CAction expandAllAction = new CAction(this::expandAll);
 	public final CAction insertAfterAction = new CAction(this::insertAfter);
 	public final CAction insertChildAction = new CAction(this::insertChild);
@@ -45,7 +47,17 @@ public class TreeTablePane
 		
 		handler = new TreeHandler<Page>(tree);
 		
-		// set up actions
+		setupActions();
+		
+		addColumn(Page.Field.TITLE, "Title");
+		addColumn(Page.Field.TIME_CREATED, "Created");
+		
+		setCenter(tree);
+	}
+	
+	
+	protected void setupActions()
+	{
 		insertAfterAction.disabledProperty().bind(Bindings.createBooleanBinding(() ->
 		{
 			return tree.getSelectionModel().getSelectedItems().size() != 1;
@@ -56,10 +68,14 @@ public class TreeTablePane
 			return tree.getSelectionModel().getSelectedItems().size() != 1;
 		}, tree.getSelectionModel().getSelectedItems()));
 		
-		addColumn(Page.Field.TITLE, "Title");
-		addColumn(Page.Field.TIME_CREATED, "Created");
-		
-		setCenter(tree);
+		// alternative method
+		tree.getSelectionModel().getSelectedItems().addListener((Observable s) ->
+		{
+			int sz = tree.getSelectionModel().getSelectedItems().size();
+			boolean atLeastOne = (sz > 0);
+			
+			deleteSelectionAction.setEnabled(atLeastOne);
+		});
 	}
 	
 	
@@ -250,7 +266,33 @@ public class TreeTablePane
 		FX.later(() -> 
 		{
 			tree.edit(ix, tree.getColumns().get(0));
-			// FIX focus the cell!
+			
+			Node n = tree.lookup(".text-input");
+			
+			// FIX focus the editor
+			FX.later(() -> 
+			{
+				// it looks like the editor is losing focus
+				n.requestFocus();
+			});
 		});
+	}
+	
+	
+	public void deleteSelection()
+	{
+		int ix = tree.getSelectionModel().getSelectedIndex();
+		CList<TreeItem<Page>> sel = new CList<>(tree.getSelectionModel().getSelectedItems());
+		
+		tree.getSelectionModel().clearSelection();
+		
+		for(TreeItem<Page> p: sel)
+		{
+			p.getParent().getChildren().remove(p);
+		}
+		
+		tree.getSelectionModel().select(ix);
+		
+		// TODO undo
 	}
 }

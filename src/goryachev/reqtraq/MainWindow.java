@@ -111,7 +111,7 @@ public class MainWindow
 				add("Collapse All", tree.collapseAllAction);
 				separator();
 				
-				add("Delete");
+				add("Delete", tree.deleteSelectionAction);
 				separator();
 				
 				add("Move Up");
