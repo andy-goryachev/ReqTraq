@@ -9,13 +9,13 @@ import javafx.beans.property.SimpleObjectProperty;
  */
 public class MainController
 {
-	public final PageTreePane tree;
+	public final TreeTablePane tree;
 	public final EditorPane editor;
 	private final SimpleObjectProperty<Page> page = new SimpleObjectProperty<>();
 	private boolean handleEvents = true;
 	
 	
-	public MainController(PageTreePane tree, EditorPane editor)
+	public MainController(TreeTablePane tree, EditorPane editor)
 	{
 		this.tree = tree;
 		this.editor = editor;
