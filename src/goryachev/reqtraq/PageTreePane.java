@@ -22,7 +22,7 @@ import research.fx.FxTreeTableColumn;
 
 // TODO drop zone indicator
 // TODO cell factory
-public class TreeTablePane
+public class PageTreePane
 	extends CPane
 {
 	public final CAction collapseAllAction = new CAction(this::collapseAll);
@@ -35,7 +35,7 @@ public class TreeTablePane
 	public final TreeHandler<Page> handler;
 	
 
-	public TreeTablePane()
+	public PageTreePane()
 	{
 		tree = new TreeTableView<>();
 		tree.setShowRoot(false);

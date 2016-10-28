@@ -27,7 +27,7 @@ import research.fx.OpenFileController;
 public class MainWindow
 	extends FxWindow
 {
-	public final TreeTablePane tree;
+	public final PageTreePane tree;
 	public final EditorPane editor;
 	public final MainController control;
 	public final OpenFileController openFileController;
@@ -74,7 +74,7 @@ public class MainWindow
 		openFileController.addFileFilter("*", "*.* All Files");
 		bind("FILE", openFileController);
 		
-		tree = new TreeTablePane();
+		tree = new PageTreePane();
 		
 		editor = new EditorPane();
 		
