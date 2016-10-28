@@ -12,7 +12,7 @@ import javafx.scene.layout.Pane;
 public class FxEditor
 	extends Pane
 {
-	private ReadOnlyObjectWrapper<FxEditorModel> model;
+	private ReadOnlyObjectWrapper<FxEditorModel> model = new ReadOnlyObjectWrapper<>();
 	private Handler handler = new Handler();
 	
 	
@@ -28,16 +28,6 @@ public class FxEditor
 	}
 	
 	
-	private ReadOnlyObjectWrapper<FxEditorModel> model()
-	{
-		if(model == null)
-		{
-			model = new ReadOnlyObjectWrapper<>();
-		}
-		return model;
-	}
-	
-	
 	public void setModel(FxEditorModel m)
 	{
 		FxEditorModel old = getModel();
@@ -46,7 +36,7 @@ public class FxEditor
 			old.removeListener(handler);
 		}
 		
-		model().set(m);
+		model.set(m);
 		
 		if(m != null)
 		{
@@ -63,7 +53,7 @@ public class FxEditor
 	
 	public ReadOnlyObjectProperty<FxEditorModel> modelProperty()
 	{
-		return model().getReadOnlyProperty();
+		return model.getReadOnlyProperty();
 	}
 	
 	
