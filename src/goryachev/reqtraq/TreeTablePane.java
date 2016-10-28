@@ -7,7 +7,6 @@ import goryachev.fx.CommonStyles;
 import goryachev.fx.FX;
 import goryachev.reqtraq.util.Tools;
 import javafx.beans.Observable;
-import javafx.beans.binding.Bindings;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -21,7 +20,6 @@ import research.fx.FxTreeTableColumn;
 
 
 // TODO drop zone indicator
-// TODO cell factory
 public class TreeTablePane
 	extends CPane
 {
@@ -57,23 +55,15 @@ public class TreeTablePane
 	
 	protected void setupActions()
 	{
-		insertAfterAction.disabledProperty().bind(Bindings.createBooleanBinding(() ->
-		{
-			return tree.getSelectionModel().getSelectedItems().size() != 1;
-		}, tree.getSelectionModel().getSelectedItems()));
-		
-		insertChildAction.disabledProperty().bind(Bindings.createBooleanBinding(() ->
-		{
-			return tree.getSelectionModel().getSelectedItems().size() != 1;
-		}, tree.getSelectionModel().getSelectedItems()));
-		
-		// alternative method
 		tree.getSelectionModel().getSelectedItems().addListener((Observable s) ->
 		{
 			int sz = tree.getSelectionModel().getSelectedItems().size();
 			boolean atLeastOne = (sz > 0);
+			boolean one = (sz == 1);
 			
 			deleteSelectionAction.setEnabled(atLeastOne);
+			insertAfterAction.setEnabled(one);
+			insertChildAction.setEnabled(one);
 		});
 	}
 	
