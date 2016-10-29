@@ -1,5 +1,6 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package research.fx.edit;
+import goryachev.fx.FX;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.geometry.HPos;
@@ -35,9 +36,13 @@ public class FxEditor
 	
 	public FxEditor(FxEditorModel m)
 	{
+		// TODO move to handler
 		vscroll = new ScrollBar();
 		vscroll.setOrientation(Orientation.VERTICAL);
 		vscroll.setManaged(true);
+		vscroll.setMin(0.0);
+		vscroll.setMax(1.0);
+		vscroll.valueProperty().addListener((s,p,val) -> handler.setAbsolutePosition(val.doubleValue()));
 		getChildren().add(vscroll);
 		
 		setModel(m);
@@ -80,6 +85,12 @@ public class FxEditor
 		layout = updateLayout(layout);
 	}
 	
+	
+	public void setStartIndex(int x)
+	{
+		startIndex = x;
+		requestLayout();
+	}
 	
 	
 	protected FxEditorLayout updateLayout(FxEditorLayout prev)
@@ -132,12 +143,6 @@ public class FxEditor
 	}
 	
 	
-	public void setAbsolutePosition(double pos)
-	{
-		// TODO
-	}
-	
-	
 	public void scroll(double pixels)
 	{
 		// TODO
@@ -162,6 +167,14 @@ public class FxEditor
 
 		public void eventLinesModified(int start, int count)
 		{
+		}
+		
+		
+		public void setAbsolutePosition(double pos)
+		{
+			// TODO account for visible line count
+			int start = FX.round(getModel().getLineCount() * pos);
+			setStartIndex(start);
 		}
 	}
 }
