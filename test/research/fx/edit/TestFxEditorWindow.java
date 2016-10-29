@@ -1,10 +1,11 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package research.fx.edit;
+import goryachev.fx.FxDump;
 import goryachev.fx.FxWindow;
 
 
 /**
- * TestFxEditorWindow.
+ * Test FxEditor Window.
  */
 public class TestFxEditorWindow
 	extends FxWindow
@@ -13,8 +14,14 @@ public class TestFxEditorWindow
 	{
 		super("TestFxEditorWindow");
 		
+		FxEditorModel m =
+			// new TestFxPlainEditorModel();
+			new TestFxColorEditorModel();
+		
 		setTitle("FxEditor Test");
-		setCenter(new FxEditor(new TestFxPlainEditorModel()));
+		setCenter(new FxEditor(m));
 		setSize(600, 700);
+		
+		FxDump.attach(this);
 	}
 }
