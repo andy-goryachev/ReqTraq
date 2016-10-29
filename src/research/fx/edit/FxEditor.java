@@ -1,11 +1,10 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package research.fx.edit;
-import goryachev.common.util.CList;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.geometry.HPos;
+import javafx.geometry.Orientation;
 import javafx.geometry.VPos;
-import javafx.scene.Node;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
@@ -20,13 +19,12 @@ public class FxEditor
 	private ReadOnlyObjectWrapper<FxEditorModel> model = new ReadOnlyObjectWrapper<>();
 	private ReadOnlyObjectWrapper<Boolean> wrap = new ReadOnlyObjectWrapper<>();
 	private Handler handler = new Handler();
-	private boolean layoutDirty;
+	private ScrollBar vscroll;
+	private ScrollBar hscroll;
 	private int offsetx;
 	private int offsety;
 	private int startIndex;
-	private CList<Line> lines;
-	private ScrollBar vscroll;
-	private ScrollBar hscroll;
+	private FxEditorLayout layout;
 	
 	
 	public FxEditor()
@@ -37,6 +35,11 @@ public class FxEditor
 	
 	public FxEditor(FxEditorModel m)
 	{
+		vscroll = new ScrollBar();
+		vscroll.setOrientation(Orientation.VERTICAL);
+		vscroll.setManaged(true);
+		getChildren().add(vscroll);
+		
 		setModel(m);
 	}
 	
@@ -74,43 +77,45 @@ public class FxEditor
 	
 	protected void layoutChildren()
 	{
-		updateParagraphs();
-		
-		for(Node n: getChildrenUnmodifiable())
-		{
-			if(n.isResizable() && n.isManaged())
-			{
-				n.autosize();
-			}
-		}
+		layout = updateLayout(layout);
 	}
 	
 	
-	protected void updateParagraphs()
+	
+	protected FxEditorLayout updateLayout(FxEditorLayout prev)
 	{
+		if(prev != null)
+		{
+			prev.removeFrom(getChildren());
+		}
+		
+		double width = getWidth();
+		double height = getHeight();
+
+		// position the scrollbar(s)
+		if(vscroll.isVisible())
+		{
+			double w = vscroll.prefWidth(-1);
+			layoutInArea(vscroll, width - w, 0, w, height, 0, null, true, true, HPos.LEFT, VPos.TOP);
+		}
+		
 		// TODO is loaded?
 		FxEditorModel m = getModel();
 		int lines = m.getLineCount();
-		CList<Line> ls = new CList<>(32);
-		
-		getChildren().clear();
+		FxEditorLayout la = new FxEditorLayout(startIndex, offsety);
 		
 		double y = 0;
-		double height = getHeight();
 		
 		for(int ix=startIndex; ix<lines; ix++)
 		{
 			Region n = m.getDecoratedLine(ix);
 			n.setManaged(true);
-			getChildren().add(n);
 			
 			double w = n.prefWidth(-1);
 			double h = n.prefHeight(w);
 			
-			Line ln = new Line();
-			ln.index = ix;
-			ln.box = n;
-			ls.add(ln);
+			LineBox b = new LineBox(ix, n);
+			la.add(b);
 			
 			layoutInArea(n, 0, y, w, h, 0, null, true, true, HPos.LEFT, VPos.TOP);
 			
@@ -120,6 +125,10 @@ public class FxEditor
 				break;
 			}
 		}
+		
+		la.addTo(getChildren());
+		
+		return la;
 	}
 	
 	
@@ -136,15 +145,6 @@ public class FxEditor
 	
 	
 	//
-	
-	
-	/** represents a box enclosing a single line of source text */
-	public static class Line
-	{
-		public int index;
-		public Region box;
-		// TODO line numbers
-	}
 	
 	
 	public class Handler

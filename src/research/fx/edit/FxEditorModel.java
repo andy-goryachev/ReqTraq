@@ -39,6 +39,8 @@ public abstract class FxEditorModel
 	
 	//
 	
+	/** returns a load info structure that gives us information about the loading process and estimates of line count/file size, 
+	 * or null if the data has been loaded. */ 
 	public abstract LoadInfo getLoadInfo();
 	
 	/** returns a known line count.  if the model is still loading, returns the best estimate of the number of lines. */
@@ -47,7 +49,13 @@ public abstract class FxEditorModel
 	/** returns plain text at the specified line, or null if unknown */
 	public abstract String getSearchText(int line);
 	
-	/** returns a non-null Region containing Text, TextFlow, or any other Nodes representing a line */
+	/** 
+	 * returns a non-null Region containing Text, TextFlow, or any other Nodes representing a line.
+	 * I am not sure this should be a part of the editor model, because the presentation should be controlled by the editor ui.
+	 * What this method needs to return is a list/array of segments encapsulating text, text style and colors.
+	 * Another consideration is support for arbitrary Nodes such as images (tables and so on) - and for those we need to 
+	 * have a ui component.
+	 */
 	public abstract Region getDecoratedLine(int line);
 	
 	//

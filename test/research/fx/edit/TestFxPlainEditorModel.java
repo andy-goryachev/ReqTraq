@@ -32,8 +32,7 @@ public class TestFxPlainEditorModel
 
 	public LoadInfo getLoadInfo()
 	{
-		long t = System.currentTimeMillis();
-		return new LoadInfo(1.0, getLineCount(), t, t); 
+		return null; 
 	}
 
 
@@ -41,9 +40,15 @@ public class TestFxPlainEditorModel
 	{
 		return Integer.MAX_VALUE;
 	}
-
-
+	
+	
 	public String getSearchText(int line)
+	{
+		return getSearchText0(line) + "   " + line + "   " + getSearchText0(line);
+	}
+
+
+	public String getSearchText0(int line)
 	{
 		String s = String.valueOf(line);
 		int sz = s.length();
