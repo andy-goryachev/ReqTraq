@@ -1,4 +1,4 @@
-// Copyright (c) 2013 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2013 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq.data;
 import goryachev.common.util.CKit;
 import goryachev.common.util.FileTools;

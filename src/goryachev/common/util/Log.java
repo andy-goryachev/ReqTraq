@@ -16,7 +16,7 @@ import java.io.File;
  * Log.configFromFile(File);
  * Log.reset();
  * Log. TODO connect loggers to appenders
- * Log.fail()
+ * Log.ex()
  * 
  * Log.conf("ChannelName", Log.Level.INFO);
  * 
