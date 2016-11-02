@@ -20,6 +20,6 @@ public class Dialogs
 	public static void error(Window parent, Throwable e)
 	{
 		D.print();
-		Log.fail(e);
+		Log.ex(e);
 	}
 }

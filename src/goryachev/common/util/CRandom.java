@@ -19,7 +19,7 @@ public final class CRandom
 		catch(NoSuchAlgorithmException e)
 		{
 			// should not happen
-			Log.fail(e);
+			Log.ex(e);
 			throw new Error(e);
 		}
 	}

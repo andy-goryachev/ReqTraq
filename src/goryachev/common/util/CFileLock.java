@@ -39,7 +39,7 @@ public class CFileLock
 		}
 		catch(Exception e)
 		{ 
-			Log.fail(e);
+			Log.ex(e);
 		}
 		
 		unlock();
@@ -58,7 +58,7 @@ public class CFileLock
 			}
 			catch(Exception e)
 			{
-				Log.fail(e);
+				Log.ex(e);
 			}
 			
 			lock = null;
@@ -74,7 +74,7 @@ public class CFileLock
 			}
 			catch(Exception e)
 			{
-				Log.fail(e);
+				Log.ex(e);
 			}
 		}
 	}

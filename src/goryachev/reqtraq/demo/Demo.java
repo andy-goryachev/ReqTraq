@@ -61,7 +61,7 @@ public class Demo
 		}
 		catch(Exception e)
 		{
-			Log.fail(e);
+			Log.ex(e);
 		}
 		finally
 		{
