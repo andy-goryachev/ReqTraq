@@ -138,9 +138,17 @@ public class CCalendar
 	}
 	
 	
+	/** sets Calendar class month!  Calendar.JANUARY = 0 */
 	public void setMonth(int x)
 	{
 		cal.set(Calendar.MONTH, x);
+	}
+	
+	
+	/** sets human month (January = 1) */
+	public void setMonthHuman(int x)
+	{
+		cal.set(Calendar.MONTH, x - 1);
 	}
 	
 	
@@ -220,5 +228,11 @@ public class CCalendar
 	public static CCalendar gregorianCalendar()
 	{
 		return new CCalendar(new GregorianCalendar());
+	}
+	
+	
+	public String toString()
+	{
+		return cal.toString();
 	}
 }

@@ -15,6 +15,6 @@ public class Styles
 		sel(EditorPane.ID_TITLE);
 		fontSize("150%");
 			
-		CommonStyles.generate(this);
+		include(new CommonStyles());
 	}
 }

@@ -1,12 +1,15 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.table;
 import goryachev.fx.CPane;
+import goryachev.fx.CommonStyles;
+import goryachev.fx.FX;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
+import javafx.scene.control.TreeTableView.TreeTableViewSelectionModel;
 import javafx.scene.layout.Pane;
 import javafx.util.Callback;
 
@@ -24,6 +27,18 @@ public class FxTreeTable<T>
 	{
 		tree = new TreeTableView<T>();
 		setCenter(tree);
+	}
+	
+	
+	public void selectFirst()
+	{
+		tree.getSelectionModel().selectFirst();
+	}
+	
+	
+	public TreeTableViewSelectionModel<T> getSelectionModel()
+	{
+		return tree.getSelectionModel();
 	}
 	
 	
@@ -118,6 +133,7 @@ public class FxTreeTable<T>
 	public void setResizePolicyConstrained()
 	{
 		tree.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
+		FX.style(tree, CommonStyles.NO_HORIZONTAL_SCROLL_BAR);
 	}
 	
 	

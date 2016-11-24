@@ -17,7 +17,7 @@ public class Formatters
 	{
 		public String toString(Object x)
 		{
-			return formatString(x);
+			return format(x);
 		}
 	};
 }

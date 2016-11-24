@@ -24,8 +24,8 @@ public abstract class FxFormatter
     }
     
     
-    protected String formatString(Object x)
+    public String format(Object x)
     {
-    	return (x == null ? null : x.toString());
+    	return toString(x);
     }
 }

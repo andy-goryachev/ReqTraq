@@ -1,12 +1,15 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.table;
+import goryachev.fx.CommonStyles;
 import goryachev.fx.FX;
 import java.util.Collection;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.layout.BorderPane;
 
 
@@ -108,6 +111,7 @@ public class FxTable<T>
 	public void setResizePolicyConstrained()
 	{
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		FX.style(table, CommonStyles.NO_HORIZONTAL_SCROLL_BAR);
 	}
 	
 	
@@ -138,5 +142,23 @@ public class FxTable<T>
 	public void setPlaceholder(Node n)
 	{
 		table.setPlaceholder(n);
+	}
+	
+	
+	public void selectFirst()
+	{
+		table.getSelectionModel().selectFirst();
+	}
+	
+	
+	public TableViewSelectionModel<T> getSelectionModel()
+	{
+		return table.getSelectionModel();
+	}
+	
+	
+	public void setMultipleSelection(boolean on)
+	{
+		table.getSelectionModel().setSelectionMode(on ? SelectionMode.MULTIPLE : SelectionMode.SINGLE);
 	}
 }
