@@ -48,6 +48,7 @@ public class TreeTablePane
 		
 		addColumn(Page.Field.TITLE, "Title");
 		addColumn(Page.Field.TIME_CREATED, "Created");
+		addColumn(Page.Field.STATUS, "Status");
 		
 		setCenter(tree);
 	}
@@ -82,20 +83,21 @@ public class TreeTablePane
 
 	protected void addColumn(Page.Field f, String label)
 	{
-		FxTreeTableColumn<Page> c = new FxTreeTableColumn<Page>(label, true)
+		FxTreeTableColumn<Page> tc = new FxTreeTableColumn<Page>(label, true)
 		{
 			protected ObservableValue getCellValueProperty(Page p)
 			{
 				return FX.toObservableValue(p.getField(f));
 			}
 		};
-		c.setCellFactory((tc) -> new TextFieldTreeTableCell(c.getConverter()));
-		c.setAlignment(getAlignment(f));
-		c.setConverter(getFormatter(f));
-		c.setPrefWidth(getPreferredWidth(f));
-		c.setEditable(isColumnEditable(f));
+		tc.setCellFactory((x) -> new TextFieldTreeTableCell(tc.getConverter()));
+		tc.setAlignment(getAlignment(f));
+		tc.setConverter(getFormatter(f));
+		tc.setPrefWidth(getPreferredWidth(f));
+		tc.setEditable(isColumnEditable(f));
+		tc.setSortable(false);
 		
-		tree.getColumns().add(c);
+		tree.getColumns().add(tc);
 	}
 	
 	
@@ -132,6 +134,8 @@ public class TreeTablePane
 		{
 		case ID:
 			return 100;
+		case STATUS:
+			return 50;
 		case SYNOPSIS:
 			return 500;
 		case TEXT:

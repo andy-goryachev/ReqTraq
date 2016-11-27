@@ -5,6 +5,7 @@ import goryachev.common.util.BKey;
 import goryachev.reqtraq.data.GUID;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 
@@ -22,7 +23,7 @@ public class Page
 		// IMAGES,
 		// PERCENT_COMPLETED,
 		// RELEASE,
-		// STATUS,
+		STATUS,
 		SYNOPSIS,
 		TITLE,
 		TIME_CREATED,
@@ -35,6 +36,7 @@ public class Page
 	public final SimpleStringProperty title = new SimpleStringProperty();
 	public final SimpleStringProperty text = new SimpleStringProperty();
 	public final SimpleLongProperty modified = new SimpleLongProperty();
+	public final SimpleObjectProperty<Object> status = new SimpleObjectProperty<>();
 	private final BKey id;
 	private final long created;
 	private transient int level;
@@ -68,6 +70,8 @@ public class Page
 		{
 		case ID:
 			return getID();
+		case STATUS:
+			return status;
 		case SYNOPSIS:
 			return synopsisProperty();
 		case TEXT:
