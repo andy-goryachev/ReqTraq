@@ -5,7 +5,7 @@ import goryachev.fx.CssGenerator;
 
 
 /**
- * Application style sheet.
+ * ReqTraq style sheet.
  */
 public class Styles
 	extends CssGenerator
