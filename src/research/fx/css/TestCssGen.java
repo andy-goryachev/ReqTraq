@@ -30,7 +30,12 @@ public class TestCssGen
 				selector("b").defines
 				(
 					cellSize("b1"),
-					cellSize("b2")
+					cellSize("b2"),
+					
+					selector(HOVER).defines
+					(
+						padding("0 0 0 0")
+					)
 				)
 			)
 		);
@@ -40,6 +45,6 @@ public class TestCssGen
 	@Test
 	public void test()
 	{
-		D.print("\n" + new TestCssGen().generate());
+		D.print("\n[" + new TestCssGen().generate() + "]");
 	}
 }

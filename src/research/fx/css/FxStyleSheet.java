@@ -33,6 +33,7 @@ public class FxStyleSheet
 	}
 
 
+	/** creates a selector to be passed to defines() method */
 	public static Selector selector(Object ... sel)
 	{
 		return new Selector(sel);
@@ -66,6 +67,7 @@ public class FxStyleSheet
 		}
 
 
+		/** use this method to add properties or cascaded selectors */
 		public Selector defines(Object ... sel)
 		{
 			items.addAll(sel);
@@ -73,11 +75,37 @@ public class FxStyleSheet
 		}
 		
 		
-		public void write(SB sb, Object parentSelectors)
+		protected static Selector[] chain(Selector[] parents, Selector sel)
+		{
+			if(parents == null)
+			{
+				return new Selector[] { sel };
+			}
+			else
+			{
+				int sz = parents.length;
+				Selector[] rv = new Selector[sz + 1];
+				System.arraycopy(parents, 0, rv, 0, sz);
+				rv[sz] = sel;
+				return rv;
+			}
+		}
+		
+		
+		protected void write(SB sb, Selector[] parentSelectors)
 		{
 			if(items.size() == 0)
 			{
 				return;
+			}
+			
+			if(parentSelectors != null)
+			{
+				for(Selector sel: parentSelectors)
+				{
+					sb.a(sel.selector);
+					sb.a(' ');
+				}
 			}
 			
 			sb.a(selector);
@@ -111,7 +139,7 @@ public class FxStyleSheet
 			{
 				for(Selector sel: selectors)
 				{
-					sel.write(sb, this);
+					sel.write(sb, chain(parentSelectors, this));
 				}
 			}			
 		}

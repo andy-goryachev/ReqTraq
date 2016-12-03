@@ -219,5 +219,9 @@ public class CssTools
 			CssPseudo s = (CssPseudo)x;
 			sb.a(s.getName());
 		}
+		else
+		{
+			throw new Error("?" + x);
+		}
 	}
 }
