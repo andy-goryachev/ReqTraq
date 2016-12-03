@@ -4,6 +4,7 @@ import goryachev.common.util.CList;
 import goryachev.fx.CAction;
 import goryachev.fx.CPane;
 import goryachev.fx.CommonStyles;
+import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
 import goryachev.reqtraq.util.Tools;
 import javafx.beans.Observable;
@@ -23,6 +24,8 @@ import research.fx.FxTreeTableColumn;
 public class TreeTablePane
 	extends CPane
 {
+	public static final CssStyle TREE = new CssStyle("TreeTablePane_TREE");
+	
 	public final CAction collapseAllAction = new CAction(this::collapseAll);
 	public final CAction deleteSelectionAction = new CAction(this::deleteSelection);
 	public final CAction expandAllAction = new CAction(this::expandAll);
@@ -40,7 +43,7 @@ public class TreeTablePane
 		tree.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		tree.setEditable(true);
 		tree.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
-		FX.style(tree, CommonStyles.NO_HORIZONTAL_SCROLL_BAR);
+		FX.style(tree, CommonStyles.NO_HORIZONTAL_SCROLL_BAR, TREE);
 		
 		handler = new TreeTableHandler<Page>(tree);
 		

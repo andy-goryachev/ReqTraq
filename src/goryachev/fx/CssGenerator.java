@@ -248,6 +248,9 @@ public abstract class CssGenerator
 	/** A series of width or sets of four width values, separated by commas. For each item in the series, a single width value means that all border widths are the same; and if a set of four width values is specified, they are used for the top, right, bottom, and left border widths, in that order. If the border is not rectangular, only the first width value is used. Each item in the series of widths applies to the corresponding item in the series of border colors.  */
 	public void borderWidth(Object ... xs) { prop("-fx-border-width", CssTools.toValues(xs)); }
 
+	// C
+	public void cellSize(Object x) { prop("-fx-cell-size", x); }
+	
 	// F
 	public void fitToHeight(boolean x) { prop("-fx-fit-to-height", x); }
 	public void fitToWidth(boolean x) { prop("-fx-fit-to-width", x); }
