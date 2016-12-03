@@ -1,7 +1,7 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import goryachev.common.util.SB;
-import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.paint.Color;
 
 
@@ -118,7 +118,7 @@ public class CssTools
 	}
 	
 	
-	public static String toValue(ScrollBarPolicy x)
+	public static String toValue(ScrollPane.ScrollBarPolicy x)
 	{
 		switch(x)
 		{
@@ -162,6 +162,59 @@ public class CssTools
 			sb.a(toValue(xs[i]));
 		}
 		return sb.toString();
+	}
 
+
+	/** constructs selector string */
+	public static String selector(Object[] sel)
+	{
+		SB sb = new SB();
+		for(Object x: sel)
+		{
+			addSelector(sb, x);
+		}
+		return sb.toString();
+	}
+	
+	
+	private static void addSelector(SB sb, Object x)
+	{
+		if(x instanceof CssStyle)
+		{
+			if(sb.isNotEmpty())
+			{
+				sb.a(' ');
+			}
+			
+			CssStyle s = (CssStyle)x;
+			sb.a('.');
+			sb.a(s.getName());
+		}
+		else if(x instanceof CssID)
+		{
+			if(sb.isNotEmpty())
+			{
+				sb.a(' ');
+			}
+			
+			CssID s = (CssID)x;
+			sb.a('#');
+			sb.a(s.getID());
+		}
+		else if(x instanceof String)
+		{
+			String s = (String)x;
+			if(!s.startsWith(":"))
+			{
+				sb.a(' ');
+			}
+			
+			sb.a(s);
+		}
+		else if(x instanceof CssPseudo)
+		{
+			CssPseudo s = (CssPseudo)x;
+			sb.a(s.getName());
+		}
 	}
 }

@@ -9,7 +9,7 @@ import goryachev.common.util.D;
  * CssGen Test.
  */
 public class TestCssGen
-	extends CssGen
+	extends FxStyleSheet
 {
 	public static void main(String[] args)
 	{
@@ -19,7 +19,6 @@ public class TestCssGen
 	
 	public TestCssGen()
 	{
-//		super
 		defines
 		(
 			selector("a").defines
