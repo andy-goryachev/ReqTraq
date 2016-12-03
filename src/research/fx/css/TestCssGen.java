@@ -3,6 +3,7 @@ package research.fx.css;
 import goryachev.common.test.TF;
 import goryachev.common.test.Test;
 import goryachev.common.util.D;
+import goryachev.reqtraq.TreeTablePane;
 
 
 /**
@@ -21,12 +22,15 @@ public class TestCssGen
 	{
 		defines
 		(
-			selector("a").defines
+			selector(TreeTablePane.TREE, ".view").defines
 			(
-				cellSize(0),
+				cellSize("a1"),
+				cellSize("a2"),
+				
 				selector("b").defines
 				(
-					cellSize(1)
+					cellSize("b1"),
+					cellSize("b2")
 				)
 			)
 		);

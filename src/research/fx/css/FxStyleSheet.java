@@ -33,9 +33,9 @@ public class FxStyleSheet
 	}
 
 
-	public static Selector selector(String name, Object ... xs)
+	public static Selector selector(Object ... sel)
 	{
-		return new Selector();
+		return new Selector(sel);
 	}
 	
 	
@@ -98,23 +98,22 @@ public class FxStyleSheet
 				{
 					sb.a("\t");
 					((FxCssProp)x).write(sb);
-					sb.a("\n");
 				}
 				else
 				{
 					sb.a(x);
 				}
 			}
-			
+
+			sb.a("}\n\n");
+
 			if(selectors != null)
 			{
 				for(Selector sel: selectors)
 				{
 					sel.write(sb, this);
 				}
-			}
-			
-			sb.a("\n}\n\n");
+			}			
 		}
 	}
 }

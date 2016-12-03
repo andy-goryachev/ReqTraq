@@ -206,7 +206,10 @@ public class CssTools
 			String s = (String)x;
 			if(!s.startsWith(":"))
 			{
-				sb.a(' ');
+				if(sb.isNotEmpty())
+				{
+					sb.a(' ');
+				}
 			}
 			
 			sb.a(s);

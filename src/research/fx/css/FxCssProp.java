@@ -24,5 +24,6 @@ public class FxCssProp
 		sb.a(name);
 		sb.a(": ");
 		sb.a(value);
+		sb.a(";\n");
 	}
 }
