@@ -13,6 +13,8 @@ public class Schema
 	public static final String KEY_PAGES = "pages";
 	/** page nesting level */
 	public static final String KEY_PAGE_LEVEL = "level";
+	/** page status */
+	public static final String KEY_PAGE_STATUS = "status";
 	/** page text */
 	public static final String KEY_PAGE_TEXT = "text";
 	/** page creation timestamp */

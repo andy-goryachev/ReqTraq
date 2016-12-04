@@ -3,7 +3,7 @@ General
 	Releases
 	Tags
 		
-Main Window
+Main Window||y
 	Menu
 		Export
 			html
@@ -20,7 +20,7 @@ Main Window
 			excel
 	
 	Tree Pane
-		Columns:
+		Columns
 			title
 			scheduled release
 			% done
@@ -35,11 +35,33 @@ Main Window
 			expand all
 			add child
 			add
-			move left right up down
+			move left 
+			move right 
+			move up
+			move down
 			cut 
 			copy 
 			paste
+			undo
 			add tag
+		Cells
+			edit on focus
+		Drag and Drop
+			move items
+			multiple selection
+			discontinued selection
+			ctrl+ copies
+		Keyboard
+			undo
+			redo
+			copy
+			paste
+			cut
+			cursor up
+			cursor down
+			ctrl-left indent left
+			ctrl-right indent right
+			multiple selection indent|possible solution:\nindent up to parent, indent parent on the next key stroke
 	Detail Pane
 		View
 			single page

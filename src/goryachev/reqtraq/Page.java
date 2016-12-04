@@ -33,10 +33,16 @@ public class Page
 	
 	//
 	
+	public static final String STATUS_DONE = "DONE";
+	public static final String STATUS_OPEN = "OPEN";
+	public static final String STATUS_TBD = "TBD";
+	
+	//
+	
 	public final SimpleStringProperty title = new SimpleStringProperty();
 	public final SimpleStringProperty text = new SimpleStringProperty();
 	public final SimpleLongProperty modified = new SimpleLongProperty();
-	public final SimpleObjectProperty<Object> status = new SimpleObjectProperty<>();
+	public final SimpleStringProperty status = new SimpleStringProperty();
 	private final BKey id;
 	private final long created;
 	private transient int level;
@@ -51,16 +57,18 @@ public class Page
 	}
 	
 	
-	public Page(BKey id, long created, long modified, int level, String title, String text)
+	public Page(BKey id, long created, long modified, int level, String title, String text, String status)
 	{
 		Assert.notNull(id, "id");
 		
 		this.id = id;
 		this.created = created;
 		this.level = level;
+		
 		setTimeModified(modified);
 		setTitle(title);
 		setText(text);
+		setStatus(status);
 	}
 	
 	
@@ -183,6 +191,12 @@ public class Page
 	public void setText(String s)
 	{
 		text.set(s);
+	}
+	
+	
+	public void setStatus(String s)
+	{
+		status.set(s);
 	}
 	
 	

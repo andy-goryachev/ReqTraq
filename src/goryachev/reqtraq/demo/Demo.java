@@ -8,6 +8,7 @@ import goryachev.common.util.Log;
 import goryachev.reqtraq.Page;
 import goryachev.reqtraq.data.GUID;
 import goryachev.reqtraq.data.ReqDoc;
+import java.util.Locale;
 
 
 /**
@@ -43,19 +44,32 @@ public class Demo
 					
 					String title;
 					String text;
+					String status;
 					int ix = s.indexOf('|');
 					if(ix < 0)
 					{
 						title = s;
 						text = null;
+						status = null;
 					}
 					else
 					{
 						title = s.substring(0, ix);
 						text = s.substring(ix + 1);
 						text = text.replace("\\n", "\n");
+						
+						ix = text.indexOf('|');
+						if(ix < 0)
+						{
+							status = null;
+						}
+						else
+						{
+							status = parseStatus(text.substring(ix + 1));
+							text = text.substring(0, ix);
+						}
 					}
-					ps.add(new Page(id, time, time, lev, title, text));
+					ps.add(new Page(id, time, time, lev, title, text, status));
 				}
 			}
 		}
@@ -69,6 +83,27 @@ public class Demo
 		}
 		
 		return ps;
+	}
+	
+	
+	private static String parseStatus(String s)
+	{
+		if(s == null)
+		{
+			return null;
+		}
+		
+		s = s.toLowerCase(Locale.ENGLISH);
+		if(s.startsWith("y"))
+		{
+			return Page.STATUS_DONE;
+		}
+		else if(s.startsWith("t"))
+		{
+			return Page.STATUS_TBD;
+		}
+		
+		return Page.STATUS_OPEN; 
 	}
 
 

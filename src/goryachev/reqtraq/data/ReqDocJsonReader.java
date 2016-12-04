@@ -86,6 +86,7 @@ public class ReqDocJsonReader
 		long modified = 0;
 		String title = null;
 		String text = null;
+		String status = null;
 		int level = 1;
 		
 		beginObject();
@@ -106,16 +107,19 @@ public class ReqDocJsonReader
 			case Schema.KEY_PAGE_LEVEL:
 				level = nextInt();
 				break;
-			case Schema.KEY_PAGE_TITLE:
-				title = nextString();
+			case Schema.KEY_PAGE_STATUS:
+				status = nextString();
 				break;
 			case Schema.KEY_PAGE_TEXT:
 				text = nextString();
+				break;
+			case Schema.KEY_PAGE_TITLE:
+				title = nextString();
 				break;
 			}
 		}
 		endObject();
 		
-		return new Page(id, created, modified, level, title, text);
+		return new Page(id, created, modified, level, title, text, status);
     }
 }
