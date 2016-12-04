@@ -14,8 +14,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeTableCell;
+import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
+import javafx.util.Callback;
 import research.fx.FxFormatter;
 import research.fx.FxTreeTableColumn;
 
@@ -93,17 +96,30 @@ public class TreeTablePane
 				return FX.toObservableValue(p.getField(f));
 			}
 		};
-		tc.setCellFactory((x) -> new TextFieldTreeTableCell(tc.getConverter()));
 		tc.setAlignment(getAlignment(f));
 		tc.setConverter(getFormatter(f));
 		tc.setPrefWidth(getPreferredWidth(f));
 		tc.setEditable(isColumnEditable(f));
 		tc.setSortable(false);
 		
+		tc.setCellFactory(createCellFactory(tc, f));
+		
 		tree.getColumns().add(tc);
 	}
 	
 	
+	private Callback<TreeTableColumn<Page,Object>,TreeTableCell<Page,Object>> createCellFactory(FxTreeTableColumn<Page> tc, Page.Field f)
+	{
+		switch(f)
+		{
+		case STATUS:
+			return (x) -> new StatusCell();
+		default:
+			return (x) -> new TextFieldTreeTableCell(tc.getConverter());
+		}
+	}
+
+
 	protected Pos getAlignment(Page.Field f)
 	{
 		switch(f)

@@ -5,7 +5,6 @@ import goryachev.common.util.BKey;
 import goryachev.reqtraq.data.GUID;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleLongProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 
@@ -197,6 +196,12 @@ public class Page
 	public void setStatus(String s)
 	{
 		status.set(s);
+	}
+	
+	
+	public String getStatus()
+	{
+		return status.get();
 	}
 	
 	

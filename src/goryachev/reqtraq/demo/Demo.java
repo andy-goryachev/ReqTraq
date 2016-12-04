@@ -50,7 +50,7 @@ public class Demo
 					{
 						title = s;
 						text = null;
-						status = null;
+						status = Page.STATUS_OPEN;
 					}
 					else
 					{
@@ -61,7 +61,7 @@ public class Demo
 						ix = text.indexOf('|');
 						if(ix < 0)
 						{
-							status = null;
+							status = Page.STATUS_OPEN;
 						}
 						else
 						{

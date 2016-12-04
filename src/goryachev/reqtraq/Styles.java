@@ -1,5 +1,6 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
+import goryachev.fx.FX;
 import goryachev.fx.OBSOLETE.CssGenerator;
 import javafx.scene.paint.Color;
 import research.fx.css.CommonStyles;
@@ -38,6 +39,18 @@ public class Styles
 						)
 					)
 				)
+			),
+			new Selector(StatusCell.DONE).defines
+			(
+				backgroundColor(FX.alpha(Color.LIGHTGREEN, 0.4))
+			),
+			new Selector(StatusCell.OPEN).defines
+			(
+				backgroundColor(FX.alpha(Color.LIGHTYELLOW, 0.4))
+			),
+			new Selector(StatusCell.TBD).defines
+			(
+				backgroundColor(FX.alpha(Color.GRAY, 0.1))
 			),
 			// editor
 			new Selector(EditorPane.ID_TITLE).defines

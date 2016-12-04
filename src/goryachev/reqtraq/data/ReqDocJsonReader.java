@@ -86,7 +86,7 @@ public class ReqDocJsonReader
 		long modified = 0;
 		String title = null;
 		String text = null;
-		String status = null;
+		String status = Page.STATUS_OPEN;
 		int level = 1;
 		
 		beginObject();

@@ -48,7 +48,8 @@ public class CssTools
 			else
 			{
 				double a = c.getOpacity();
-				return "rgba(" + r + "," + g + "," + b + "," + a + ")";
+				return String.format("#%02x%02x%02x%02x", to8bit(r), to8bit(g), to8bit(b), to8bit(a));
+//				return "rgba(" + r + "," + g + "," + b + "," + a + ")";
 			}
 		}
 		else

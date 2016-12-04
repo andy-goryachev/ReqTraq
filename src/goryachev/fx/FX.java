@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -545,9 +546,9 @@ public final class FX
 	
 	
 	/** sets an opacity value for a color */
-	public static Color alpha(Color c, double alpha)
+	public static Color alpha(Color c, double opacity)
 	{
-		return new Color(c.getRed(), c.getGreen(), c.getBlue(), alpha);
+		return new Color(c.getRed(), c.getGreen(), c.getBlue(), opacity);
 	}
 	
 	
@@ -702,6 +703,34 @@ public final class FX
 		else
 		{
 			return val;
+		}
+	}
+	
+
+	/** adds or removes the specified style */
+	public static void setStyle(Node n, CssStyle st, boolean on)
+	{
+		if(n == null)
+		{
+			return;
+		}
+		else if(st == null)
+		{
+			return;
+		}
+		
+		String name = st.getName();
+		ObservableList<String> ss = n.getStyleClass();
+		if(on)
+		{
+			if(!ss.contains(name))
+			{
+				ss.add(st.getName());
+			}
+		}
+		else
+		{
+			ss.remove(name);
 		}
 	}
 }
