@@ -4,6 +4,7 @@ import goryachev.fx.CPane;
 import goryachev.fx.CssID;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
+import goryachev.fx.FxCtl;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
@@ -29,8 +30,8 @@ public class EditorPane
 		titleField = new TextField();
 		FX.style(titleField, ID_TITLE);
 		
-		textField = new TextArea();	
-		FX.style(textField, ID_TEXT);
+		textField = new TextArea();
+		FX.style(textField, ID_TEXT, FxCtl.WRAP_TEXT);
 	
 		setTop(titleField);
 		setCenter(textField);

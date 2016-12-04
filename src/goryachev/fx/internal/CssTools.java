@@ -129,6 +129,10 @@ public class CssTools
 				return String.valueOf(vd);
 			}
 		}
+		else if(x instanceof Color)
+		{
+			return toColor(x);
+		}
 		else
 		{
 			return x.toString();

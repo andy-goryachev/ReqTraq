@@ -72,4 +72,10 @@ public class StandardFxProperties
 	
 	// V
 	public static FxCssProp vBarPolicy(ScrollPane.ScrollBarPolicy x) { return new FxCssProp("-fx-vbar-policy", CssTools.toValue(x)); }
+	
+	
+	//
+	
+	
+	public static FxCssProp prop(String name, Object val) { return new FxCssProp(name, val); }
 }

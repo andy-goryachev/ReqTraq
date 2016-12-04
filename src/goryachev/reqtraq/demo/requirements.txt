@@ -1,3 +1,4 @@
+Project Goals|A desktop tool to support requirements management, capture and track project progress, and provide estimate of completion date. 
 General
 	Requirements
 	Releases
@@ -18,6 +19,21 @@ Main Window||y
 			plain text
 			html
 			excel
+			
+	Toolbar
+		search
+			
+	Tabs
+		dashboard
+		tree table with detail pane
+		milestones / releases
+		tags
+		
+	Dashboard||tbd
+		progress
+		milestones
+		current release progress
+		estimates
 	
 	Tree Pane
 		Columns
@@ -62,6 +78,7 @@ Main Window||y
 			ctrl-left indent left
 			ctrl-right indent right
 			multiple selection indent|possible solution:\nindent up to parent, indent parent on the next key stroke
+			ctrl-down to insert?
 	Detail Pane
 		View
 			single page

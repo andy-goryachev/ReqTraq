@@ -20,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Tooltip;
@@ -290,7 +291,18 @@ public final class FX
 						n.setFocusTraversable(false);
 						break;
 					case WRAP_TEXT:
-						((Labeled)n).setWrapText(true);
+						if(n instanceof Labeled)
+						{
+							((Labeled)n).setWrapText(true);
+						}
+						else if(n instanceof TextArea)
+						{
+							((TextArea)n).setWrapText(true);
+						}
+						else
+						{
+							throw new Error("?wrap for " + n);
+						}
 						break;
 					default:
 						throw new Error("?" + a);

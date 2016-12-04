@@ -14,8 +14,26 @@ public class Styles
 {
 	public Styles()
 	{
+		// TODO themes
+		
 		add
 		(
+			// basic styles
+			new Selector(".root").defines
+			(
+				prop("-fx-accent", Color.RED),
+				prop("-fx-focus-color", Color.RED),
+				prop("-fx-faint-focus-color", Color.BLACK)
+			),
+			
+			new Selector(".text").defines
+			(
+				prop("-fx-font-smoothing-type", "gray")
+			),
+			
+			// common fx styles
+			new CommonStyles(),
+			
 			// tree
 			new Selector(TreeTablePane.TREE).defines
 			(
@@ -56,10 +74,7 @@ public class Styles
 			new Selector(EditorPane.ID_TITLE).defines
 			(
 				fontSize("150%")
-			),
-			
-			// common fx styles
-			new CommonStyles()
+			)
 		);
 	}
 }
