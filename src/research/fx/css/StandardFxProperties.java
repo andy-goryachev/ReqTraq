@@ -10,6 +10,10 @@ import javafx.scene.control.ScrollPane;
  * 
  * border:  -fx-border-color, -fx-border-insets, -fx-border-radius, -fx-border-style, -fx-border-width, -fx-border-image-insets, -fx-border-image-repeat, -fx-border-image-slice, -fx-border-image-source, -fx-border-image-width
  * background:  -fx-background-color, -fx-background-image, -fx-background-insets, -fx-background-position, -fx-background-radius, -fx-background-repeat, -fx-background-size
+ * 
+ * text input:
+ * -fx-highlight-fill 0x0096c9ff
+ * -fx-highlight-text-fill 0xffffffff
  */
 public class StandardFxProperties
 {
@@ -55,6 +59,9 @@ public class StandardFxProperties
 	public static FxCssProp shape(Object x) { return new FxCssProp("-fx-shape", x); }
 	// T
 	public static FxCssProp textFill(Object x) { return new FxCssProp("-fx-text-fill", CssTools.toColor(x)); }
+	public static FxCssProp translateX(double x) { return new FxCssProp("-fx-translate-x", x); }
+	public static FxCssProp translateY(double x) { return new FxCssProp("-fx-translate-y", x); }
+	
 	// V
 	public static FxCssProp vBarPolicy(ScrollPane.ScrollBarPolicy x) { return new FxCssProp("-fx-vbar-policy", CssTools.toValue(x)); }
 }

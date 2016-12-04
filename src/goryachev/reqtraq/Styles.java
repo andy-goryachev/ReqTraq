@@ -29,10 +29,12 @@ public class Styles
 					(
 						padding(0),
 						backgroundColor(null),
+						backgroundInsets(null),
 						borderWidth(0),
 						
 						new Selector(FOCUSED).defines
 						(
+							translateX(-1)
 						)
 					)
 				)
