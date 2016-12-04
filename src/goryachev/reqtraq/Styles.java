@@ -1,6 +1,7 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
 import goryachev.fx.CssGenerator;
+import javafx.scene.paint.Color;
 import research.fx.css.CommonStyles;
 import research.fx.css.FxStyleSheet;
 
@@ -16,23 +17,31 @@ public class Styles
 		add
 		(
 			// tree
-			new Selector(TreeTablePane.TREE, ".cell").defines
+			new Selector(TreeTablePane.TREE).defines
 			(
-				padding(0),
-				cellSize("1.5em") // TODO font size + necessary padding
+				new Selector(".cell").defines
+				(					
+					padding(0),
+					borderWidth(0),
+					cellSize("1.8em"), // TODO font size + necessary padding
+					
+					new Selector(".text-field").defines
+					(
+						padding(0),
+						backgroundColor(null),
+						borderWidth(0),
+						
+						new Selector(FOCUSED).defines
+						(
+						)
+					)
+				)
 			),
-			
-			new Selector(TreeTablePane.TREE, ".cell", ".text-field").defines
-			(
-				padding(0)
-			),
-			
 			// editor
 			new Selector(EditorPane.ID_TITLE).defines
 			(
 				fontSize("150%")
 			),
-			
 			// common fx styles
 			new CommonStyles()
 		);
@@ -51,7 +60,7 @@ public class Styles
 			
 			public String generateStyleSheet()
 			{
-				return Styles.this.generate();
+				return new Styles().generate();
 			}
 		};
 	}

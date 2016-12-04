@@ -7,6 +7,9 @@ import javafx.scene.control.ScrollPane;
 
 /**
  * Standard Fx Css Properties.
+ * 
+ * border:  -fx-border-color, -fx-border-insets, -fx-border-radius, -fx-border-style, -fx-border-width, -fx-border-image-insets, -fx-border-image-repeat, -fx-border-image-slice, -fx-border-image-source, -fx-border-image-width
+ * background:  -fx-background-color, -fx-background-image, -fx-background-insets, -fx-background-position, -fx-background-radius, -fx-background-repeat, -fx-background-size
  */
 public class StandardFxProperties
 {
