@@ -4,6 +4,7 @@ import goryachev.common.test.TF;
 import goryachev.common.test.Test;
 import goryachev.common.util.D;
 import goryachev.reqtraq.TreeTablePane;
+import research.fx.css.FxStyleSheet.Selector;
 
 
 /**
@@ -20,28 +21,32 @@ public class TestCssGen
 	
 	public TestCssGen()
 	{
-		selector(TreeTablePane.TREE, ".view").defines
+		add
 		(
-			cellSize("a1"),
-			cellSize("a2"),
-			
-			selector("b").defines
+			new Selector(TreeTablePane.TREE, ".view").defines
 			(
-				cellSize("b1"),
-				cellSize("b2"),
+				cellSize("a1"),
+				cellSize("a2"),
 				
-				selector(HOVER).defines
+				new Selector("b").defines
 				(
-					padding("0 0 0 0")
+					cellSize("b1"),
+					cellSize("b2"),
+					
+					// FIX extra space!
+					new Selector(HOVER).defines
+					(
+						padding("0 0 0 0")
+					)
 				)
-			)
-		);
-		
-		selector("SHOULD_NOT_OUTPUT_ALONE").defines
-		(
-			selector("ONLY_WITH_THIS").defines
+			),
+			
+			new Selector("SHOULD_NOT_OUTPUT_ALONE").defines
 			(
-				padding("1px")
+				new Selector("ONLY_WITH_THIS").defines
+				(
+					padding("1px")
+				)
 			)
 		);
 	}

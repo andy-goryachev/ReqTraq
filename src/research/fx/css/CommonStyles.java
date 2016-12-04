@@ -18,26 +18,29 @@ public class CommonStyles
 	
 	public CommonStyles()
 	{
-		// bold
-		selector(BOLD).defines
+		add
 		(
-			fontWeight("bold")
-		);
-		
-		// disables horizontal scroll bar
-		selector(NO_HORIZONTAL_SCROLL_BAR).defines
-		(
-			selector(".scroll-bar:horizontal").defines
+			// bold
+			new Selector(BOLD).defines
 			(
-				maxHeight(0),
-				padding(0),
-				opacity(0)
+				fontWeight("bold")
 			),
-			selector(".scroll-bar:horizontal *").defines
+			
+			// disables horizontal scroll bar
+			new Selector(NO_HORIZONTAL_SCROLL_BAR).defines
 			(
-				maxHeight(0),
-				padding(0),
-				opacity(0)
+				new Selector(".scroll-bar:horizontal").defines
+				(
+					maxHeight(0),
+					padding(0),
+					opacity(0)
+				),
+				new Selector(".scroll-bar:horizontal *").defines
+				(
+					maxHeight(0),
+					padding(0),
+					opacity(0)
+				)
 			)
 		);
 	}

@@ -13,26 +13,29 @@ public class Styles
 {
 	public Styles()
 	{
-		// tree
-		selector(TreeTablePane.TREE, ".cell").defines
+		add
 		(
-			padding(0),
-			cellSize("1.5em") // TODO font size + necessary padding
-		);
-		
-		selector(TreeTablePane.TREE, ".cell", ".text-field").defines
-		(
-			padding(0)
-		);
-		
-		// editor
-		selector(EditorPane.ID_TITLE).defines
-		(
-			fontSize("150%")
-		);
+			// tree
+			new Selector(TreeTablePane.TREE, ".cell").defines
+			(
+				padding(0),
+				cellSize("1.5em") // TODO font size + necessary padding
+			),
 			
-		// common fx styles
-		include(new CommonStyles());
+			new Selector(TreeTablePane.TREE, ".cell", ".text-field").defines
+			(
+				padding(0)
+			),
+			
+			// editor
+			new Selector(EditorPane.ID_TITLE).defines
+			(
+				fontSize("150%")
+			),
+			
+			// common fx styles
+			new CommonStyles()
+		);
 	}
 
 	

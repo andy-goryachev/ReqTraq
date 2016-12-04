@@ -27,19 +27,27 @@ public class FxStyleSheet
 	}
 	
 	
-	public void include(FxStyleSheet ss)
+	/** use this method to add properties or cascaded selectors */
+	public void add(Object ... sel)
+	{
+		elements.addAll(sel);
+	}
+	
+	
+	public void add(Object ss)
 	{
 		elements.add(ss);
 	}
 
 
+	// FIX
 	/** adds a selector */
-	public Selector selector(Object ... sel)
-	{
-		Selector s = new Selector(sel);
-		elements.add(s);
-		return s;
-	}
+//	public Selector selector(Object ... sel)
+//	{
+//		Selector s = new Selector(sel);
+//		elements.add(s);
+//		return s;
+//	}
 	
 	
 	public String generate()
@@ -117,16 +125,7 @@ public class FxStyleSheet
 			{
 				return;
 			}
-			
-			if(parentSelectors != null)
-			{
-				for(Selector sel: parentSelectors)
-				{
-					sb.a(sel.selector);
-					sb.a(' ');
-				}
-			}
-			
+						
 			boolean epilogue = false;
 			
 			CList<Selector> selectors = null;
@@ -144,6 +143,16 @@ public class FxStyleSheet
 				{
 					if(!epilogue)
 					{
+						// write selector prologue
+						if(parentSelectors != null)
+						{
+							for(Selector sel: parentSelectors)
+							{
+								sb.a(sel.selector);
+								sb.a(' ');
+							}
+						}
+
 						sb.a(selector);
 						sb.a("\n{\n");
 						epilogue = true;
