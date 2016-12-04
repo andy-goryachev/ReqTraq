@@ -7,7 +7,7 @@ import goryachev.reqtraq.TreeTablePane;
 
 
 /**
- * CssGen Test.
+ * FxStyleSheet Test.
  */
 public class TestCssGen
 	extends FxStyleSheet
@@ -20,23 +20,28 @@ public class TestCssGen
 	
 	public TestCssGen()
 	{
-		defines
+		selector(TreeTablePane.TREE, ".view").defines
 		(
-			selector(TreeTablePane.TREE, ".view").defines
+			cellSize("a1"),
+			cellSize("a2"),
+			
+			selector("b").defines
 			(
-				cellSize("a1"),
-				cellSize("a2"),
+				cellSize("b1"),
+				cellSize("b2"),
 				
-				selector("b").defines
+				selector(HOVER).defines
 				(
-					cellSize("b1"),
-					cellSize("b2"),
-					
-					selector(HOVER).defines
-					(
-						padding("0 0 0 0")
-					)
+					padding("0 0 0 0")
 				)
+			)
+		);
+		
+		selector("SHOULD_NOT_OUTPUT_ALONE").defines
+		(
+			selector("ONLY_WITH_THIS").defines
+			(
+				padding("1px")
 			)
 		);
 	}

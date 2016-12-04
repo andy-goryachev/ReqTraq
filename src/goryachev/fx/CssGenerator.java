@@ -7,6 +7,7 @@ import javafx.scene.control.ScrollPane;
 /**
  * Base class for an FX CSS Generator.
  */
+@Deprecated // use FxStyleSheet
 public abstract class CssGenerator
 {
 	/** use selector() and property methods to build the style sheet */

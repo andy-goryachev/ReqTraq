@@ -5,6 +5,7 @@ package goryachev.fx;
 /**
  * Common Styles.
  */
+@Deprecated // TODO replace with new style sheet 
 public class CommonStyles
 	extends CssGenerator
 {

@@ -19,7 +19,7 @@ public class FxStyleSheet
 	
 	public static final String TRANSPARENT = "transparent";
 	
-	private final CList<Selector> selectors = new CList();
+	private final CList<Object> elements = new CList();
 
 
 	public FxStyleSheet()
@@ -27,27 +27,46 @@ public class FxStyleSheet
 	}
 	
 	
-	public void defines(Selector ... xs)
+	public void include(FxStyleSheet ss)
 	{
-		selectors.addAll(xs);
+		elements.add(ss);
 	}
 
 
-	/** creates a selector to be passed to defines() method */
-	public static Selector selector(Object ... sel)
+	/** adds a selector */
+	public Selector selector(Object ... sel)
 	{
-		return new Selector(sel);
+		Selector s = new Selector(sel);
+		elements.add(s);
+		return s;
 	}
 	
 	
 	public String generate()
 	{
 		SB sb = new SB();
-		for(Selector sel: selectors)
-		{
-			sel.write(sb, null);
-		}
+		generate(sb);
 		return sb.toString();
+	}
+	
+	
+	protected void generate(SB sb)
+	{
+		for(Object x: elements)
+		{
+			if(x instanceof Selector)
+			{
+				((Selector)x).write(sb, null);
+			}
+			else if(x instanceof FxStyleSheet)
+			{
+				((FxStyleSheet)x).generate(sb);
+			}
+			else if(x != null)
+			{
+				throw new Error("?" + x);
+			}
+		}
 	}
 	
 	
@@ -108,8 +127,7 @@ public class FxStyleSheet
 				}
 			}
 			
-			sb.a(selector);
-			sb.a("\n{\n");
+			boolean epilogue = false;
 			
 			CList<Selector> selectors = null;
 			for(Object x: items)
@@ -124,16 +142,26 @@ public class FxStyleSheet
 				}
 				else if(x instanceof FxCssProp)
 				{
+					if(!epilogue)
+					{
+						sb.a(selector);
+						sb.a("\n{\n");
+						epilogue = true;
+					}
+					
 					sb.a("\t");
 					((FxCssProp)x).write(sb);
 				}
-				else
+				else if(x != null)
 				{
-					sb.a(x);
+					throw new Error("?" + x);
 				}
 			}
 
-			sb.a("}\n\n");
+			if(epilogue)
+			{
+				sb.a("}\n\n");
+			}
 
 			if(selectors != null)
 			{
