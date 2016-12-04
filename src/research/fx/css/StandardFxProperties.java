@@ -17,6 +17,14 @@ import javafx.scene.control.ScrollPane;
  */
 public class StandardFxProperties
 {
+	public static final CssPseudo DISABLED = new CssPseudo(":disabled");
+	public static final CssPseudo FOCUSED = new CssPseudo(":focused");
+	public static final CssPseudo HOVER = new CssPseudo(":hover");
+	public static final CssPseudo PRESSED = new CssPseudo(":pressed");
+	
+	public static final String TRANSPARENT = "transparent";
+	
+
 	// B
 	public static FxCssProp backgroundColor(Object x) { return new FxCssProp("-fx-background-color", CssTools.toColor(x)); }
 	public static FxCssProp backgroundImage(Object x) { return new FxCssProp("-fx-background-image", CssTools.toValue(x)); }

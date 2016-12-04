@@ -1,7 +1,6 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
 import goryachev.fx.FX;
-import goryachev.fx.OBSOLETE.CssGenerator;
 import javafx.scene.paint.Color;
 import research.fx.css.CommonStyles;
 import research.fx.css.FxStyleSheet;
@@ -52,31 +51,15 @@ public class Styles
 			(
 				backgroundColor(FX.alpha(Color.GRAY, 0.1))
 			),
+			
 			// editor
 			new Selector(EditorPane.ID_TITLE).defines
 			(
 				fontSize("150%")
 			),
+			
 			// common fx styles
 			new CommonStyles()
 		);
-	}
-
-	
-	@Deprecated // FIX
-	public CssGenerator createOldStyleGenerator()
-	{
-		return new CssGenerator()
-		{
-			protected void generate()
-			{
-			}
-			
-			
-			public String generateStyleSheet()
-			{
-				return new Styles().generate();
-			}
-		};
 	}
 }

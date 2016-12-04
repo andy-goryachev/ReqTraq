@@ -40,6 +40,6 @@ public class ReqTraqFxApp
 	{
 		new MainWindow().open();
 		
-		CssLoader.setStyles(new Styles().createOldStyleGenerator());
+		CssLoader.setStyles(new Styles());
 	}
 }

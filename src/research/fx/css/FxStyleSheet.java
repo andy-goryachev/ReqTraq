@@ -12,13 +12,6 @@ import goryachev.fx.internal.CssTools;
 public class FxStyleSheet
 	extends StandardFxProperties
 {
-	public static final CssPseudo DISABLED = new CssPseudo(":disabled");
-	public static final CssPseudo FOCUSED = new CssPseudo(":focused");
-	public static final CssPseudo HOVER = new CssPseudo(":hover");
-	public static final CssPseudo PRESSED = new CssPseudo(":pressed");
-	
-	public static final String TRANSPARENT = "transparent";
-	
 	private final CList<Object> elements = new CList();
 
 
@@ -27,20 +20,22 @@ public class FxStyleSheet
 	}
 	
 	
-	/** use this method to add selectors or style sheets */
+	/** adds multiple selectors or style sheets */
 	public void add(Object ... sel)
 	{
 		elements.addAll(sel);
 	}
 	
 	
+	/** adds a selector or a style sheet */
 	public void add(Object ss)
 	{
 		elements.add(ss);
 	}
 
 	
-	public String generate()
+	/** generates style sheet */
+	public String generateStyleSheet()
 	{
 		SB sb = new SB();
 		generate(sb);

@@ -55,6 +55,6 @@ public class TestCssGen
 	@Test
 	public void test()
 	{
-		D.print("\n[" + new TestCssGen().generate() + "]");
+		D.print("\n[" + new TestCssGen().generateStyleSheet() + "]");
 	}
 }
