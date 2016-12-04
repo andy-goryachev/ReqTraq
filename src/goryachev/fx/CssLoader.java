@@ -1,5 +1,9 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import goryachev.common.util.Base64;
+import goryachev.common.util.CKit;
+import goryachev.common.util.Log;
+import goryachev.fx.OBSOLETE.CssGenerator;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,9 +12,6 @@ import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
 import com.sun.javafx.css.StyleManager;
-import goryachev.common.util.Base64;
-import goryachev.common.util.CKit;
-import goryachev.common.util.Log;
 import javafx.application.Platform;
 
 

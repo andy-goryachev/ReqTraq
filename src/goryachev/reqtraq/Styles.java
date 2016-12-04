@@ -1,6 +1,6 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
-import goryachev.fx.CssGenerator;
+import goryachev.fx.OBSOLETE.CssGenerator;
 import javafx.scene.paint.Color;
 import research.fx.css.CommonStyles;
 import research.fx.css.FxStyleSheet;

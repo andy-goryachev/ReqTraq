@@ -1,7 +1,7 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package research.fx.css;
 import goryachev.common.util.SB;
-import goryachev.fx.CssTools;
+import goryachev.fx.internal.CssTools;
 
 
 /**

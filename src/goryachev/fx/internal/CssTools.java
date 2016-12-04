@@ -1,6 +1,9 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
-package goryachev.fx;
+package goryachev.fx.internal;
 import goryachev.common.util.SB;
+import goryachev.fx.CssID;
+import goryachev.fx.CssPseudo;
+import goryachev.fx.CssStyle;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.paint.Color;
 

@@ -1,6 +1,7 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import goryachev.common.util.GlobalSettings;
+import goryachev.fx.OBSOLETE.CommonStyles;
 import goryachev.fx.internal.WindowsFx;
 import javafx.application.Platform;
 import javafx.beans.property.Property;

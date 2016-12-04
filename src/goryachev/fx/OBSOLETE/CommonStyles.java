@@ -1,5 +1,6 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
-package goryachev.fx;
+package goryachev.fx.OBSOLETE;
+import goryachev.fx.CssStyle;
 
 
 /**

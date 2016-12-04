@@ -1,7 +1,7 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.table;
-import goryachev.fx.CommonStyles;
 import goryachev.fx.FX;
+import goryachev.fx.OBSOLETE.CommonStyles;
 import java.util.Collection;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;

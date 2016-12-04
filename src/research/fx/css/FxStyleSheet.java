@@ -3,7 +3,7 @@ package research.fx.css;
 import goryachev.common.util.CList;
 import goryachev.common.util.SB;
 import goryachev.fx.CssPseudo;
-import goryachev.fx.CssTools;
+import goryachev.fx.internal.CssTools;
 
 
 /**
