@@ -1,6 +1,7 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package research.fx.css;
 import goryachev.common.util.SB;
+import goryachev.fx.CssTools;
 
 
 /**
@@ -23,7 +24,7 @@ public class FxCssProp
 	{
 		sb.a(name);
 		sb.a(": ");
-		sb.a(value);
+		sb.a(CssTools.toValue(value));
 		sb.a(";\n");
 	}
 }

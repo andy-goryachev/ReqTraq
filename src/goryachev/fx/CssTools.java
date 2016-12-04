@@ -105,6 +105,20 @@ public class CssTools
 		{
 			return "null";
 		}
+		else if(x instanceof Number)
+		{
+			Number n = (Number)x;
+			int vi = n.intValue();
+			double vd = n.doubleValue();
+			if(vd == vi)
+			{
+				return String.valueOf(vi);
+			}
+			else
+			{
+				return String.valueOf(vd);
+			}
+		}
 		else
 		{
 			return x.toString();
