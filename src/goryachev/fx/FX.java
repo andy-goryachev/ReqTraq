@@ -1,7 +1,7 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import goryachev.common.util.GlobalSettings;
-import goryachev.fx.OBSOLETE.CommonStyles;
+import goryachev.fx.internal.CssTools;
 import goryachev.fx.internal.WindowsFx;
 import javafx.application.Platform;
 import javafx.beans.property.Property;
@@ -135,7 +135,7 @@ public final class FX
 				switch((FxCtl)a)
 				{
 				case BOLD:
-					n.getStyleClass().add(CommonStyles.BOLD.getName());
+					n.getStyleClass().add(CssTools.BOLD.getName());
 					break;
 				case FOCUSABLE:
 					n.setFocusTraversable(true);
@@ -214,7 +214,7 @@ public final class FX
 				switch((FxCtl)a)
 				{
 				case BOLD:
-					n.getStyleClass().add(CommonStyles.BOLD.getName());
+					n.getStyleClass().add(CssTools.BOLD.getName());
 					break;
 				case FOCUSABLE:
 					n.setFocusTraversable(true);
@@ -268,7 +268,7 @@ public final class FX
 					switch((FxCtl)a)
 					{
 					case BOLD:
-						n.getStyleClass().add(CommonStyles.BOLD.getName());
+						n.getStyleClass().add(CssTools.BOLD.getName());
 						break;
 					case EDITABLE:
 						((TextInputControl)n).setEditable(true);

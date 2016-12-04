@@ -2,7 +2,7 @@
 package goryachev.fx.table;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
-import goryachev.fx.OBSOLETE.CommonStyles;
+import goryachev.fx.internal.CssTools;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.TreeItem;
@@ -133,7 +133,7 @@ public class FxTreeTable<T>
 	public void setResizePolicyConstrained()
 	{
 		tree.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
-		FX.style(tree, CommonStyles.NO_HORIZONTAL_SCROLL_BAR);
+		FX.style(tree, CssTools.NO_HORIZONTAL_SCROLL_BAR);
 	}
 	
 	

@@ -5,7 +5,7 @@ import goryachev.fx.CAction;
 import goryachev.fx.CPane;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
-import goryachev.fx.OBSOLETE.CommonStyles;
+import goryachev.fx.internal.CssTools;
 import goryachev.reqtraq.util.Tools;
 import javafx.beans.Observable;
 import javafx.beans.value.ObservableValue;
@@ -43,7 +43,7 @@ public class TreeTablePane
 		tree.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		tree.setEditable(true);
 		tree.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
-		FX.style(tree, CommonStyles.NO_HORIZONTAL_SCROLL_BAR, TREE);
+		FX.style(tree, CssTools.NO_HORIZONTAL_SCROLL_BAR, TREE);
 		
 		handler = new TreeTableHandler<Page>(tree);
 		
