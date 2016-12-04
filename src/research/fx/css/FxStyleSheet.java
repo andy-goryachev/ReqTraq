@@ -27,7 +27,7 @@ public class FxStyleSheet
 	}
 	
 	
-	/** use this method to add properties or cascaded selectors */
+	/** use this method to add selectors or style sheets */
 	public void add(Object ... sel)
 	{
 		elements.addAll(sel);
@@ -39,16 +39,6 @@ public class FxStyleSheet
 		elements.add(ss);
 	}
 
-
-	// FIX
-	/** adds a selector */
-//	public Selector selector(Object ... sel)
-//	{
-//		Selector s = new Selector(sel);
-//		elements.add(s);
-//		return s;
-//	}
-	
 	
 	public String generate()
 	{
@@ -92,8 +82,8 @@ public class FxStyleSheet
 		{
 			selector = CssTools.selector(sel);
 		}
-
-
+		
+		
 		/** use this method to add properties or cascaded selectors */
 		public Selector defines(Object ... sel)
 		{
@@ -116,6 +106,30 @@ public class FxStyleSheet
 				rv[sz] = sel;
 				return rv;
 			}
+		}
+		
+		
+		protected void writeSelector(SB sb, boolean first, Object selector)
+		{
+			String s;
+			if(selector instanceof Selector)
+			{
+				s = ((Selector)selector).selector;
+			}
+			else
+			{
+				s = (String)selector;
+			}
+			
+			if(!first)
+			{
+				if(!s.startsWith(":"))
+				{
+					sb.sp();
+				}
+			}
+			
+			sb.a(s);
 		}
 		
 		
@@ -144,16 +158,17 @@ public class FxStyleSheet
 					if(!epilogue)
 					{
 						// write selector prologue
+						boolean first = true;
 						if(parentSelectors != null)
 						{
 							for(Selector sel: parentSelectors)
 							{
-								sb.a(sel.selector);
-								sb.a(' ');
+								writeSelector(sb, first, sel);
+								first = false;
 							}
 						}
 
-						sb.a(selector);
+						writeSelector(sb, first, selector);
 						sb.a("\n{\n");
 						epilogue = true;
 					}

@@ -41,9 +41,9 @@ public class TestCssGen
 				)
 			),
 			
-			new Selector("SHOULD_NOT_OUTPUT_ALONE").defines
+			new Selector(".SHOULD_NOT_OUTPUT_ALONE").defines
 			(
-				new Selector("ONLY_WITH_THIS").defines
+				new Selector(".ONLY_WITH_THIS").defines
 				(
 					padding("1px")
 				)
