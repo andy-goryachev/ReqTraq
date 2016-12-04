@@ -11,11 +11,13 @@ Main Window
 			plain text
 			csv
 			MS Word
+			excel
 		Import
 			MS Word
 			CSV
 			plain text
 			html
+			excel
 	
 	Tree Pane
 		Columns:
@@ -43,6 +45,14 @@ Main Window
 			single page
 			list of immediate children
 			document with all descendants
+		Content
+			text
+			history
+			metadata
+				id
+				status
+		Action Pane
+			status change buttons
 	Right Pane ?
 		comments or links
 		sidepanel with browser?
@@ -76,3 +86,5 @@ Future Ideas
 		supports auto-merging of git conflicts
 	Command Line Tool
 		command to generate html for build scripts
+		convert to github markdown
+
