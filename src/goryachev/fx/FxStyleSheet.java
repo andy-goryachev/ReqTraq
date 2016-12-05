@@ -1,9 +1,10 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
-package research.fx.css;
+package goryachev.fx;
 import goryachev.common.util.CList;
 import goryachev.common.util.SB;
-import goryachev.fx.CssPseudo;
 import goryachev.fx.internal.CssTools;
+import goryachev.fx.internal.FxCssProp;
+import goryachev.fx.internal.StandardFxProperties;
 
 
 /**

@@ -1,7 +1,5 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
-package research.fx.css;
-import goryachev.fx.CssStyle;
-
+package goryachev.fx;
 
 /**
  * Common Styles.

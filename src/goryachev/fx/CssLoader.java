@@ -12,7 +12,6 @@ import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
 import com.sun.javafx.css.StyleManager;
 import javafx.application.Platform;
-import research.fx.css.FxStyleSheet;
 
 
 /**

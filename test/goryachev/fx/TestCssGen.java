@@ -1,10 +1,11 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
-package research.fx.css;
+package goryachev.fx;
 import goryachev.common.test.TF;
 import goryachev.common.test.Test;
 import goryachev.common.util.D;
+import goryachev.fx.FxStyleSheet;
+import goryachev.fx.FxStyleSheet.Selector;
 import goryachev.reqtraq.TreeTablePane;
-import research.fx.css.FxStyleSheet.Selector;
 
 
 /**

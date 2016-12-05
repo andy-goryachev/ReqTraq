@@ -1,9 +1,9 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
+import goryachev.fx.CommonStyles;
 import goryachev.fx.FX;
+import goryachev.fx.FxStyleSheet;
 import javafx.scene.paint.Color;
-import research.fx.css.CommonStyles;
-import research.fx.css.FxStyleSheet;
 
 
 /**

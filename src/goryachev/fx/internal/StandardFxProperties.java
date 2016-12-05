@@ -1,7 +1,6 @@
 // Copyright © 2016 Andy Goryachev <andy@goryachev.com>
-package research.fx.css;
+package goryachev.fx.internal;
 import goryachev.fx.CssPseudo;
-import goryachev.fx.internal.CssTools;
 import javafx.scene.control.ScrollPane;
 
 
