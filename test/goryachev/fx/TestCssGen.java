@@ -3,9 +3,7 @@ package goryachev.fx;
 import goryachev.common.test.TF;
 import goryachev.common.test.Test;
 import goryachev.common.util.D;
-import goryachev.fx.FxStyleSheet;
-import goryachev.fx.FxStyleSheet.Selector;
-import goryachev.reqtraq.TreeTablePane;
+import goryachev.fx.internal.CssTools;
 
 
 /**
@@ -24,7 +22,7 @@ public class TestCssGen
 	{
 		add
 		(
-			new Selector(TreeTablePane.TREE, ".view").defines
+			new Selector(CssTools.NO_HORIZONTAL_SCROLL_BAR, ".view").defines
 			(
 				cellSize("a1"),
 				cellSize("a2"),
