@@ -1,7 +1,7 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
-import research.fx.FxDateFormatter;
-import research.fx.FxFormatter;
+import goryachev.fx.FxDateFormatter;
+import goryachev.fx.FxFormatter;
 
 
 /**

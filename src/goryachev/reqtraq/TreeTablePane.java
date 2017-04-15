@@ -5,7 +5,9 @@ import goryachev.fx.CAction;
 import goryachev.fx.CPane;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
+import goryachev.fx.FxFormatter;
 import goryachev.fx.internal.CssTools;
+import goryachev.fx.table.FxTreeTableColumn;
 import goryachev.reqtraq.util.Tools;
 import javafx.beans.Observable;
 import javafx.beans.value.ObservableValue;
@@ -19,8 +21,6 @@ import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
 import javafx.util.Callback;
-import research.fx.FxFormatter;
-import research.fx.FxTreeTableColumn;
 
 
 // TODO drop zone indicator
