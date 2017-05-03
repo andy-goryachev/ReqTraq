@@ -1,7 +1,6 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
-package goryachev.fx.table;
+package research.fx;
 import goryachev.fx.Converters;
-import goryachev.fx.FxFormatter;
 import java.util.function.Function;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
@@ -94,24 +93,21 @@ public abstract class FxTreeTableColumn<T>
 				
 				if(empty)
 				{
-					setText(null);
+					item = null;
+				}
+				
+				if(renderer == null)
+				{
+					String text = formatter.toString(item);
+					setText(text);
 					setGraphic(null);
+					setAlignment(alignment);
 				}
 				else
 				{
-					if(renderer == null)
-					{
-						String text = formatter.toString(item);
-						setText(text);
-						setGraphic(null);
-						setAlignment(alignment);
-					}
-					else
-					{
-						Node n = renderer.apply(item);
-						setText(null);
-						setGraphic(n);
-					}
+					Node n = renderer.apply(item);
+					setText(null);
+					setGraphic(n);
 				}
 			}
 		};
