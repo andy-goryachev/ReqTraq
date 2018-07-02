@@ -1,4 +1,4 @@
-// Copyright © 2005-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2005-2018 Andy Goryachev <andy@goryachev.com>
 package research.fx;
 import goryachev.common.util.CPlatform;
 import goryachev.common.util.GlobalSettings;

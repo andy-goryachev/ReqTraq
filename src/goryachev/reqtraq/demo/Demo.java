@@ -1,4 +1,4 @@
-// Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq.demo;
 import goryachev.common.io.CReader;
 import goryachev.common.util.BKey;
