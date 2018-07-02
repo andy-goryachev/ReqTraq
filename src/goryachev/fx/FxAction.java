@@ -1,4 +1,4 @@
-// Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import goryachev.common.util.Log;
 import javafx.beans.property.BooleanProperty;
@@ -17,30 +17,31 @@ import javafx.scene.control.ToggleButton;
  * An AbstractAction equivalent for FX, using method references.
  * 
  * Usage:
- *    public final CAction backAction = new CAction(this::actionBack);
+ *    public final FxAction backAction = new FxAction(this::actionBack);
  */
-public class CAction
+public class FxAction
     implements EventHandler<ActionEvent>
 {
+	public static final FxAction TODO = new FxAction(null, false);
 	private final BooleanProperty selectedProperty = new SimpleBooleanProperty(this, "selected");
 	private final BooleanProperty disabledProperty = new SimpleBooleanProperty(this, "disabled");
 	private Runnable onAction;
 	
 	
-	public CAction(Runnable onAction, boolean enabled)
+	public FxAction(Runnable onAction, boolean enabled)
 	{
 		this.onAction = onAction;
 		setEnabled(enabled);
 	}
 	
 	
-	public CAction(Runnable onAction)
+	public FxAction(Runnable onAction)
 	{
 		this.onAction = onAction;
 	}
 	
 	
-	public CAction()
+	public FxAction()
 	{
 	}
 	

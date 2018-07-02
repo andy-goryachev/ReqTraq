@@ -1,13 +1,18 @@
-// Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import goryachev.common.util.GlobalSettings;
+import goryachev.fx.hacks.FxHacks;
 import goryachev.fx.internal.CssTools;
 import goryachev.fx.internal.WindowsFx;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 import java.util.function.Consumer;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -111,7 +116,7 @@ public final class FX
 	}
 	
 	
-	public static CAction exitAction()
+	public static FxAction exitAction()
 	{
 		return windowsFx.exitAction();
 	}
@@ -188,6 +193,18 @@ public final class FX
 			else if(a instanceof Color)
 			{
 				n.setTextFill((Color)a);
+			}
+			else if(a instanceof StringProperty)
+			{
+				n.textProperty().bind((StringProperty)a);
+			}
+			else if(a instanceof Node)
+			{
+				n.setGraphic((Node)a);
+			}
+			else if(a instanceof Background)
+			{
+				n.setBackground((Background)a);
 			}
 			else
 			{
@@ -409,6 +426,22 @@ public final class FX
 		}
 		return false;
 	}
+	
+	
+	/** returns true if (x,y) point in eventSource coordinates is contained by eventTarget node */
+	public static boolean contains(Node eventSource, Node eventTarget, double x, double y)
+	{
+		Point2D p = eventSource.localToScreen(x, y);
+		if(p != null)
+		{
+			p = eventTarget.screenToLocal(p);
+			if(p != null)
+			{
+				return eventTarget.contains(p);
+			}
+		}
+		return false;
+	}
 
 
 	public static boolean isParent(Node parent, Node child)
@@ -485,6 +518,22 @@ public final class FX
 	public static void later(Runnable r)
 	{
 		Platform.runLater(r);
+	}
+	
+	
+	/** swing invokeAndWait() analog.  if called from an FX application thread, simply invokes the producer. */
+	public static <T> T invokeAndWait(Callable<T> producer) throws Exception
+	{
+		if(Platform.isFxApplicationThread())
+		{
+			return producer.call();
+		}
+		else
+		{
+			FutureTask<T> t = new FutureTask(producer);
+			FX.later(t);
+			return t.get();
+		}
 	}
 
 
@@ -772,9 +821,9 @@ public final class FX
 			{
 				((Node)x).setDisable(on);
 			}
-			else if(x instanceof CAction)
+			else if(x instanceof FxAction)
 			{
-				((CAction)x).setDisabled(on);
+				((FxAction)x).setDisabled(on);
 			}
 		}
 	}
@@ -891,5 +940,43 @@ public final class FX
 		double h = Math.ceil(r.getHeight() + m.getTop() + m.getBottom());
 		
 		return new FxSize(w, h);
+	}
+	
+
+	/** requests focus in Platform.runLater() */
+	public static void focusLater(Node n)
+	{
+		later(() -> n.requestFocus());
+	}
+	
+	
+	/** returns a parent of the specified type, or null.  if comp is an instance of the specified class, returns comp */
+	public static <T> T getAncestorOfClass(Class<T> c, Node comp)
+	{
+		while(comp != null)
+		{
+			if(c.isInstance(comp))
+			{
+				return (T)comp;
+			}
+			
+//			if(comp instanceof JPopupMenu)
+//			{
+//				if(comp.getParent() == null)
+//				{
+//					comp = ((JPopupMenu)comp).getInvoker();
+//					continue;
+//				}
+//			}
+			
+			comp = comp.getParent();
+		}
+		return null;
+	}
+	
+	
+	public static List<Window> getWindows()
+	{
+		return FxHacks.get().getWindows();
 	}
 }

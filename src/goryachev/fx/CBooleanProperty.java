@@ -1,4 +1,4 @@
-// Copyright © 2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -20,6 +20,12 @@ public class CBooleanProperty
 	public CBooleanProperty(boolean initialValue)
 	{
 		super(initialValue);
+	}
+	
+	
+	public CBooleanProperty(Runnable invalidationListener)
+	{
+		addListener((s) -> invalidationListener.run());
 	}
 	
 	

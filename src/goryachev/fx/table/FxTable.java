@@ -1,5 +1,6 @@
-// Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.table;
+import goryachev.fx.CommonStyles;
 import goryachev.fx.FX;
 import goryachev.fx.internal.CssTools;
 import java.util.Collection;
@@ -77,11 +78,23 @@ public class FxTable<T>
 		return table.getColumns().size();
 	}
 	
-	
+
 	public FxTableColumn<T> lastColumn()
 	{
 		ObservableList<TableColumn<T,?>> cs = table.getColumns();
 		return (FxTableColumn<T>)cs.get(cs.size() - 1);
+	}
+	
+	
+	public int getRowCount()
+	{
+		return table.getItems().size();
+	}
+	
+	
+	public ObservableList<T> getItems()
+	{
+		return table.getItems();
 	}
 	
 	
@@ -100,7 +113,7 @@ public class FxTable<T>
 	}
 	
 	
-	public void setItems(T[] items)
+	public void setItems(T ... items)
 	{
 		clearSelection();
 		if(items == null)
@@ -169,6 +182,7 @@ public class FxTable<T>
 	public void selectFirst()
 	{
 		table.getSelectionModel().selectFirst();
+		table.scrollTo(0);
 	}
 	
 	
@@ -199,5 +213,18 @@ public class FxTable<T>
 	public void setMultipleSelection(boolean on)
 	{
 		table.getSelectionModel().setSelectionMode(on ? SelectionMode.MULTIPLE : SelectionMode.SINGLE);
+	}
+	
+	
+	public void setCellSelectionEnabled(boolean on)
+	{
+		table.getSelectionModel().setCellSelectionEnabled(on);
+	}
+	
+	
+	public void setAlternateRowsColoring(boolean on)
+	{
+		// https://stackoverflow.com/questions/38680711/javafx-tableview-remove-default-alternate-row-color
+		FX.setStyle(table, CommonStyles.ALTERNATE_ROWS_OFF, !on);
 	}
 }

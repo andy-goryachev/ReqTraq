@@ -1,4 +1,4 @@
-// Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -10,16 +10,16 @@ import javafx.stage.Window;
  * CDialog is an easier-to-use Dialog.
  * This is a first attempt at this.
  */
-public class CDialog
+public class FxDialog
 	extends Dialog<Object>
 {
-	public CDialog(Window owner)
+	public FxDialog(Window owner)
 	{
 		initOwner(owner);
 	}
 	
 	
-	public CDialog()
+	public FxDialog()
 	{
 	}
 	

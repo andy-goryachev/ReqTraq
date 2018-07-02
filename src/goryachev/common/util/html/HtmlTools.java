@@ -1,4 +1,4 @@
-// Copyright © 2008-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2008-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util.html;
 import goryachev.common.util.Base64;
 import goryachev.common.util.CComparator;
@@ -302,7 +302,7 @@ public class HtmlTools
 	{
 		if(htmlTags == null)
 		{
-			htmlTags = CKit.collectPublicStaticFields(HTML4.class, String.class);
+			htmlTags = new CSet<>(CKit.collectPublicStaticFields(HTML4.class, String.class));
 		}
 		return htmlTags;
 	}

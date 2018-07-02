@@ -1,4 +1,4 @@
-// Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import javafx.geometry.Side;
 import javafx.scene.Node;
@@ -8,7 +8,7 @@ import javafx.scene.Node;
  * Dynamic popup menu.
  */
 public abstract class CPopupMenu
-	extends CContextMenu
+	extends FxContextMenu
 {
 	/**
 	 * Implement this method to populate the menu dynamically.

@@ -1,4 +1,4 @@
-// Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.edit;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
@@ -46,17 +46,10 @@ public abstract class FxEditorModel
 	/** returns a known line count.  if the model is still loading, returns the best estimate of the number of lines. */
 	public abstract int getLineCount();
 	
-	/** returns plain text at the specified line, or null if unknown */
-	public abstract String getPlainText(int line);
-	
 	/** 
-	 * returns a non-null Region containing Text, TextFlow, or any other Nodes representing a line.
-	 * I am not sure this should be a part of the editor model, because the presentation should be controlled by the editor ui.
-	 * What this method needs to return is a list/array of segments encapsulating text, text style and colors.
-	 * Another consideration is support for arbitrary Nodes such as images (tables and so on) - and for those we need to 
-	 * have a ui component.
+	 * returns a non-null LineBox containing components that represent a logical line.
 	 */
-	public abstract Region getDecoratedLine(int line);
+	public abstract LineBox getLineBox(int line);
 	
 	/**
 	 * Applies modification to the model.  The model makes necessary changes to its internal state, 
@@ -67,16 +60,18 @@ public abstract class FxEditorModel
 	
 	//
 
-	private CBooleanProperty editableProperty = new CBooleanProperty(false);
-	private CList<FxEditor> listeners = new CList<>();
+	protected CBooleanProperty editableProperty = new CBooleanProperty(false);
+	protected CList<FxEditor> listeners = new CList<>();
+	protected final CMap<DataFormat,ClipboardHandlerBase> clipboardHandlers = new CMap(); 
 	private static FxEditorModel empty;
 	
 	
 	public FxEditorModel()
 	{
+		addClipboardHandler(new PlainTextClipboardHandler());
 	}
-	
-	
+
+
 	public void addListener(FxEditor li)
 	{
 		listeners.add(li);
@@ -113,14 +108,15 @@ public abstract class FxEditorModel
 		{
 			empty = new FxEditorModel()
 			{
+				private final LineBox box = new LineBox();
+				
 				public LoadInfo getLoadInfo()
 				{
 					long t = System.currentTimeMillis();
 					return new LoadInfo(1.0, 0, t, t); 
 				}
 				public int getLineCount() { return 0; }
-				public String getPlainText(int line) { return null; }
-				public Region getDecoratedLine(int line) { return null; }
+				public LineBox getLineBox(int line) { return box; }
 				public Edit edit(Edit ed) throws Exception { throw new Exception(); }
 			};
 		}
@@ -143,44 +139,75 @@ public abstract class FxEditorModel
 	}
 	
 	
-	/** copies every data format the model contains to the clipboard */
-	public void copy(EditorSelection sel)
+	public void addClipboardHandler(ClipboardHandlerBase h)
 	{
-		sel = sel.getNormalizedSelection();
-		
-		CMap<DataFormat,Object> m = new CMap();
-		String s = copyPlainText(sel);
-		if(s != null)
-		{
-			m.put(DataFormat.PLAIN_TEXT, s);
-		}
-		
-		Clipboard c = Clipboard.getSystemClipboard();
-		c.setContent(m);
+		clipboardHandlers.put(h.getFormat(), h);
 	}
 	
 	
-	public String copyPlainText(EditorSelection sel)
+	public void removeClipboardHandler(DataFormat f)
+	{
+		clipboardHandlers.remove(f);
+	}
+	
+	
+	/** returns all supported copy/paste formats */
+	public DataFormat[] getSupportedFormats()
+	{
+		return clipboardHandlers.keySet().toArray(new DataFormat[clipboardHandlers.size()]);
+	}
+	
+	
+	/** returns true if the format is supported */
+	public boolean isFormatSupported(DataFormat f)
+	{
+		return (clipboardHandlers.get(f) != null);
+	}
+	
+	
+	/** copies specified data formats to the clipboard.  silently ignores unsupported data format.  DataFormat.PLAIN_TEXT is always supported. */
+	public void copy(EditorSelection sel, Consumer<Throwable> errorHandler, DataFormat ... formats)
 	{
 		try
 		{
-			StringWriter wr = new StringWriter();
-			getPlainText(sel, wr);
-			return wr.toString();
+			CMap<DataFormat,Object> m = new CMap();
+			
+			for(DataFormat f: formats)
+			{
+				if(isFormatSupported(f))
+				{
+					ClipboardHandlerBase handler = clipboardHandlers.get(f);
+					if(handler != null)
+					{
+						Object v = handler.copy(this, sel);
+						if(v != null)
+						{
+							m.put(f, v);
+						}						
+					}
+				}
+			}
+			
+			Clipboard c = Clipboard.getSystemClipboard();
+			c.setContent(m);
 		}
-		catch(Exception e)
+		catch(Throwable e)
 		{
-			// TODO communicate error to the ui
-			Log.ex(e);
-			return null;
+			if(errorHandler == null)
+			{
+				Log.ex(e);
+			}
+			else
+			{
+				errorHandler.accept(e);
+			}
 		}
 	}
+	
 
-
-	/** plain text copy, expecting normalized selection ranges */
+	/** plain text copy, expecting ordered selection ranges */
 	public void getPlainText(EditorSelection sel, Writer wr) throws Exception
 	{
-		sel = sel.getNormalizedSelection();
 		for(SelectionSegment s: sel.getSegments())
 		{
 			CKit.checkCancelled();
@@ -191,8 +218,8 @@ public abstract class FxEditorModel
 
 	protected void writePlainText(SelectionSegment seg, Writer wr) throws Exception
 	{
-		Marker m0 = seg.getTop();
-		Marker m1 = seg.getBottom();
+		Marker m0 = seg.getMin();
+		Marker m1 = seg.getMax();
 		
 		int first = m0.getLine();
 		int last = m1.getLine();
@@ -225,5 +252,20 @@ public abstract class FxEditorModel
 			
 			wr.write(s);
 		}
+	}
+
+	
+	public int getTextLength(int line)
+	{
+		String s = getPlainText(line);
+		return s == null ? 0 : s.length();
+	}
+	
+	
+	/** returns plain text at the specified line, or null if unknown */
+	public String getPlainText(int line)
+	{
+		LineBox b = getLineBox(line);
+		return b.getText();
 	}
 }

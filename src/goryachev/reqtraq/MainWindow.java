@@ -1,13 +1,10 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
-import goryachev.common.util.D;
-import goryachev.fx.CMenu;
-import goryachev.fx.CMenuBar;
-import goryachev.fx.CMenuItem;
 import goryachev.fx.CPane;
 import goryachev.fx.CPopupMenu;
 import goryachev.fx.FX;
 import goryachev.fx.FxDump;
+import goryachev.fx.FxMenuBar;
 import goryachev.fx.FxWindow;
 import goryachev.reqtraq.data.ReqDoc;
 import goryachev.reqtraq.data.ReqDocJsonReader;
@@ -128,63 +125,63 @@ public class MainWindow
 	
 	protected Node createMenu()
 	{
-		CMenuBar b = new CMenuBar();
+		FxMenuBar m = new FxMenuBar();
 		// app
-		CMenu m = b.addMenu("ReqTraq");
-		m.add(new CMenuItem("Quit", FX.exitAction()));
+		m.menu("ReqTraq");
+		m.item("Quit", FX.exitAction());
 		// file
-		m = b.addMenu("File");
-		m.add("New", openFileController.newFileAction);
-		m.add("Open", openFileController.openFileAction);
+		m.menu("File");
+		m.item("New", openFileController.newFileAction);
+		m.item("Open", openFileController.openFileAction);
 		m.add(openFileController.recentFilesMenu());
 		m.separator();
-		m.add("Save", openFileController.saveAction);
-		m.add("Save As...", openFileController.saveAsAction);
+		m.item("Save", openFileController.saveAction);
+		m.item("Save As...", openFileController.saveAsAction);
 		m.separator();
-		m.add("Print");
+		m.item("Print");
 		// edit
-		m = b.addMenu("Edit");
-		m.add("Undo");
-		m.add("Redo");
+		m.menu("Edit");
+		m.item("Undo");
+		m.item("Redo");
 		m.separator();
-		m.add("Cut");
-		m.add("Copy");
-		m.add("Paste");
+		m.item("Cut");
+		m.item("Copy");
+		m.item("Paste");
 		m.separator();
-		m.add("Insert After");
-		m.add("Insert Child");
+		m.item("Insert After");
+		m.item("Insert Child");
 		m.separator();
-		m.add("Move Left");
-		m.add("Move Right");
-		m.add("Move Up");
-		m.add("Move Down");
+		m.item("Move Left");
+		m.item("Move Right");
+		m.item("Move Up");
+		m.item("Move Down");
 		m.separator();
-		m.add("Select All");
+		m.item("Select All");
 		m.separator();
-		m.add("Delete");
+		m.item("Delete");
 		m.separator();
-		m.add("Find");
+		m.item("Find");
 		// search
-		m = b.addMenu("Search");
+		m.menu("Search");
 		// reports
-		m = b.addMenu("Reports");
+		m.menu("Reports");
 		// view
-		m = b.addMenu("View");
-		m.add("Dashboard");
-		m.add("Requirements");
-		m.add("Releases");
-		m.add("Search");
-		m.add("Reports");
+		m.menu("View");
+		m.item("Dashboard");
+		m.item("Requirements");
+		m.item("Releases");
+		m.item("Search");
+		m.item("Reports");
 		m.separator();
-		m.add("Layout");
+		m.item("Layout");
 		// window
-		m = b.addMenu("Window");
+		m.menu("Window");
 		// help
-		m = b.addMenu("Help");
-		m.add("License");
-		m.add("Open Source Licenses");
-		m.add("About");
-		return b;
+		m.menu("Help");
+		m.item("License");
+		m.item("Open Source Licenses");
+		m.item("About");
+		return m;
 	}
 
 	

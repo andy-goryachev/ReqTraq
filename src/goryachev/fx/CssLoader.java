@@ -1,9 +1,10 @@
-// Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import goryachev.common.util.Base64;
 import goryachev.common.util.CKit;
 import goryachev.common.util.Log;
 import goryachev.common.util.UrlStreamFactory;
+import goryachev.fx.hacks.FxHacks;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,7 +12,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.util.function.Supplier;
-import com.sun.javafx.css.StyleManager;
 import javafx.application.Platform;
 
 
@@ -99,6 +99,16 @@ public class CssLoader
 	}
 	
 	
+	public static String getCurrentStyleSheet()
+	{
+		if(instance != null)
+		{
+			return instance.url;
+		}
+		return null;
+	}
+	
+	
 	public void setGenerator(Supplier<FxStyleSheet> g)
 	{
 		this.generator = g;
@@ -145,9 +155,6 @@ public class CssLoader
 				}
 				else
 				{
-					// stderr is ok here
-					System.err.println("reloading css");
-					
 					Platform.runLater(() -> update(old, url));
 				}
 				
@@ -158,6 +165,11 @@ public class CssLoader
 				}
 			}
 		}
+		catch(Error e)
+		{
+			Log.ex(e);
+			throw e;
+		}
 		catch(Throwable e)
 		{
 			Log.ex(e);
@@ -167,10 +179,6 @@ public class CssLoader
 		
 	protected void update(String old, String cur)
 	{
-		if(old != null)
-		{
-			StyleManager.getInstance().removeUserAgentStylesheet(old);
-		}
-		StyleManager.getInstance().addUserAgentStylesheet(cur);
+		FxHacks.get().applyStyleSheet(old, cur);
 	}
 }

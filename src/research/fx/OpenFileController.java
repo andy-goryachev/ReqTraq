@@ -4,11 +4,11 @@ import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.common.util.GlobalSettings;
 import goryachev.common.util.SStream;
-import goryachev.fx.CAction;
-import goryachev.fx.CMenu;
-import goryachev.fx.CMenuItem;
 import goryachev.fx.FX;
+import goryachev.fx.FxAction;
 import goryachev.fx.FxCtl;
+import goryachev.fx.FxMenu;
+import goryachev.fx.FxMenuItem;
 import goryachev.fx.HasSettings;
 import java.io.File;
 import java.util.List;
@@ -38,11 +38,11 @@ public abstract class OpenFileController
 	
 	//
 	
-	public final CAction newFileAction = new CAction(this::newFilePrivate);
-	public final CAction openFileAction = new CAction(this::openFilePrivate);
-	public final CAction saveAction = new CAction(this::saveFilePrivate);
-	public final CAction saveAsAction = new CAction(this::saveFileAsPrivate);
-	public final CAction clearRecentAction = new CAction(this::clearRecentFiles);
+	public final FxAction newFileAction = new FxAction(this::newFilePrivate);
+	public final FxAction openFileAction = new FxAction(this::openFilePrivate);
+	public final FxAction saveAction = new FxAction(this::saveFilePrivate);
+	public final FxAction saveAsAction = new FxAction(this::saveFileAsPrivate);
+	public final FxAction clearRecentAction = new FxAction(this::clearRecentFiles);
 	
 	public final SimpleObjectProperty<File> file = new SimpleObjectProperty<>();
 	public final SimpleBooleanProperty modified = new SimpleBooleanProperty();
@@ -431,7 +431,7 @@ public abstract class OpenFileController
 	}
 
 
-	public CMenu recentFilesMenu()
+	public FxMenu recentFilesMenu()
 	{
 		return new RecentFilesMenu();
 	}
@@ -455,7 +455,7 @@ public abstract class OpenFileController
 	
 	
 	public class RecentFilesMenu 
-		extends CMenu
+		extends FxMenu
 	{
 		public RecentFilesMenu()
 		{
@@ -485,7 +485,7 @@ public abstract class OpenFileController
 					path = null;
 				}
 
-				CMenuItem mi = new CMenuItem(path, icon, new CAction()
+				FxMenuItem mi = new FxMenuItem(path, icon, new FxAction()
 				{
 					public void action()
 					{
@@ -500,7 +500,7 @@ public abstract class OpenFileController
 				separator();
 			}
 			
-			add(new CMenuItem("Clear Recent Files", clearRecentAction));
+			add(new FxMenuItem("Clear Recent Files", clearRecentAction));
 		}
 	}
 }

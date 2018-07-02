@@ -1,13 +1,15 @@
-// Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.internal;
 import goryachev.common.util.CList;
 import goryachev.common.util.CMap;
 import goryachev.common.util.GlobalSettings;
 import goryachev.common.util.Log;
 import goryachev.common.util.WeakList;
-import goryachev.fx.CAction;
+import goryachev.fx.FxAction;
+import goryachev.fx.CssLoader;
 import goryachev.fx.FxWindow;
 import goryachev.fx.OnWindowClosing;
+import goryachev.fx.hacks.FxHacks;
 import java.util.List;
 import java.util.function.Consumer;
 import javafx.application.Platform;
@@ -108,9 +110,9 @@ public class WindowsFx
 	}
 	
 	
-	public CAction exitAction()
+	public FxAction exitAction()
 	{
-		return new CAction(this::exit);
+		return new FxAction(this::exit);
 	}
 	
 	
@@ -159,6 +161,15 @@ public class WindowsFx
 		
 		addWindow(w);
 		restoreWindow(w);
+		
+		try
+		{
+			FxHacks.get().applyStyleSheet(w, null, CssLoader.getCurrentStyleSheet());
+		}
+		catch(Throwable e)
+		{
+			Log.ex(e);
+		}
 		
 		try
 		{

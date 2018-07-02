@@ -1,7 +1,7 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
 import goryachev.common.util.CList;
-import goryachev.fx.CAction;
+import goryachev.fx.FxAction;
 import goryachev.fx.CPane;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
@@ -29,11 +29,11 @@ public class TreeTablePane
 {
 	public static final CssStyle TREE = new CssStyle("TreeTablePane_TREE");
 	
-	public final CAction collapseAllAction = new CAction(this::collapseAll);
-	public final CAction deleteSelectionAction = new CAction(this::deleteSelection);
-	public final CAction expandAllAction = new CAction(this::expandAll);
-	public final CAction insertAfterAction = new CAction(this::insertAfter);
-	public final CAction insertChildAction = new CAction(this::insertChild);
+	public final FxAction collapseAllAction = new FxAction(this::collapseAll);
+	public final FxAction deleteSelectionAction = new FxAction(this::deleteSelection);
+	public final FxAction expandAllAction = new FxAction(this::expandAll);
+	public final FxAction insertAfterAction = new FxAction(this::insertAfter);
+	public final FxAction insertChildAction = new FxAction(this::insertChild);
 	
 	public final TreeTableView<Page> tree;
 	public final TreeTableHandler<Page> handler;

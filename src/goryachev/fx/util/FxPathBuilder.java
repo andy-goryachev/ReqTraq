@@ -1,4 +1,4 @@
-// Copyright © 2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2017-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.util;
 import goryachev.common.util.CList;
 import java.util.List;
@@ -35,5 +35,17 @@ public class FxPathBuilder
 	public List<PathElement> getPath()
 	{
 		return path;
+	}
+	
+	
+	public void add(PathElement em)
+	{
+		path.add(em);
+	}
+	
+	
+	public void addAll(PathElement[] elements)
+	{
+		path.addAll(elements);
 	}
 }

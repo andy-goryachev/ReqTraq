@@ -1,4 +1,4 @@
-// Copyright © 2012-2017 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2012-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.io;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
@@ -887,7 +887,7 @@ public class Persister
 					for(int c=0; c<cols; c++)
 					{
 						Object v = in.readObject();
-						t.setValueAt(ca.read(v), r, c);
+						t.setValueAt(r, c, ca.read(v));
 					}
 				}
 				return t;
