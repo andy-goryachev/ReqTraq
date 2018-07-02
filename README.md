@@ -5,7 +5,7 @@ by means of capturing and tracking every single bit of functionality.
 
 The goal of this project is to create a desktop tool that supports the process.
 
-![screenshot](https://github.com/andy-goryachev/ReqTraq/raw/master/screenshots/2016-1126-180050-644.png)
+![screenshot](https://github.com/andy-goryachev/ReqTraq/raw/master/screenshots/app.png)
 
 ## License
 
