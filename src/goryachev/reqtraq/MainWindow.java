@@ -1,20 +1,26 @@
 // Copyright © 2016-2017 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
+import goryachev.common.util.CKit;
 import goryachev.fx.CPane;
 import goryachev.fx.CPopupMenu;
 import goryachev.fx.FX;
+import goryachev.fx.FxAction;
 import goryachev.fx.FxDump;
 import goryachev.fx.FxMenuBar;
 import goryachev.fx.FxWindow;
+import goryachev.fx.HPane;
 import goryachev.reqtraq.data.ReqDoc;
 import goryachev.reqtraq.data.ReqDocJsonReader;
 import goryachev.reqtraq.data.ReqDocJsonWriter;
 import goryachev.reqtraq.demo.Demo;
 import java.io.File;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TreeItem;
+import javafx.scene.paint.Color;
+import javafx.stage.Window;
 import research.fx.OpenFileController;
 
 
@@ -86,6 +92,7 @@ public class MainWindow
 		
 		setTop(createMenu());
 		setCenter(cp);
+		setBottom(createStatusBar());
 		
 		new CPopupMenu(tree.tree)
 		{
@@ -176,6 +183,13 @@ public class MainWindow
 		m.item("Layout");
 		// window
 		m.menu("Window");
+		
+		if(CKit.isEclipse())
+		{
+			m.menu("Debug");
+			m.item("Resize Windows for Screenshot", new FxAction(this::resizeWindows));
+		}
+		
 		// help
 		m.menu("Help");
 		m.item("License");
@@ -227,5 +241,27 @@ public class MainWindow
 	{
 		ReqDoc d = getDocument();
 		ReqDocJsonWriter.saveJSON(d, f);
+	}
+	
+	
+	protected Node createStatusBar()
+	{
+		HPane p = new HPane();
+		p.setPadding(new Insets(1, 10, 1, 10));
+		
+//		p.add(FX.label(statusProperty, Color.GRAY));
+		p.fill();
+		p.add(FX.label(Version.COPYRIGHT, Color.GRAY));
+		return p;
+	}
+	
+	
+	protected void resizeWindows()
+	{
+		for(Window w: FX.getWindows())
+		{
+			w.setWidth(Config.SNAPSHOT_WIDTH);
+			w.setHeight(Config.SNAPSHOT_HEIGHT);
+		}
 	}
 }

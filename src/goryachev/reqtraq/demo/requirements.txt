@@ -1,4 +1,4 @@
-Project Goals|A desktop tool to support requirements management, capture and track project progress, and provide estimate of completion date. 
+Project Goals|A desktop tool which facilitates requirements capture, management, and tracking; continuous reporting of the project progress, as well as provides an estimate of the project completion date.\n\nThe tool stores its data in the same git repository as the code, and automatically handles merging of changes made by the team members.
 General
 	Requirements
 	Releases
