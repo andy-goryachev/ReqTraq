@@ -1,5 +1,5 @@
 // Copyright © 2013-2018 Andy Goryachev <andy@goryachev.com>
-package goryachev.reqtraq.data;
+package goryachev.reqtraq.data.v1;
 import goryachev.common.util.CKit;
 import goryachev.common.util.FileTools;
 import goryachev.json.JsonEncoder;

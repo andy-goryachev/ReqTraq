@@ -1,5 +1,5 @@
 // Copyright © 2013-2018 Andy Goryachev <andy@goryachev.com>
-package goryachev.reqtraq.data;
+package goryachev.reqtraq.data.v1;
 import goryachev.common.io.CReader;
 import goryachev.common.util.BKey;
 import goryachev.common.util.CKit;

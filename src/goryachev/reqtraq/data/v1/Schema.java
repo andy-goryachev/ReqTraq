@@ -1,5 +1,5 @@
 // Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
-package goryachev.reqtraq.data;
+package goryachev.reqtraq.data.v1;
 
 
 public class Schema

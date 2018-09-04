@@ -1,9 +1,10 @@
 // Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
-package goryachev.reqtraq.data;
+package goryachev.reqtraq.data.v1;
 import goryachev.common.util.Assert;
 import goryachev.common.util.BKey;
 import goryachev.common.util.CList;
 import goryachev.reqtraq.Page;
+import goryachev.reqtraq.data.GUID;
 import goryachev.reqtraq.util.Tools;
 import java.util.List;
 import javafx.scene.control.TreeItem;
