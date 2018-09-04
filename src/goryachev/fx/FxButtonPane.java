@@ -8,6 +8,7 @@ package goryachev.fx;
  * TODO default button
  * TODO fix HPane layout
  * TODO set minimum button width
+ * TODO own layout, sets min width and alignment (to avoid fill())
  */
 public class FxButtonPane
 	extends HPane
@@ -34,6 +35,12 @@ public class FxButtonPane
 		
 		add(b);
 		return b;
+	}
+	
+	
+	public FxButton addButton(String text, Runnable r)
+	{
+		return addButton(text, new FxAction(r));
 	}
 	
 	

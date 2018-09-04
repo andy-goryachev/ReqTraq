@@ -280,6 +280,10 @@ public class TreeTablePane
 			tree.edit(ix, tree.getColumns().get(0));
 			
 			Node n = tree.lookup(".text-input");
+			if(n == null)
+			{
+				return;
+			}
 			
 			// FIX focus the editor
 			FX.later(() -> 

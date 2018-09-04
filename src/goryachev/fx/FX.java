@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.Property;
@@ -16,6 +17,7 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -33,6 +35,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
@@ -122,7 +127,7 @@ public final class FX
 	}
 	
 	
-	/** creates a label */
+	/** creates a label.  accepts: CssStyle, CssID, FxCtl, Insets, OverrunStyle, Pos, TextAlignment, Color, Node, Background */
 	public static Label label(Object ... attrs)
 	{
 		Label n = new Label();
@@ -478,18 +483,33 @@ public final class FX
 	}
 	
 	
-	/** returns parent window or null */
-	public static Window getParentWindow(Node n)
+	/** 
+	 * returns parent window or null, accepts either a Node or a Window.
+	 * unfortunately, FX Window is not a Node, so we have to lose some type safety 
+	 */
+	public static Window getParentWindow(Object nodeOrWindow)
 	{
-		if(n != null)
+		if(nodeOrWindow == null)
 		{
-			Scene s = n.getScene();
+			return null;
+		}
+		else if(nodeOrWindow instanceof Window)
+		{
+			return (Window)nodeOrWindow;
+		}
+		else if(nodeOrWindow instanceof Node)
+		{
+			Scene s = ((Node)nodeOrWindow).getScene();
 			if(s != null)
 			{
 				return s.getWindow();
 			}
+			return null;
 		}
-		return null;
+		else
+		{
+			throw new Error("node or window");
+		}
 	}
 	
 	
@@ -978,5 +998,67 @@ public final class FX
 	public static List<Window> getWindows()
 	{
 		return FxHacks.get().getWindows();
+	}
+	
+	
+	/** attach a popup menu to the node */
+	public static void setPopupMenu(Node owner, Supplier<FxPopupMenu> generator)
+	{
+		owner.setOnContextMenuRequested((ev) ->
+		{
+			FX.later(() ->
+			{
+				FxPopupMenu m = generator.get();
+				if(m != null)
+				{
+					if(m.getItems().size() > 0)
+					{
+						// javafx does not dismiss the popup when the user
+						// clicks on the owner node
+						EventHandler<MouseEvent> li = new EventHandler<MouseEvent>()
+						{
+							public void handle(MouseEvent event)
+							{
+								m.hide();
+								owner.removeEventFilter(MouseEvent.MOUSE_PRESSED, this);
+							}
+						};
+						
+						owner.addEventFilter(MouseEvent.MOUSE_PRESSED, li);
+						m.show(owner, ev.getScreenX(), ev.getScreenY());
+					}
+				}
+			});
+			ev.consume();
+		});
+	}
+	
+	
+	public static void checkThread()
+	{
+		if(!Platform.isFxApplicationThread())
+		{
+			throw new Error("must be called from an FX application thread");
+		}
+	}
+
+
+	public static void onKey(Node node, KeyCode code, FxAction a)
+	{
+		node.addEventHandler(KeyEvent.KEY_PRESSED, (ev) ->
+		{
+			if(ev.getCode() == code)
+			{
+				if(ev.isAltDown() || ev.isControlDown() || ev.isMetaDown() || ev.isShiftDown() || ev.isShortcutDown())
+				{
+					return;
+				}
+				else
+				{
+					a.action();
+					ev.consume();
+				}
+			}
+		});
 	}
 }

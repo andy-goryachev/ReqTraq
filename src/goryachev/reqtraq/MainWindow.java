@@ -2,11 +2,11 @@
 package goryachev.reqtraq;
 import goryachev.common.util.CKit;
 import goryachev.fx.CPane;
-import goryachev.fx.CPopupMenu;
 import goryachev.fx.FX;
 import goryachev.fx.FxAction;
 import goryachev.fx.FxDump;
 import goryachev.fx.FxMenuBar;
+import goryachev.fx.FxPopupMenu;
 import goryachev.fx.FxWindow;
 import goryachev.fx.HPane;
 import goryachev.reqtraq.data.ReqDoc;
@@ -94,39 +94,41 @@ public class MainWindow
 		setCenter(cp);
 		setBottom(createStatusBar());
 		
-		new CPopupMenu(tree.tree)
-		{
-			protected void createPopupMenu()
-			{
-				add("Cut");
-				add("Copy");
-				add("Paste");
-				separator();
-
-				add("Undo");
-				add("Redo");
-				separator();
-
-				add("Insert After", tree.insertAfterAction);
-				add("Insert Child", tree.insertChildAction);
-				separator();
-				
-				add("Expand All", tree.expandAllAction);
-				add("Collapse All", tree.collapseAllAction);
-				separator();
-				
-				add("Delete", tree.deleteSelectionAction);
-				separator();
-				
-				add("Move Up");
-				add("Move Down");
-				add("Move Left");
-				add("Move Right");
-			}
-		};
+		FX.setPopupMenu(tree.tree, this::createTreePopupMenu);
 		
 		// FIX remove
 		setDocument(Demo.create());
+	}
+	
+	
+	protected FxPopupMenu createTreePopupMenu()
+	{
+		FxPopupMenu m = new FxPopupMenu();
+		m.item("Cut");
+		m.item("Copy");
+		m.item("Paste");
+		m.separator();
+
+		m.item("Undo");
+		m.item("Redo");
+		m.separator();
+
+		m.item("Insert After", tree.insertAfterAction);
+		m.item("Insert Child", tree.insertChildAction);
+		m.separator();
+		
+		m.item("Expand All", tree.expandAllAction);
+		m.item("Collapse All", tree.collapseAllAction);
+		m.separator();
+		
+		m.item("Delete", tree.deleteSelectionAction);
+		m.separator();
+		
+		m.item("Move Up");
+		m.item("Move Down");
+		m.item("Move Left");
+		m.item("Move Right");
+		return m;
 	}
 
 	

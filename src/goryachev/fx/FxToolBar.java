@@ -24,7 +24,7 @@ public class FxToolBar
 	
 	public FxButton button(String text)
 	{
-		return button(text, FxAction.TODO);
+		return button(text, FxAction.DISABLED);
 	}
 	
 	

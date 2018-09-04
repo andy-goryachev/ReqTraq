@@ -86,6 +86,14 @@ public class FxMenuBar
 	}
 	
 	
+	public FxMenuItem item(String name, Runnable r)
+	{
+		FxMenuItem m = new FxMenuItem(name, r);
+		add(m);
+		return m;
+	}
+	
+	
 	public FxCheckMenuItem item(String text, BooleanProperty prop)
 	{
 		return lastMenu().item(text, prop);

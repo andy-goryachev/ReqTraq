@@ -52,6 +52,8 @@ public class CommonStyles
 			text(theme),
 			// FIX
 			//radioButton(theme),
+			buttonPane(theme),
+			cpane(),
 						
 			// andy's hacks
 			
@@ -541,6 +543,33 @@ public class CommonStyles
 					//effect("dropshadow(two-pass-box, rgba(0, 0, 0, 0.4), 12, 0, 2, 2)")
 					shadow()
 				)
+			)
+		};
+	}
+	
+	
+	protected Object buttonPane(Theme theme)
+	{
+		return new Object[]
+		{
+			selector(FxButtonPane.PANE).defines
+			(
+				borderColor(TRANSPARENT),
+				borderWidth(10)
+			)
+		};
+	}
+	
+	
+	protected Object cpane()
+	{
+		return new Object[]
+		{
+			selector(CPane.CPANE).defines
+			(
+				padding(10),
+				prop("-ag-hgap", 10),
+				prop("-ag-vgap", 5)
 			)
 		};
 	}
