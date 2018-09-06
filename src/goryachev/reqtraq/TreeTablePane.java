@@ -8,6 +8,7 @@ import goryachev.fx.FX;
 import goryachev.fx.FxFormatter;
 import goryachev.fx.internal.CssTools;
 import goryachev.fx.table.FxTreeTableColumn;
+import goryachev.reqtraq.data.Page;
 import goryachev.reqtraq.util.Tools;
 import javafx.beans.Observable;
 import javafx.beans.value.ObservableValue;

@@ -1,8 +1,7 @@
 // Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
-package goryachev.reqtraq;
+package goryachev.reqtraq.data;
 import goryachev.common.util.Assert;
 import goryachev.common.util.BKey;
-import goryachev.reqtraq.data.GUID;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;

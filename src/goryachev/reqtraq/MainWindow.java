@@ -9,6 +9,7 @@ import goryachev.fx.FxMenuBar;
 import goryachev.fx.FxPopupMenu;
 import goryachev.fx.FxWindow;
 import goryachev.fx.HPane;
+import goryachev.reqtraq.data.Page;
 import goryachev.reqtraq.data.v1.ReqDoc;
 import goryachev.reqtraq.data.v1.ReqDocJsonReader;
 import goryachev.reqtraq.data.v1.ReqDocJsonWriter;

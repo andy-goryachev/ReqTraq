@@ -3,6 +3,7 @@ package goryachev.reqtraq;
 import goryachev.common.util.CKit;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
+import goryachev.reqtraq.data.Page;
 import javafx.scene.control.TreeTableCell;
 
 

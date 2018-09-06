@@ -5,7 +5,7 @@ import goryachev.common.util.BKey;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.json.JsonDecoder;
-import goryachev.reqtraq.Page;
+import goryachev.reqtraq.data.Page;
 import java.io.File;
 import java.io.Reader;
 

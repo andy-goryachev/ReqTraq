@@ -3,8 +3,8 @@ package goryachev.reqtraq.data.v1;
 import goryachev.common.util.Assert;
 import goryachev.common.util.BKey;
 import goryachev.common.util.CList;
-import goryachev.reqtraq.Page;
 import goryachev.reqtraq.data.GUID;
+import goryachev.reqtraq.data.Page;
 import goryachev.reqtraq.util.Tools;
 import java.util.List;
 import javafx.scene.control.TreeItem;
@@ -13,6 +13,7 @@ import javafx.scene.control.TreeItem;
 /**
  * Requirements Document.
  */
+@Deprecated
 public class ReqDoc
 {
 	private BKey id;

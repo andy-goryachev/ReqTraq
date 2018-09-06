@@ -5,6 +5,7 @@ import goryachev.fx.CssID;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
 import goryachev.fx.FxCtl;
+import goryachev.reqtraq.data.Page;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 

@@ -1,5 +1,6 @@
 // Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
+import goryachev.reqtraq.data.Page;
 import javafx.beans.Observable;
 import javafx.beans.property.SimpleObjectProperty;
 

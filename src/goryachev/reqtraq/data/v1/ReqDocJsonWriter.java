@@ -3,7 +3,7 @@ package goryachev.reqtraq.data.v1;
 import goryachev.common.util.CKit;
 import goryachev.common.util.FileTools;
 import goryachev.json.JsonEncoder;
-import goryachev.reqtraq.Page;
+import goryachev.reqtraq.data.Page;
 import java.io.File;
 
 
