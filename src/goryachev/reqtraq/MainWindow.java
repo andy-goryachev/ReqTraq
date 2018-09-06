@@ -111,53 +111,21 @@ public class MainWindow
 	}
 	
 	
-	protected FxPopupMenu createTreePopupMenu()
-	{
-		FxPopupMenu m = new FxPopupMenu();
-		m.item("Cut");
-		m.item("Copy");
-		m.item("Paste");
-		m.separator();
-
-		m.item("Undo");
-		m.item("Redo");
-		m.separator();
-
-		m.item("Insert After", tree.insertAfterAction);
-		m.item("Insert Child", tree.insertChildAction);
-		m.separator();
-		
-		m.item("Expand All", tree.expandAllAction);
-		m.item("Collapse All", tree.collapseAllAction);
-		m.separator();
-		
-		m.item("Delete", tree.deleteSelectionAction);
-		m.separator();
-		
-		m.item("Move Up");
-		m.item("Move Down");
-		m.item("Move Left");
-		m.item("Move Right");
-		return m;
-	}
-
-	
 	protected Node createMenu()
 	{
 		FxMenuBar m = new FxMenuBar();
-		// app
-		m.menu("ReqTraq");
-		m.item("Quit", FX.exitAction());
 		// file
 		m.menu("File");
 		m.item("New", openFileController.newFileAction);
 		m.item("Open", openFileController.openFileAction);
-		m.add(openFileController.recentFilesMenu());
+		m.item(openFileController.recentFilesMenu());
 		m.separator();
 		m.item("Save", openFileController.saveAction);
 		m.item("Save As...", openFileController.saveAsAction);
 		m.separator();
 		m.item("Print");
+		m.separator();
+		m.item("Quit", FX.exitAction());
 		// edit
 		m.menu("Edit");
 		m.item("Undo");
@@ -211,24 +179,36 @@ public class MainWindow
 	}
 	
 	
-//	public void setDocument(ReqDoc d)
-//	{
-//		document.set(d);
-//		tree.setRoot(d.getTreeRoot());
-//		// TODO memorize expanded state?
-//		tree.expandAll();
-//		tree.selectFirst();
-//	}
-//	
-//	
-//	public ReqDoc getDocument()
-//	{
-//		ReqDoc d = document.get();
-//		TreeItem<Page> root = tree.getRoot();
-//		d.setTreeRoot(d);
-//		return d;
-//	}
-	
+	protected FxPopupMenu createTreePopupMenu()
+	{
+		FxPopupMenu m = new FxPopupMenu();
+		m.item("Cut");
+		m.item("Copy");
+		m.item("Paste");
+		m.separator();
+
+		m.item("Undo");
+		m.item("Redo");
+		m.separator();
+
+		m.item("Insert After", tree.insertAfterAction);
+		m.item("Insert Child", tree.insertChildAction);
+		m.separator();
+		
+		m.item("Expand All", tree.expandAllAction);
+		m.item("Collapse All", tree.collapseAllAction);
+		m.separator();
+		
+		m.item("Delete", tree.deleteSelectionAction);
+		m.separator();
+		
+		m.item("Move Up");
+		m.item("Move Down");
+		m.item("Move Left");
+		m.item("Move Right");
+		return m;
+	}
+
 	
 	protected void commit()
 	{
@@ -251,8 +231,8 @@ public class MainWindow
 	
 	protected void saveFile(File f) throws Exception
 	{
-//		ReqDoc d = getDocument();
-//		ReqDocJsonWriter.saveJSON(d, f);
+		// TODO
+		save();
 	}
 	
 	
@@ -261,7 +241,6 @@ public class MainWindow
 		HPane p = new HPane();
 		p.setPadding(new Insets(1, 10, 1, 10));
 		
-//		p.add(FX.label(statusProperty, Color.GRAY));
 		p.fill();
 		p.add(FX.label(Version.COPYRIGHT, Color.GRAY));
 		return p;

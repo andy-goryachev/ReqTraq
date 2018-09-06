@@ -94,6 +94,13 @@ public class FxMenuBar
 	}
 	
 	
+	public FxMenu item(FxMenu m)
+	{
+		lastMenu().add(m);
+		return m;
+	}
+	
+	
 	public FxCheckMenuItem item(String text, BooleanProperty prop)
 	{
 		return lastMenu().item(text, prop);
