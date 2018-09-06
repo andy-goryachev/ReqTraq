@@ -13,7 +13,8 @@ public class Demo
 {
 	public static void init()
 	{
-		// TODO
+		Page root = new Page();
+		
 		for(int i=0; i<3; i++)
 		{
 			long t = System.currentTimeMillis();
@@ -21,7 +22,9 @@ public class Demo
 			String text = i + "\n" + i + "\n" + i;
 			
 			Page p = new Page(GUID.create(), t, t, title, text, Status.OPEN);
-			AppState.root.add(p);
+			root.add(p);
 		}
+		
+		AppState.root.set(root);
 	}
 }

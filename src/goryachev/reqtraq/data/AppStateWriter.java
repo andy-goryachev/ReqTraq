@@ -25,7 +25,7 @@ public class AppStateWriter
 	
 	public void write() throws Exception
 	{
-		CList<Page> pages = collectPages(AppState.root);
+		CList<Page> pages = collectPages(AppState.getRootPage());
 		
 		wr = new CWriter(out);
 		

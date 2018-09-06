@@ -1,8 +1,8 @@
 // Copyright © 2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq.data;
-import goryachev.common.util.Log;
 import java.io.InputStream;
 import java.io.OutputStream;
+import javafx.beans.property.SimpleObjectProperty;
 
 
 /**
@@ -10,8 +10,15 @@ import java.io.OutputStream;
  */
 public class AppState
 {
-	// FIX root is different every time
-	public static final Page root = new Page();
+	public static final SimpleObjectProperty<Page> root = new SimpleObjectProperty(new Page());
+	
+	//
+	
+
+	public static Page getRootPage()
+	{
+		return root.get();
+	}
 	
 	
 	public static void save(OutputStream out) throws Exception

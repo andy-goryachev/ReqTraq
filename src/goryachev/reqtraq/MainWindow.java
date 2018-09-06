@@ -96,7 +96,7 @@ public class MainWindow
 		
 		FX.setPopupMenu(tree.tree, this::createTreePopupMenu);
 		
-		tree.setRoot(new PageTreeItem(AppState.root));
+		FX.listen(this::updateRoot, true, AppState.root);
 		
 		FX.later(() -> 
 		{
@@ -108,6 +108,12 @@ public class MainWindow
 			// TODO memorize selection?
 			tree.selectFirst();
 		});
+	}
+	
+	
+	protected void updateRoot()
+	{
+		tree.setRoot(new PageTreeItem(AppState.getRootPage()));		
 	}
 	
 	

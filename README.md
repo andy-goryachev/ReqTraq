@@ -8,6 +8,12 @@ The goal of this project is to create a desktop tool that supports the process.
 
 ![screenshot](https://github.com/andy-goryachev/ReqTraq/raw/master/screenshots/app.png)
 
+
+## Work in Progress
+
+This project is not yet ready.  Look but do not use in production.
+
+
 ## License
 
 This project and its source code is licensed under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0) and you should feel free to make adaptations of this work. Please see the included LICENSE file for further details.
