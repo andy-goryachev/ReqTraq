@@ -1,6 +1,8 @@
 // Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq;
 import goryachev.common.util.CKit;
+import goryachev.common.util.D;
+import goryachev.common.util.Log;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
 import goryachev.fx.FxAction;
@@ -9,20 +11,15 @@ import goryachev.fx.FxMenuBar;
 import goryachev.fx.FxPopupMenu;
 import goryachev.fx.FxWindow;
 import goryachev.fx.HPane;
-import goryachev.reqtraq.data.Page;
-import goryachev.reqtraq.data.v1.ReqDoc;
-import goryachev.reqtraq.data.v1.ReqDocJsonReader;
-import goryachev.reqtraq.data.v1.ReqDocJsonWriter;
 import goryachev.reqtraq.data.v2.AppState;
 import goryachev.reqtraq.demo.Demo;
 import goryachev.reqtraq.tree.PageTreeNode;
 import goryachev.reqtraq.tree.TreeTablePane;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
-import javafx.scene.control.TreeItem;
 import javafx.scene.paint.Color;
 import javafx.stage.Window;
 import research.fx.OpenFileController;
@@ -100,12 +97,17 @@ public class MainWindow
 		FX.setPopupMenu(tree.tree, this::createTreePopupMenu);
 		
 		tree.setRoot(new PageTreeNode(AppState.root));
-//		// TODO memorize expanded state?
-		tree.expandAll();
-		// TODO memorize selection?
-		tree.selectFirst();
 		
-		FX.later(() -> Demo.init());
+		FX.later(() -> 
+		{
+			Demo.init();
+			save();
+			
+			// TODO memorize expanded state?
+			tree.expandAll();
+			// TODO memorize selection?
+			tree.selectFirst();
+		});
 	}
 	
 	
@@ -272,6 +274,26 @@ public class MainWindow
 		{
 			w.setWidth(Config.SNAPSHOT_WIDTH);
 			w.setHeight(Config.SNAPSHOT_HEIGHT);
+		}
+	}
+	
+	
+	public void save()
+	{
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		try
+		{
+			AppState.save(out);
+			// FIX
+			D.print(new String(out.toByteArray(), CKit.CHARSET_UTF8));
+		}
+		catch(Exception e)
+		{
+			Log.ex(e);
+		}
+		finally
+		{
+			CKit.close(out);
 		}
 	}
 }

@@ -1,10 +1,10 @@
 // Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq.tree;
 import goryachev.common.util.CList;
-import goryachev.fx.FxAction;
 import goryachev.fx.CPane;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
+import goryachev.fx.FxAction;
 import goryachev.fx.FxFormatter;
 import goryachev.fx.internal.CssTools;
 import goryachev.fx.table.FxTreeTableColumn;
@@ -29,7 +29,7 @@ import javafx.util.Callback;
 public class TreeTablePane
 	extends CPane
 {
-	public static final CssStyle TREE = new CssStyle("TreeTablePane_TREE");
+	public static final CssStyle TREE = new CssStyle();
 	
 	public final FxAction collapseAllAction = new FxAction(this::collapseAll);
 	public final FxAction deleteSelectionAction = new FxAction(this::deleteSelection);
@@ -95,10 +95,6 @@ public class TreeTablePane
 		{
 			protected ObservableValue getCellValueProperty(Page p)
 			{
-				if(p == null)
-				{
-					return null;
-				}
 				return FX.toObservableValue(p.getField(f));
 			}
 		};

@@ -2,30 +2,49 @@
 package goryachev.reqtraq.data.v2;
 import goryachev.common.io.CWriter;
 import goryachev.common.util.CKit;
+import goryachev.common.util.CList;
 import goryachev.common.util.Hex;
 import goryachev.common.util.SB;
+import goryachev.reqtraq.data.Page;
 import java.io.OutputStream;
 
 
 /**
- * ReqTrack Writer V2.
+ * AppState Writer V2.
  */
-public class ReqTrackWriter
+public class AppStateWriter
 {
+	private final OutputStream out;
 	private CWriter wr;
 
 
-	public ReqTrackWriter()
+	public AppStateWriter(OutputStream out) throws Exception
 	{
+		this.out = out;
 	}
 	
 	
-	public void write(OutputStream out) throws Exception
+	public void write() throws Exception
 	{
+		CList<Page> pages = collectPages(AppState.root);
+		
 		wr = new CWriter(out);
+		
 		try
 		{
-			header("version");
+//			header("version");
+			
+			header("pages");
+			text("id|title");
+			nl();
+			
+			for(Page p: pages)
+			{
+				text(p.getID().toHexString());
+				write("|");
+				text(p.getTitle());
+				nl();
+			}
 		}
 		finally
 		{
@@ -35,6 +54,25 @@ public class ReqTrackWriter
 	}
 	
 	
+	protected CList<Page> collectPages(Page root)
+	{
+		CList<Page> pages = new CList();
+		collectPages(pages, root);
+		return pages;
+	}
+	
+	
+	protected void collectPages(CList<Page> pages, Page p)
+	{
+		pages.add(p);
+		
+		for(Page ch: p.children)
+		{
+			pages.add(ch);
+		}
+	}
+
+
 	protected static boolean isIllegalSymbol(char c)
 	{
 		switch(c)
@@ -63,6 +101,11 @@ public class ReqTrackWriter
 	
 	protected String safe(String s)
 	{
+		if(s == null)
+		{
+			return "";
+		}
+		
 		if(hasIllegalSymbols(s))
 		{
 			SB sb = new SB(s.length() * 2);
@@ -89,6 +132,21 @@ public class ReqTrackWriter
 	protected void text(String s) throws Exception
 	{
 		wr.write(safe(s));
+	}
+	
+	
+	protected void nl() throws Exception
+	{
+		wr.write("\n");
+	}
+	
+	
+	protected void write(Object x) throws Exception
+	{
+		if(x != null)
+		{
+			wr.write(x.toString());
+		}
 	}
 	
 	
