@@ -4,6 +4,7 @@ import goryachev.common.util.CKit;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
 import goryachev.reqtraq.data.Page;
+import goryachev.reqtraq.data.Status;
 import javafx.scene.control.TreeTableCell;
 
 
@@ -30,8 +31,8 @@ public class StatusCell
 		String s = CKit.toString(item);
 		setText(s);
 		
-		FX.setStyle(this, DONE, Page.STATUS_DONE.equals(s));
-		FX.setStyle(this, OPEN, Page.STATUS_OPEN.equals(s));
-		FX.setStyle(this, TBD, Page.STATUS_TBD.equals(s));
+		FX.setStyle(this, DONE, Status.DONE.equals(item));
+		FX.setStyle(this, OPEN, Status.OPEN.equals(item));
+		FX.setStyle(this, TBD, Status.TBD.equals(item));
 	}
 }

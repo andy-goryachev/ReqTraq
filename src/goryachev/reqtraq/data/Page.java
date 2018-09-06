@@ -4,6 +4,7 @@ import goryachev.common.util.Assert;
 import goryachev.common.util.BKey;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -33,16 +34,10 @@ public class Page
 	
 	//
 	
-	public static final String STATUS_DONE = "DONE";
-	public static final String STATUS_OPEN = "OPEN";
-	public static final String STATUS_TBD = "TBD";
-	
-	//
-	
 	public final SimpleStringProperty title = new SimpleStringProperty();
 	public final SimpleStringProperty text = new SimpleStringProperty();
 	public final SimpleLongProperty modified = new SimpleLongProperty();
-	public final SimpleStringProperty status = new SimpleStringProperty();
+	public final SimpleObjectProperty<Status> status = new SimpleObjectProperty();
 	public final ObservableList<Page> children = FXCollections.observableArrayList();
 	private final BKey id;
 	private final long created;
@@ -58,7 +53,7 @@ public class Page
 	}
 	
 	
-	public Page(BKey id, long created, long modified, String title, String text, String status)
+	public Page(BKey id, long created, long modified, String title, String text, Status status)
 	{
 		Assert.notNull(id, "id");
 		
@@ -205,13 +200,13 @@ public class Page
 	}
 	
 	
-	public void setStatus(String s)
+	public void setStatus(Status s)
 	{
 		status.set(s);
 	}
 	
 	
-	public String getStatus()
+	public Status getStatus()
 	{
 		return status.get();
 	}

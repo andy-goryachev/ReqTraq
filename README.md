@@ -1,7 +1,8 @@
-# Simple Requirements Tracker
+# Requirements Tracker
 
 Over the years, I came up with an effective way to organize the software development process
-by means of capturing and tracking every single bit of functionality.
+by means of capturing and tracking functionality with a high degree of granularity.  Simply put,
+if a developer needs to make a decision or write a function, it has to be documented as a "feature".
 
 The goal of this project is to create a desktop tool that supports the process.
 
