@@ -1,5 +1,5 @@
 // Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
-package goryachev.reqtraq;
+package goryachev.reqtraq.tree;
 import goryachev.common.util.CList;
 import goryachev.fx.FxAction;
 import goryachev.fx.CPane;
@@ -8,6 +8,7 @@ import goryachev.fx.FX;
 import goryachev.fx.FxFormatter;
 import goryachev.fx.internal.CssTools;
 import goryachev.fx.table.FxTreeTableColumn;
+import goryachev.reqtraq.Formatters;
 import goryachev.reqtraq.data.Page;
 import goryachev.reqtraq.util.Tools;
 import javafx.beans.Observable;
@@ -94,6 +95,10 @@ public class TreeTablePane
 		{
 			protected ObservableValue getCellValueProperty(Page p)
 			{
+				if(p == null)
+				{
+					return null;
+				}
 				return FX.toObservableValue(p.getField(f));
 			}
 		};

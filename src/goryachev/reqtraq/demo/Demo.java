@@ -8,6 +8,7 @@ import goryachev.common.util.Log;
 import goryachev.reqtraq.data.GUID;
 import goryachev.reqtraq.data.Page;
 import goryachev.reqtraq.data.v1.ReqDoc;
+import goryachev.reqtraq.data.v2.AppState;
 import java.util.Locale;
 
 
@@ -16,6 +17,19 @@ import java.util.Locale;
  */
 public class Demo
 {
+	public static void init()
+	{
+		// TODO
+		for(int i=0; i<3; i++)
+		{
+			long t = System.currentTimeMillis();
+			String title = "page " + (i + 1);
+			Page p = new Page(GUID.create(), t, t, 0,title, "text", "OK");
+			AppState.root.add(p);
+		}
+	}
+	
+	
 	public static ReqDoc create()
 	{
 		String s = CKit.readStringQuiet(Demo.class, "requirements.txt");

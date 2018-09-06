@@ -13,7 +13,10 @@ import goryachev.reqtraq.data.Page;
 import goryachev.reqtraq.data.v1.ReqDoc;
 import goryachev.reqtraq.data.v1.ReqDocJsonReader;
 import goryachev.reqtraq.data.v1.ReqDocJsonWriter;
+import goryachev.reqtraq.data.v2.AppState;
 import goryachev.reqtraq.demo.Demo;
+import goryachev.reqtraq.tree.PageTreeNode;
+import goryachev.reqtraq.tree.TreeTablePane;
 import java.io.File;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
@@ -35,7 +38,6 @@ public class MainWindow
 	public final EditorPane editor;
 	public final MainController control;
 	public final OpenFileController openFileController;
-	public final SimpleObjectProperty<ReqDoc> document = new SimpleObjectProperty();
 	
 	
 	public MainWindow()
@@ -97,8 +99,13 @@ public class MainWindow
 		
 		FX.setPopupMenu(tree.tree, this::createTreePopupMenu);
 		
-		// FIX remove
-		setDocument(Demo.create());
+		tree.setRoot(new PageTreeNode(AppState.root));
+//		// TODO memorize expanded state?
+		tree.expandAll();
+		// TODO memorize selection?
+		tree.selectFirst();
+		
+		FX.later(() -> Demo.init());
 	}
 	
 	
@@ -200,25 +207,25 @@ public class MainWindow
 		m.item("About");
 		return m;
 	}
-
-	
-	public void setDocument(ReqDoc d)
-	{
-		document.set(d);
-		tree.setRoot(d.getTreeRoot());
-		// TODO memorize expanded state?
-		tree.expandAll();
-		tree.selectFirst();
-	}
 	
 	
-	public ReqDoc getDocument()
-	{
-		ReqDoc d = document.get();
-		TreeItem<Page> root = tree.getRoot();
-		d.setTreeRoot(d);
-		return d;
-	}
+//	public void setDocument(ReqDoc d)
+//	{
+//		document.set(d);
+//		tree.setRoot(d.getTreeRoot());
+//		// TODO memorize expanded state?
+//		tree.expandAll();
+//		tree.selectFirst();
+//	}
+//	
+//	
+//	public ReqDoc getDocument()
+//	{
+//		ReqDoc d = document.get();
+//		TreeItem<Page> root = tree.getRoot();
+//		d.setTreeRoot(d);
+//		return d;
+//	}
 	
 	
 	protected void commit()
@@ -229,21 +236,21 @@ public class MainWindow
 	
 	protected void newFile()
 	{
-		setDocument(new ReqDoc());
+//		setDocument(new ReqDoc());
 	}
 	
 	
 	protected void openFile(File f) throws Exception
 	{
-		ReqDoc d = ReqDocJsonReader.readJSON(f);
-		setDocument(d);
+//		ReqDoc d = ReqDocJsonReader.readJSON(f);
+//		setDocument(d);
 	}
 	
 	
 	protected void saveFile(File f) throws Exception
 	{
-		ReqDoc d = getDocument();
-		ReqDocJsonWriter.saveJSON(d, f);
+//		ReqDoc d = getDocument();
+//		ReqDocJsonWriter.saveJSON(d, f);
 	}
 	
 	

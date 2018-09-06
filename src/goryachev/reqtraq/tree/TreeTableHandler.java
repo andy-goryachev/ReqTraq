@@ -1,5 +1,5 @@
 // Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
-package goryachev.reqtraq;
+package goryachev.reqtraq.tree;
 import goryachev.common.util.D;
 import goryachev.fx.FX;
 import javafx.animation.KeyFrame;

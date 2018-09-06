@@ -6,6 +6,8 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 
 /**
@@ -41,9 +43,12 @@ public class Page
 	public final SimpleStringProperty text = new SimpleStringProperty();
 	public final SimpleLongProperty modified = new SimpleLongProperty();
 	public final SimpleStringProperty status = new SimpleStringProperty();
+	public final ObservableList<Page> children = FXCollections.observableArrayList();
 	private final BKey id;
 	private final long created;
+	@Deprecated
 	private transient int level;
+	private transient Page parent;
 	private ObservableValue<String> synopsis;
 	
 	
@@ -67,6 +72,30 @@ public class Page
 		setTitle(title);
 		setText(text);
 		setStatus(status);
+	}
+	
+	
+	public void add(Page p)
+	{
+		children.add(p);
+		p.setParent(this);
+	}
+	
+	
+	protected void setParent(Page p)
+	{
+		if(parent != null)
+		{
+			throw new Error();
+		}
+		
+		parent = p;
+	}
+	
+	
+	public Page getParent()
+	{
+		return parent;
 	}
 	
 	

@@ -1,5 +1,5 @@
 // Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
-package goryachev.reqtraq;
+package goryachev.reqtraq.tree;
 import goryachev.common.util.CKit;
 import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
@@ -13,9 +13,9 @@ import javafx.scene.control.TreeTableCell;
 public class StatusCell
 	extends TreeTableCell<Page,Object>
 {
-	public static final CssStyle DONE = new CssStyle("StatusCell_DONE");
-	public static final CssStyle OPEN = new CssStyle("StatusCell_OPEN");
-	public static final CssStyle TBD = new CssStyle("StatusCell_TBD");
+	public static final CssStyle DONE = new CssStyle();
+	public static final CssStyle OPEN = new CssStyle();
+	public static final CssStyle TBD = new CssStyle();
 	
 	
 	public StatusCell()

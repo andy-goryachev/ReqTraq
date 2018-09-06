@@ -3,6 +3,8 @@ package goryachev.reqtraq;
 import goryachev.fx.CommonStyles;
 import goryachev.fx.FX;
 import goryachev.fx.FxStyleSheet;
+import goryachev.reqtraq.tree.StatusCell;
+import goryachev.reqtraq.tree.TreeTablePane;
 import javafx.scene.paint.Color;
 
 

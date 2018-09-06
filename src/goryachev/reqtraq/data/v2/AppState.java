@@ -10,7 +10,7 @@ import java.io.OutputStream;
  */
 public class AppState
 {
-	public final Page root = new Page();
+	public static final Page root = new Page();
 	
 	
 	public static void save(OutputStream out) throws Exception
