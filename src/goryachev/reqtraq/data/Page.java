@@ -46,8 +46,6 @@ public class Page
 	public final ObservableList<Page> children = FXCollections.observableArrayList();
 	private final BKey id;
 	private final long created;
-	@Deprecated
-	private transient int level;
 	private transient Page parent;
 	private ObservableValue<String> synopsis;
 	
@@ -60,13 +58,12 @@ public class Page
 	}
 	
 	
-	public Page(BKey id, long created, long modified, int level, String title, String text, String status)
+	public Page(BKey id, long created, long modified, String title, String text, String status)
 	{
 		Assert.notNull(id, "id");
 		
 		this.id = id;
 		this.created = created;
-		this.level = level;
 		
 		setTimeModified(modified);
 		setTitle(title);
@@ -144,19 +141,6 @@ public class Page
 	public void setTimeModified(long t)
 	{
 		modified.set(t);
-	}
-	
-	
-	/** nesting level 0 corresponds to the root's children */
-	public int getNestingLevel()
-	{
-		return level;
-	}
-	
-	
-	public void setNestingLevel(int x)
-	{
-		level = x;
 	}
 	
 	

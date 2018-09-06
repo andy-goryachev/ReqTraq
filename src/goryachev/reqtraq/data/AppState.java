@@ -1,7 +1,6 @@
 // Copyright © 2018 Andy Goryachev <andy@goryachev.com>
-package goryachev.reqtraq.data.v2;
+package goryachev.reqtraq.data;
 import goryachev.common.util.Log;
-import goryachev.reqtraq.data.Page;
 import java.io.InputStream;
 import java.io.OutputStream;
 

@@ -11,7 +11,7 @@ import goryachev.fx.FxMenuBar;
 import goryachev.fx.FxPopupMenu;
 import goryachev.fx.FxWindow;
 import goryachev.fx.HPane;
-import goryachev.reqtraq.data.v2.AppState;
+import goryachev.reqtraq.data.AppState;
 import goryachev.reqtraq.demo.Demo;
 import goryachev.reqtraq.tree.PageTreeItem;
 import goryachev.reqtraq.tree.TreeTablePane;

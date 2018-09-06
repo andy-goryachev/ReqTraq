@@ -1,16 +1,15 @@
 // Copyright © 2018 Andy Goryachev <andy@goryachev.com>
-package goryachev.reqtraq.data.v2;
+package goryachev.reqtraq.data;
 import goryachev.common.io.CWriter;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.common.util.Hex;
 import goryachev.common.util.SB;
-import goryachev.reqtraq.data.Page;
 import java.io.OutputStream;
 
 
 /**
- * AppState Writer V2.
+ * AppState Writer.
  */
 public class AppStateWriter
 {
@@ -32,13 +31,28 @@ public class AppStateWriter
 		
 		try
 		{
-			header("global");
+			header(Schema.SECTION_GLOBAL);
 			sep();
 			nl();
 			nl();
 			
-			header("pages");
-			write("id|created|modified|parent|status|title|text|pic\n");
+			header(Schema.SECTION_PAGES);
+			write(Schema.ID);
+			sep();
+			write(Schema.TIME_CREATED);
+			sep();
+			write(Schema.TIME_MODIFIED);
+			sep();
+			write(Schema.PARENT);
+			sep();
+			write(Schema.STATUS);
+			sep();
+			write(Schema.TITLE);
+			sep();
+			write(Schema.TEXT);
+			sep();
+			write(Schema.IMAGE);
+			nl();
 			
 			for(Page p: pages)
 			{
