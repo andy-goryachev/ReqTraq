@@ -11,7 +11,7 @@ import java.io.OutputStream;
  */
 public class AppState
 {
-	// FIX
+	// FIX root is different every time
 	public static final Page root = new Page();
 	
 	

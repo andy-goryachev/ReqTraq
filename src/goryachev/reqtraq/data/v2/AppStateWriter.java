@@ -32,17 +32,34 @@ public class AppStateWriter
 		
 		try
 		{
-//			header("version");
+			header("global");
+			sep();
+			nl();
+			nl();
 			
 			header("pages");
-			text("id|title");
-			nl();
+			write("id|created|modified|parent|status|title|text|pic\n");
 			
 			for(Page p: pages)
 			{
-				text(p.getID().toHexString());
-				write("|");
+				String parentRef = p.getParent() == null ? "" : p.getParent().getID().toString();
+				String pic = null; // TODO
+					
+				write(p.getID().toHexString());
+				sep();
+				write(p.getTimeCreated());
+				sep();
+				write(p.getTimeModified());
+				sep();
+				write(parentRef);
+				sep();
+				write(p.getStatus());
+				sep();
 				text(p.getTitle());
+				sep();
+				text(p.getText());
+				sep();
+				write(pic);
 				nl();
 			}
 		}
@@ -78,6 +95,8 @@ public class AppStateWriter
 		switch(c)
 		{
 		case '%':
+		case '|':
+		case '[':
 			return true;
 		default:
 			return (c < 0x20);
@@ -99,13 +118,14 @@ public class AppStateWriter
 	}
 	
 	
-	protected String safe(String s)
+	protected String safe(Object x)
 	{
-		if(s == null)
+		if(x == null)
 		{
 			return "";
 		}
 		
+		String s = x.toString();
 		if(hasIllegalSymbols(s))
 		{
 			SB sb = new SB(s.length() * 2);
@@ -129,9 +149,9 @@ public class AppStateWriter
 	}
 	
 	
-	protected void text(String s) throws Exception
+	protected void text(Object x) throws Exception
 	{
-		wr.write(safe(s));
+		wr.write(safe(x));
 	}
 	
 	
@@ -147,6 +167,12 @@ public class AppStateWriter
 		{
 			wr.write(x.toString());
 		}
+	}
+	
+	
+	protected void sep() throws Exception
+	{
+		wr.write('|');
 	}
 	
 	

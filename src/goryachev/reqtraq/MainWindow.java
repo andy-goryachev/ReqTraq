@@ -13,7 +13,7 @@ import goryachev.fx.FxWindow;
 import goryachev.fx.HPane;
 import goryachev.reqtraq.data.v2.AppState;
 import goryachev.reqtraq.demo.Demo;
-import goryachev.reqtraq.tree.PageTreeNode;
+import goryachev.reqtraq.tree.PageTreeItem;
 import goryachev.reqtraq.tree.TreeTablePane;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -96,7 +96,7 @@ public class MainWindow
 		
 		FX.setPopupMenu(tree.tree, this::createTreePopupMenu);
 		
-		tree.setRoot(new PageTreeNode(AppState.root));
+		tree.setRoot(new PageTreeItem(AppState.root));
 		
 		FX.later(() -> 
 		{

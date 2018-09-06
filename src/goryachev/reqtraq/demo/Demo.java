@@ -24,7 +24,9 @@ public class Demo
 		{
 			long t = System.currentTimeMillis();
 			String title = "page " + (i + 1);
-			Page p = new Page(GUID.create(), t, t, 0,title, "text", "OK");
+			String text = i + "\n" + i + "\n" + i;
+			
+			Page p = new Page(GUID.create(), t, t, 0, title, text, "OK");
 			AppState.root.add(p);
 		}
 	}

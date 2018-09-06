@@ -2,17 +2,16 @@
 package goryachev.reqtraq.tree;
 import goryachev.reqtraq.data.Page;
 import goryachev.reqtraq.util.ListTransform;
-import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 
 
 /**
- * Page TreeNode.
+ * Page TreeItem.
  */
-public class PageTreeNode
+public class PageTreeItem
 	extends TreeItem<Page>
 {
-	public PageTreeNode(Page p)
+	public PageTreeItem(Page p)
 	{
 		super(p);
 		
@@ -26,14 +25,8 @@ public class PageTreeNode
 	}
 	
 	
-	protected static PageTreeNode toTreeNode(Page p)
+	protected static PageTreeItem toTreeNode(Page p)
 	{
-		return new PageTreeNode(p);
-	}
-	
-	
-	public ObservableList<TreeItem<Page>> getChildren()
-	{
-		return super.getChildren();
+		return new PageTreeItem(p);
 	}
 }
