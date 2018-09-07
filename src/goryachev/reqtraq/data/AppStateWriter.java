@@ -99,7 +99,7 @@ public class AppStateWriter
 		
 		for(Page ch: p.children)
 		{
-			pages.add(ch);
+			collectPages(pages, ch);
 		}
 	}
 

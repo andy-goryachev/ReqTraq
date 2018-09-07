@@ -42,7 +42,7 @@ public class Page
 	private final BKey id;
 	private final long created;
 	private transient Page parent;
-	private ObservableValue<String> synopsis;
+	private transient ObservableValue<String> synopsis;
 	
 	
 	public Page()
@@ -215,5 +215,18 @@ public class Page
 	public String toString()
 	{
 		return "Page:" + getTitle();
+	}
+	
+	
+	public void insert(int ix, Page p)
+	{
+		if(ix >= children.size())
+		{
+			children.add(p);
+		}
+		else
+		{
+			children.add(ix, p);
+		}
 	}
 }

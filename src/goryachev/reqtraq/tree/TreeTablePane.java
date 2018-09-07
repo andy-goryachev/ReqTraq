@@ -10,7 +10,6 @@ import goryachev.fx.internal.CssTools;
 import goryachev.fx.table.FxTreeTableColumn;
 import goryachev.reqtraq.Formatters;
 import goryachev.reqtraq.data.Page;
-import goryachev.reqtraq.util.Tools;
 import javafx.beans.Observable;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -55,7 +54,7 @@ public class TreeTablePane
 		setupActions();
 		
 		addColumn(Page.Field.TITLE, "Title");
-		addColumn(Page.Field.TIME_CREATED, "Created");
+//		addColumn(Page.Field.TIME_CREATED, "Created");
 		addColumn(Page.Field.STATUS, "Status");
 		
 		setCenter(tree);
@@ -252,8 +251,12 @@ public class TreeTablePane
 	{
 		TreeItem<Page> sel = getSelectedItem();
 		sel.setExpanded(true);
-		TreeItem<Page> created = Tools.addPage(sel, 0, new Page());
-		edit(created);
+		
+		// TODO move this to PageTreeItem?
+		Page ch = new Page();
+		sel.getValue().insert(0, ch);
+		
+		edit(ch);
 	}
 	
 	
@@ -262,8 +265,18 @@ public class TreeTablePane
 		TreeItem<Page> sel = getSelectedItem();
 		TreeItem<Page> p = sel.getParent();
 		int ix = p.getChildren().indexOf(sel) + 1;
-		TreeItem<Page> created = Tools.addPage(p, ix, new Page());
-		edit(created);
+		
+		// TODO move this to PageTreeItem?
+		Page ch = new Page();
+		sel.getValue().insert(ix, ch);
+
+		edit(ch);
+	}
+	
+	
+	public void edit(Page p)
+	{
+		// TODO find in tree
 	}
 	
 	
