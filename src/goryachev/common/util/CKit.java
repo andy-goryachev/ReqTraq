@@ -1192,7 +1192,7 @@ public final class CKit
 	}
 
 
-	public static String simpleName(Object x)
+	public static String getSimpleName(Object x)
 	{
 		return Dump.simpleName(x);
 	}
@@ -1812,7 +1812,7 @@ public final class CKit
 		}
 		catch(Exception e)
 		{
-			throw new Exception("failed to copy " + simpleName(x), e);
+			throw new Exception("failed to copy " + getSimpleName(x), e);
 		}
 	}
 	
@@ -2348,6 +2348,11 @@ public final class CKit
 	
 	public static <S,T> List<T> transform(List<S> src, List<T> target, Function<S,T> converter)
 	{
+		if(src == null)
+		{
+			return null;
+		}
+		
 		int sz = src.size();
 		if(target == null)
 		{
@@ -2361,5 +2366,16 @@ public final class CKit
 			target.add(t);
 		}
 		return target;
+	}
+	
+	
+	public static byte[] copyOf(byte[] b)
+	{
+		if(b == null)
+		{
+			return null;
+		}
+		
+		return Arrays.copyOf(b, b.length);
 	}
 }

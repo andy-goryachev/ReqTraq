@@ -38,6 +38,13 @@ public class FxTable<T>
 	}
 	
 	
+	public FxTable(ObservableList<T> items)
+	{
+		table = new TableView<T>(items);
+		setCenter(table);
+	}
+	
+	
 	public FxTableColumn<T> addColumn(FxTableColumn<T> tc)
 	{
 		table.getColumns().add(tc);
