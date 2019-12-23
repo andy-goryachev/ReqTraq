@@ -6,7 +6,7 @@ import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
 import goryachev.fx.FxAction;
 import goryachev.fx.FxFormatter;
-import goryachev.fx.internal.CssTools;
+import goryachev.fx.table.FxTreeTable;
 import goryachev.fx.table.FxTreeTableColumn;
 import goryachev.reqtraq.Formatters;
 import goryachev.reqtraq.data.Page;
@@ -19,7 +19,6 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableColumn;
-import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
 import javafx.util.Callback;
 
@@ -36,19 +35,17 @@ public class TreeTablePane
 	public final FxAction insertAfterAction = new FxAction(this::insertAfter);
 	public final FxAction insertChildAction = new FxAction(this::insertChild);
 	
-	public final TreeTableView<Page> tree;
+	public final FxTreeTable<Page> tree;
 	public final TreeTableHandler<Page> handler;
 	
 
 	public TreeTablePane()
 	{
-		tree = new TreeTableView<>();
+		tree = new FxTreeTable<>();
 		tree.setShowRoot(false);
 		tree.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		tree.setEditable(true);
-		tree.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
-		// TODO FxTreeTable
-//		FX.style(tree, CssTools.NO_HORIZONTAL_SCROLL_BAR, TREE);
+		tree.setAutoResizeMode(true);
 		
 		handler = new TreeTableHandler<Page>(tree);
 		
@@ -106,7 +103,7 @@ public class TreeTablePane
 		
 		tc.setCellFactory(createCellFactory(tc, f));
 		
-		tree.getColumns().add(tc);
+		tree.addColumn(tc);
 	}
 	
 	
@@ -293,7 +290,7 @@ public class TreeTablePane
 		
 		FX.later(() -> 
 		{
-			tree.edit(ix, tree.getColumns().get(0));
+			tree.edit(ix, tree.getColumn(0));
 			
 			Node n = tree.lookup(".text-input");
 			if(n == null)

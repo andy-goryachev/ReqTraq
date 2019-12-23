@@ -2,6 +2,7 @@
 package goryachev.reqtraq.tree;
 import goryachev.common.util.D;
 import goryachev.fx.FX;
+import goryachev.fx.table.FxTreeTable;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Orientation;
@@ -26,22 +27,22 @@ import javafx.util.Duration;
 public class TreeTableHandler<T>
 {
 	private static final DataFormat JAVA_DATA_FORMAT = new DataFormat("application/x-java-serialized-object");
-	protected final TreeTableView<T> tree;
+	protected final FxTreeTable<T> tree;
 	private Timeline scrollTimeline;
 	private double scrollDirection;
 
 	
-	public TreeTableHandler(TreeTableView<T> tree)
+	public TreeTableHandler(FxTreeTable<T> tree)
 	{
 		this.tree = tree;
 		
-		tree.setRowFactory(this::rowFactory);
+		tree.tree.setRowFactory(this::rowFactory);
 		// mouse handlers
-		tree.addEventHandler(DragEvent.DRAG_EXITED, (ev) -> handleTreeDragExited(ev));
-		tree.addEventHandler(DragEvent.DRAG_ENTERED, (ev) -> handleTreeDragEntered(ev));
-		tree.addEventHandler(DragEvent.DRAG_DONE, (ev) -> handleTreeDragDone(ev));
+		tree.tree.addEventHandler(DragEvent.DRAG_EXITED, (ev) -> handleTreeDragExited(ev));
+		tree.tree.addEventHandler(DragEvent.DRAG_ENTERED, (ev) -> handleTreeDragEntered(ev));
+		tree.tree.addEventHandler(DragEvent.DRAG_DONE, (ev) -> handleTreeDragDone(ev));
 		// key handler
-		tree.addEventFilter(KeyEvent.ANY, (ev) -> handleTreeKeyEvent(ev));
+		tree.tree.addEventFilter(KeyEvent.ANY, (ev) -> handleTreeKeyEvent(ev));
 	}
 	
 
