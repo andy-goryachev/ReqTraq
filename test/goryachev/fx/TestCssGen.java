@@ -1,4 +1,4 @@
-// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import goryachev.common.test.TF;
 import goryachev.common.test.Test;
@@ -22,7 +22,7 @@ public class TestCssGen
 	{
 		add
 		(
-			new Selector(CssTools.NO_HORIZONTAL_SCROLL_BAR, ".view").defines
+			new Selector(CssTools.BOLD, ".view").defines
 			(
 				cellSize("a1"),
 				cellSize("a2"),

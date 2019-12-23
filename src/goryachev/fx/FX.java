@@ -1,10 +1,12 @@
-// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import goryachev.common.util.CPlatform;
 import goryachev.common.util.GlobalSettings;
 import goryachev.fx.hacks.FxHacks;
 import goryachev.fx.internal.CssTools;
 import goryachev.fx.internal.FxSchema;
 import goryachev.fx.internal.WindowsFx;
+import goryachev.fx.table.FxTable;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
@@ -30,7 +32,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
+import javafx.scene.control.ListView;
 import javafx.scene.control.OverrunStyle;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -38,7 +42,10 @@ import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -62,6 +69,8 @@ public final class FX
 	public static final double TWO_PI = Math.PI + Math.PI;
 	public static final double PI_2 = Math.PI / 2.0;
 	public static final double DEGREES_PER_RADIAN = 180.0 / Math.PI;
+	public static final double GAMMA = 2.2;
+	public static final double ONE_OVER_GAMMA = 1.0 / GAMMA;
 	private static WindowsFx windowsFx = new WindowsFx();
 	private static Text helper;
 
@@ -410,6 +419,12 @@ public final class FX
 	}
 	
 	
+	public static Color gray(int col)
+	{
+		return Color.rgb(col, col, col);
+	}
+	
+	
 	/** Creates Color from an RGB value. */
 	public static Color rgb(int rgb)
 	{
@@ -420,13 +435,27 @@ public final class FX
 	}
 	
 	
+	/** Creates Color from an RGB value. */
+	public static Color rgb(int red, int green, int blue)
+	{
+		return Color.rgb(red, green, blue);
+	}
+	
+	
 	/** Creates Color from an RGB value + alpha. */
-	public static Color rgba(int rgb, double alpha)
+	public static Color rgb(int rgb, double alpha)
 	{
 		int r = (rgb >> 16) & 0xff;
 		int g = (rgb >>  8) & 0xff;
 		int b = (rgb      ) & 0xff;
 		return Color.rgb(r, g, b, alpha);
+	}
+	
+	
+	/** Creates Color from an RGB value + alpha */
+	public static Color rgb(int red, int green, int blue, double alpha)
+	{
+		return Color.rgb(red, green, blue, alpha);
 	}
 
 
@@ -678,55 +707,64 @@ public final class FX
 	}
 	
 	
-	/** adds a fraction of color to the base, using perceptual intensity law */ 
-	public static Color mix(Color base, Color add, double fraction)
+	/** 
+	 * adds a fraction of color to the base, using standard gamma value 
+	 * https://en.wikipedia.org/wiki/Alpha_compositing
+	 */ 
+	public static Color mix(Color base, Color over, double fraction)
 	{
-		if(fraction < 0)
+		if(fraction <= 0.0)
 		{
 			return base;
 		}
-		else if(fraction >= 1.0)
+
+		if(base.isOpaque())
 		{
-			return add;
+			if(over.isOpaque())
+			{
+				// simplified case of both colors opaque 
+				double r = mix(base.getRed(), over.getRed(), fraction);
+				double g = mix(base.getGreen(), over.getGreen(), fraction);
+				double b = mix(base.getBlue(), over.getBlue(), fraction);
+				return new Color(r, g, b, 1.0);
+			}
 		}
 		
-		if(base.isOpaque() && add.isOpaque())
+		// full alpha blending
+		double opacityBase = base.getOpacity();
+		double opacityOver = clip(over.getOpacity() * fraction);
+
+		double alpha = opacityOver + (opacityBase * (1.0 - opacityOver));
+		if(alpha < 0.00001)
 		{
-			double r = mix(base.getRed(), add.getRed(), fraction);
-			double g = mix(base.getGreen(), add.getGreen(), fraction);
-			double b = mix(base.getBlue(), add.getBlue(), fraction);
-			return new Color(r, g, b, 1.0);
+			return new Color(0, 0, 0, 0);
 		}
-		else
-		{
-			double baseOp = base.getOpacity();
-			double addOp = add.getOpacity();
-			
-			double r = mix(base.getRed(), baseOp, add.getRed(), addOp, fraction);
-			double g = mix(base.getGreen(), baseOp, add.getGreen(), addOp, fraction);
-			double b = mix(base.getBlue(), baseOp, add.getBlue(), addOp, fraction);
-			double a = baseOp * (1.0 - fraction) + addOp * fraction;
-			return new Color(r, g, b, a);
-		}
+		
+		double r = mix(base.getRed(), opacityBase, over.getRed(), opacityOver, alpha);
+		double g = mix(base.getGreen(), opacityBase, over.getGreen(), opacityOver, alpha);
+		double b = mix(base.getBlue(), opacityBase, over.getBlue(), opacityOver, alpha);
+		return new Color(r, g, b, alpha);
 	}
 
 
-	private static double mix(double a, double b, double fraction)
+	private static double mix(double base, double over, double fraction)
 	{
-		// using square law (gamma = 2)
-		return limit(Math.sqrt((a * a) * (1.0 - fraction) + (b * b) * fraction));
+		double v = Math.pow(over, GAMMA) * fraction + Math.pow(base, GAMMA) * (1.0 - fraction);
+		v = Math.pow(v, ONE_OVER_GAMMA);
+		return clip(v);
 	}
 	
 
-	private static double mix(double a, double opacityA, double b, double opacityB, double fraction)
+	private static double mix(double base, double opacityBase, double over, double opacityOver, double alpha)
 	{
-		// using square law (gamma = 2)
-		// I am guessing with opacity values here
-		return limit(Math.sqrt((a * a * opacityA) * (1.0 - fraction) + (b * b * opacityB) * fraction));
+		double v = Math.pow(over, GAMMA) * opacityOver + Math.pow(base, GAMMA) * (1.0 - opacityOver);
+		v = v / alpha;
+		v = Math.pow(v, ONE_OVER_GAMMA);
+		return clip(v);
 	}
 
 	
-	private static double limit(double c)
+	private static double clip(double c)
 	{
 		if(c < 0)
 		{
@@ -776,7 +814,7 @@ public final class FX
 	
 	
 	/** sets a tool tip on the control. */
-	public static void tooltip(Control n, Object tooltip)
+	public static void toolTip(Control n, Object tooltip)
 	{
 		if(tooltip == null)
 		{
@@ -1034,29 +1072,32 @@ public final class FX
 	{
 		owner.setOnContextMenuRequested((ev) ->
 		{
-			FX.later(() ->
+			if(generator != null)
 			{
-				FxPopupMenu m = generator.get();
-				if(m != null)
+				FX.later(() ->
 				{
-					if(m.getItems().size() > 0)
+					FxPopupMenu m = generator.get();
+					if(m != null)
 					{
-						// javafx does not dismiss the popup when the user
-						// clicks on the owner node
-						EventHandler<MouseEvent> li = new EventHandler<MouseEvent>()
+						if(m.getItems().size() > 0)
 						{
-							public void handle(MouseEvent event)
+							// javafx does not dismiss the popup when the user
+							// clicks on the owner node
+							EventHandler<MouseEvent> li = new EventHandler<MouseEvent>()
 							{
-								m.hide();
-								owner.removeEventFilter(MouseEvent.MOUSE_PRESSED, this);
-							}
-						};
-						
-						owner.addEventFilter(MouseEvent.MOUSE_PRESSED, li);
-						m.show(owner, ev.getScreenX(), ev.getScreenY());
+								public void handle(MouseEvent event)
+								{
+									m.hide();
+									owner.removeEventFilter(MouseEvent.MOUSE_PRESSED, this);
+								}
+							};
+							
+							owner.addEventFilter(MouseEvent.MOUSE_PRESSED, li);
+							m.show(owner, ev.getScreenX(), ev.getScreenY());
+						}
 					}
-				}
-			});
+				});
+			}
 			ev.consume();
 		});
 	}
@@ -1091,7 +1132,7 @@ public final class FX
 	}
 	
 	
-	public static  <T> void addOneShotListener(Property<T> p, Consumer<T> c)
+	public static <T> void addOneShotListener(Property<T> p, Consumer<T> c)
 	{
 		p.addListener(new ChangeListener<T>()
 		{
@@ -1101,5 +1142,105 @@ public final class FX
 				p.removeListener(this);
 			}
 		});
+	}
+	
+	
+	/** Prevents the node from being resized when the SplitPane is resized. */
+	public static void preventSplitPaneResizing(Node nd)
+	{
+		SplitPane.setResizableWithParent(nd, Boolean.FALSE);
+	}
+	
+	
+	public static boolean isLeftButton(MouseEvent ev)
+	{
+		return (ev.getButton() == MouseButton.PRIMARY);
+	}
+	
+	
+	/** sometimes MouseEvent.isPopupTrigger() is not enough */
+	public static boolean isPopupTrigger(MouseEvent ev)
+	{
+		if(ev.getButton() == MouseButton.SECONDARY)
+		{
+			if(CPlatform.isMac())
+			{
+				if
+				(
+					!ev.isAltDown() &&
+					!ev.isMetaDown() &&
+					!ev.isShiftDown()
+				)
+				{
+					return true;
+				}
+			}
+			else
+			{
+				if
+				(
+					!ev.isAltDown() &&
+					!ev.isControlDown() &&
+					!ev.isMetaDown() &&
+					!ev.isShiftDown()
+				)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+
+	public static void disableAlternativeRowColor(FxTable<?> table)
+	{
+		FX.style(table.table, CommonStyles.DISABLE_ALTERNATIVE_ROW_COLOR);
+	}
+	
+	
+	public static void disableAlternativeRowColor(TableView<?> table)
+	{
+		FX.style(table, CommonStyles.DISABLE_ALTERNATIVE_ROW_COLOR);
+	}
+	
+	
+	public static void disableAlternativeRowColor(ListView<?> v)
+	{
+		FX.style(v, CommonStyles.DISABLE_ALTERNATIVE_ROW_COLOR);
+	}
+
+
+	/** 
+	 * returns a key code that represents a shortcut on this platform.
+	 * why this functionality is not public in javafx is unclear to me.
+	 */
+	public static KeyCode getShortcutKeyCode()
+	{
+		KeyEvent ev = new KeyEvent(null, null, KeyEvent.KEY_PRESSED, "", "", KeyCode.CONTROL, false, true, false, false);
+		if(ev.isShortcutDown())
+		{
+			return KeyCode.CONTROL;
+		}
+		
+		ev = new KeyEvent(null, null, KeyEvent.KEY_PRESSED, "", "", KeyCode.META, false, false, false, true);
+		if(ev.isShortcutDown())
+		{
+			return KeyCode.META;
+		}
+		
+		ev = new KeyEvent(null, null, KeyEvent.KEY_PRESSED, "", "", KeyCode.ALT, false, false, true, false);
+		if(ev.isShortcutDown())
+		{
+			return KeyCode.ALT;
+		}
+		
+		ev = new KeyEvent(null, null, KeyEvent.KEY_PRESSED, "", "", KeyCode.SHIFT, true, false, false, false);
+		if(ev.isShortcutDown())
+		{
+			return KeyCode.SHIFT;
+		}
+		
+		return null;
 	}
 }

@@ -28,7 +28,7 @@ import javafx.util.Callback;
 public class TreeTablePane
 	extends CPane
 {
-	public static final CssStyle TREE = new CssStyle();
+	public static final CssStyle TREE = new CssStyle("TreeTablePane_TREE");
 	
 	public final FxAction collapseAllAction = new FxAction(this::collapseAll);
 	public final FxAction deleteSelectionAction = new FxAction(this::deleteSelection);
@@ -47,7 +47,8 @@ public class TreeTablePane
 		tree.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		tree.setEditable(true);
 		tree.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
-		FX.style(tree, CssTools.NO_HORIZONTAL_SCROLL_BAR, TREE);
+		// TODO FxTreeTable
+//		FX.style(tree, CssTools.NO_HORIZONTAL_SCROLL_BAR, TREE);
 		
 		handler = new TreeTableHandler<Page>(tree);
 		
