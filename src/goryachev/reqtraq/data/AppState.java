@@ -1,4 +1,4 @@
-// Copyright © 2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2018-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq.data;
 import java.io.InputStream;
 import java.io.OutputStream;

@@ -1,4 +1,4 @@
-// Copyright © 2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2018-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq.util;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;

@@ -1,4 +1,4 @@
-// Copyright © 2016-2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package research.fx;
 import java.lang.ref.WeakReference;
 import javafx.beans.InvalidationListener;

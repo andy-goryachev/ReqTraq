@@ -1,4 +1,4 @@
-// Copyright © 2018 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2018-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq.tree;
 import goryachev.reqtraq.data.Page;
 import goryachev.reqtraq.util.ListTransform;
