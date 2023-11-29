@@ -98,6 +98,7 @@ public class TreeTablePane
 		tc.setAlignment(getAlignment(f));
 		tc.setConverter(getFormatter(f));
 		tc.setPrefWidth(getPreferredWidth(f));
+		tc.setMinWidth(getMinWidth(f));
 		tc.setEditable(isColumnEditable(f));
 		tc.setSortable(false);
 		
@@ -167,6 +168,17 @@ public class TreeTablePane
 		default:
 			return 100;
 		}
+	}
+	
+	
+	protected int getMinWidth(Page.Field f)
+	{
+		switch(f)
+		{
+		case STATUS:
+			return 50;
+		}
+		return 0;
 	}
 	
 	
