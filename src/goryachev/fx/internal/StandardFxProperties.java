@@ -1,10 +1,11 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.internal;
 import goryachev.fx.CssPseudo;
 import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.text.FontSmoothingType;
 
 
 /**
@@ -30,8 +31,12 @@ public class StandardFxProperties
 	public static final CssPseudo PRESSED = new CssPseudo(":pressed");
 	public static final CssPseudo SELECTED = new CssPseudo(":selected");
 	
+	public static final String BOLD = "bold";
 	public static final String TRANSPARENT = "transparent";
 	public static final String TABLE = ".table";
+	
+	// alignment
+	public static final String CENTER_LEFT = "CENTER_LEFT";
 	
 	// these colors are for debugging
 	protected static final Color R = Color.RED;
@@ -39,6 +44,9 @@ public class StandardFxProperties
 	protected static final Color B = Color.BLUE;
 	protected static final Color M = Color.MAGENTA;
 
+	// A
+	/** top-left | top-center | top-right | center-left | center | center-right bottom-left | bottom-center | bottom-right | baseline-left | baseline-center | baseline-right */
+	public static FxCssProp alignment(Object x) { return new FxCssProp("-fx-alignment", x); }
 	// B
 	public static FxCssProp backgroundColor(Object x) { return new FxCssProp("-fx-background-color", CssTools.toColor(x)); }
 	public static FxCssProp backgroundImage(Object x) { return new FxCssProp("-fx-background-image", CssTools.toValue(x)); }
@@ -68,6 +76,8 @@ public class StandardFxProperties
 	public static FxCssProp fixedCellSize(Object x) { return new FxCssProp("-fx-fixed-cell-size", x); }
 	public static FxCssProp fontFamily(Object x) { return new FxCssProp("-fx-font-family", x); }
 	public static FxCssProp fontSize(Object x) { return new FxCssProp("-fx-font-size", x); }
+	public static FxCssProp fontSmoothingType(FontSmoothingType x) { return new FxCssProp("-fx-font-smoothing-type", CssTools.toValue(x)); }
+	/** normal | italic | oblique */
 	public static FxCssProp fontStyle(Object x) { return new FxCssProp("-fx-font-style", x); }
 	/** [ normal | bold | bolder | lighter | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 ] */
 	public static FxCssProp fontWeight(Object x) { return new FxCssProp("-fx-font-weight", x); }
@@ -75,6 +85,7 @@ public class StandardFxProperties
 	public static FxCssProp hBarPolicy(ScrollPane.ScrollBarPolicy x) { return new FxCssProp("-fx-hbar-policy", CssTools.toValue(x)); }
 	// L
 	public static FxCssProp labelPadding(Object x) { return new FxCssProp("-fx-label-padding", x); }
+	public static FxCssProp labelPadding(double top, double right, double bottom, double left) { return new FxCssProp("-fx-label-padding", spaces(top, right, bottom, left)); }
 	// M
 	public static FxCssProp maxHeight(double x) { return new FxCssProp("-fx-max-height", x); }
 	public static FxCssProp maxHeight(Object x) { return new FxCssProp("-fx-max-height", x); }
@@ -93,15 +104,19 @@ public class StandardFxProperties
 	public static FxCssProp padding(double top, double right, double bottom, double left) { return new FxCssProp("-fx-padding", spaces(top, right, bottom, left)); }
 	public static FxCssProp prefHeight(double x) { return new FxCssProp("-fx-pref-height", x); }
 	public static FxCssProp prefWidth(double x) { return new FxCssProp("-fx-pref-width", x); }
+	public static FxCssProp prefWidth(String x) { return new FxCssProp("-fx-pref-width", x); }
 	// R
 	public static FxCssProp regionBackground(Object x) { return new FxCssProp("-fx-region-background", CssTools.toValue(x)); }
 	// S
 	public static FxCssProp scaleShape(boolean x) { return new FxCssProp("-fx-shape", CssTools.toValue(x)); }
 	public static FxCssProp shape(Object x) { return new FxCssProp("-fx-shape", CssTools.toQuotedString(x)); }
+	public static FxCssProp smooth(boolean x) { return new FxCssProp("-fx-smooth", CssTools.toValue(x)); }
 	public static FxCssProp stroke(Object x) { return new FxCssProp("-fx-stroke", CssTools.toColor(x)); }
 	public static FxCssProp strokeLineCap(StrokeLineCap x) { return new FxCssProp("-fx-stroke-width", CssTools.toValue(x)); }
 	public static FxCssProp strokeWidth(double x) { return new FxCssProp("-fx-stroke-width", x); }
 	// T
+	/** left | center | right | justify */
+	public static FxCssProp textAlignment(Object x) { return new FxCssProp("-fx-text-alignment", x); } 
 	public static FxCssProp textFill(Object x) { return new FxCssProp("-fx-text-fill", CssTools.toColor(x)); }
 	public static FxCssProp textOverrun(OverrunStyle x) { return new FxCssProp("-fx-text-overrun", CssTools.toColor(x)); }
 	public static FxCssProp translateX(double x) { return new FxCssProp("-fx-translate-x", x); }

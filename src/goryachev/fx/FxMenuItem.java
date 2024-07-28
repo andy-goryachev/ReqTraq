@@ -1,11 +1,11 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 
 
 /**
- * CMenuItem.
+ * A more convenient MenuItem.
  */
 public class FxMenuItem
 	extends MenuItem
@@ -13,22 +13,46 @@ public class FxMenuItem
 	public FxMenuItem(String text, Node icon, FxAction a)
 	{
 		super(text);
-		a.attach(this);
 		setGraphic(icon);
+		
+		if(a == null)
+		{
+			setDisable(true);
+		}
+		else
+		{
+			a.attach(this);
+		}
 	}
 	
 	
 	public FxMenuItem(Node icon, FxAction a)
 	{
-		a.attach(this);
 		setGraphic(icon);
+
+		if(a == null)
+		{
+			setDisable(true);
+		}
+		else
+		{
+			a.attach(this);
+		}
 	}
 	
 	
 	public FxMenuItem(String text, FxAction a)
 	{
 		super(text);
-		a.attach(this);
+		
+		if(a == null)
+		{
+			setDisable(true);
+		}
+		else
+		{
+			a.attach(this);
+		}
 	}
 	
 	
@@ -43,5 +67,16 @@ public class FxMenuItem
 	{
 		super(text);
 		setDisable(true);
+	}
+	
+	
+	public FxMenuItem(Node icon)
+	{
+		setGraphic(icon);
+	}
+	
+	
+	public FxMenuItem()
+	{
 	}
 }

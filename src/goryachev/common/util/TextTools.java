@@ -1,4 +1,4 @@
-// Copyright © 2005-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2005-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
 import java.lang.reflect.Array;
 import java.util.Collection;
@@ -14,14 +14,30 @@ public class TextTools
 	{
 		public boolean isSeparator(char c);
 	}
-	public static final SeparatorFunction NOT_LETTER_OR_DIGIT = new SeparatorFunction() { public boolean isSeparator(char c) { return !Character.isLetterOrDigit(c); }};
-	public static final SeparatorFunction ANY_BLANK = new SeparatorFunction() { public boolean isSeparator(char c) { return CKit.isBlank(c); }};
-	public static final SeparatorFunction BLANK_OR_PUNCT = new SeparatorFunction() { public boolean isSeparator(char c) { return isBlankOrPunctuation(c); }};
+	public static final SeparatorFunction NOT_LETTER_OR_DIGIT = new SeparatorFunction() { @Override
+	public boolean isSeparator(char c) { return !Character.isLetterOrDigit(c); }};
+	public static final SeparatorFunction ANY_BLANK = new SeparatorFunction() { @Override
+	public boolean isSeparator(char c) { return CKit.isBlank(c); }};
+	public static final SeparatorFunction BLANK_OR_PUNCT = new SeparatorFunction() { @Override
+	public boolean isSeparator(char c) { return isBlankOrPunctuation(c); }};
 	
 	//
 
 	// attempt to trim on the word boundary up to max characters
 	public static String trimNicely(String s, int max)
+	{
+		try
+		{
+			return trimNicely_FIX(s, max);
+		}
+		catch(Exception e)
+		{
+			return s;
+		}
+	}
+	// FIX throws an exception
+	// in the middle of this: "- https://icons.theforgesmith.com/"
+	private static String trimNicely_FIX(String s, int max)
 	{
 		if(s == null)
 		{
@@ -838,6 +854,53 @@ public class TextTools
 		
 		return TextTools.isWordDelimiter(c);
 	}
+	
+	
+	/** split text into tokens using whitespace as separator */
+	public static CList<String> splitWhitespace(String text)
+	{
+		CList<String> list = new CList<>();
+		if(text != null)
+		{
+			int start = 0;
+			int len = text.length();
+			boolean white = true;
+			
+			for(int i=0; i<len; i++)
+			{
+				char c = text.charAt(i);
+				if(CKit.isBlank(c))
+				{
+					if(!white)
+					{
+						if(i > start)
+						{
+							add(list, text.substring(start, i));
+						}
+						white = true;
+					}
+				}
+				else
+				{
+					if(white)
+					{
+						start = i;
+						white = false;
+					}
+				}
+			}
+			
+			if(!white)
+			{
+				if(start < len)
+				{
+					add(list, text.substring(start, len));
+				}
+			}
+		}
+		
+		return list;
+	}
 
 
 	/** split to words using whitespace and word-delimiting punctuation */
@@ -925,12 +988,25 @@ public class TextTools
 	}
 	
 	
+	public static String replace(String text, char pattern, char newPattern)
+	{
+		if(text != null)
+		{
+			SB sb = new SB(text);
+			sb.replace(pattern, newPattern);
+			return sb.toString();
+		}
+		return null;
+	}
+	
+	
 	public static String replaceIgnoreCase(String text, String pattern, String newPattern)
 	{
 		SB sb = new SB(text);
 		int start = 0;
 		for(;;)
 		{
+			// FIX suboptimal
 			int ix = sb.indexOfIgnoreCase(pattern, start);
 			if(ix < 0)
 			{
@@ -974,7 +1050,7 @@ public class TextTools
 	}
 
 
-	public static int indexOfIgnoreCase(String text, String pattern, int fromIndex)
+	public static int indexOfIgnoreCase(CharSequence text, String pattern, int fromIndex)
 	{
 		int textLen = text.length();
 		int patternLen = pattern.length();
@@ -1269,5 +1345,109 @@ public class TextTools
 		{
 			list.add(x.toString());
 		}
+	}
+	
+	
+	public static int indexOf(CharSequence text, CharSequence pattern)
+	{
+		return indexOf(text, pattern, 0);
+	}
+	
+	
+	public static int indexOf(CharSequence text, CharSequence pattern, int start)
+	{
+		int len = pattern.length();
+		if(start >= text.length())
+		{
+			return (len == 0 ? text.length() : -1);
+		}
+		else if(start < 0)
+		{
+			start = 0;
+		}
+		
+		if(len == 0)
+		{
+			return start;
+		}
+
+		int mx = text.length() - len;
+		char ch0 = pattern.charAt(0);
+
+		for(int i=start; i<=mx; i++)
+		{
+			if(text.charAt(i) != ch0)
+			{
+				while((++i <= mx) && (text.charAt(i) != ch0))
+				{ 
+				}
+			}
+
+			if(i <= mx)
+			{
+				int j = i + 1;
+				int end = j + len - 1;
+				for(int k=1; (j<end) && (text.charAt(j) == pattern.charAt(k)); j++,k++)
+				{
+				}
+
+				if(j == end)
+				{
+					return i;
+				}
+			}
+		}
+		return -1;
+	}
+	
+	
+	public static boolean isWhiteSpaceOrCtrl(char c)
+	{
+		if(c <= ' ')
+		{
+			return true;
+		}
+		return isWhitespace(c);
+	}
+	
+	
+	/** trims, replaces any repeating control or whitespace characters with a single space */ 
+	public static String toSingleLine(String text)
+	{
+		if(text == null)
+		{
+			return null;
+		}
+		
+		int len = text.length();
+		SB sb = new SB(len);
+		
+		boolean white = true;
+		for(int i=0; i<len; i++)
+		{
+			char c = text.charAt(i);
+			if(isWhiteSpaceOrCtrl(c))
+			{
+				if(!white)
+				{
+					white = true;
+				}
+				continue;
+			}
+			else
+			{
+				if(white)
+				{
+					if(sb.length() > 0)
+					{
+						sb.append(' ');
+					}
+				}
+				white = false;
+				sb.append(c);
+			}
+		}
+		
+		return sb.toString();
 	}
 }

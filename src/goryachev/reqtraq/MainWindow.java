@@ -2,15 +2,16 @@
 package goryachev.reqtraq;
 import goryachev.common.util.CKit;
 import goryachev.common.util.D;
-import goryachev.common.util.Log;
 import goryachev.fx.CPane;
 import goryachev.fx.FX;
 import goryachev.fx.FxAction;
 import goryachev.fx.FxDump;
+import goryachev.fx.FxFramework;
 import goryachev.fx.FxMenuBar;
 import goryachev.fx.FxPopupMenu;
 import goryachev.fx.FxWindow;
 import goryachev.fx.HPane;
+import goryachev.fx.settings.LocalSettings;
 import goryachev.reqtraq.data.AppState;
 import goryachev.reqtraq.demo.Demo;
 import goryachev.reqtraq.tree.PageTreeItem;
@@ -50,24 +51,28 @@ public class MainWindow
 		// TODO use method references
 		openFileController = new OpenFileController(this)
 		{
+			@Override
 			protected void delegateSaveFile(File f) throws Exception
 			{
 				saveFile(f);
 			}
 
 
+			@Override
 			protected void delegateOpenFile(File f) throws Exception
 			{
 				openFile(f);
 			}
 
 
+			@Override
 			protected void delegateNewFile() throws Exception
 			{
 				newFile();
 			}
 
 
+			@Override
 			protected void delegateCommit()
 			{
 				commit();
@@ -75,7 +80,7 @@ public class MainWindow
 		};
 		openFileController.addFileFilter("json", "*.json Text Files");
 		openFileController.addFileFilter("*", "*.* All Files");
-		bind("FILE", openFileController);
+		LocalSettings.get(this).add("FILE", openFileController);
 		
 		tree = new TreeTablePane();
 		
@@ -96,7 +101,7 @@ public class MainWindow
 		
 		FX.setPopupMenu(tree.tree, this::createTreePopupMenu);
 		
-		FX.listen(this::updateRoot, true, AppState.root);
+		FX.addInvalidationListener(AppState.root, true, this::updateRoot);
 		
 		FX.later(() -> 
 		{
@@ -131,7 +136,7 @@ public class MainWindow
 		m.separator();
 		m.item("Print");
 		m.separator();
-		m.item("Quit", FX.exitAction());
+		m.item("Quit", FxFramework::exit);
 		// edit
 		m.menu("Edit");
 		m.item("Undo");
@@ -255,7 +260,7 @@ public class MainWindow
 	
 	protected void resizeWindows()
 	{
-		for(Window w: FX.getWindows())
+		for(Window w: Window.getWindows())
 		{
 			w.setWidth(Config.SNAPSHOT_WIDTH);
 			w.setHeight(Config.SNAPSHOT_HEIGHT);
@@ -274,7 +279,7 @@ public class MainWindow
 		}
 		catch(Exception e)
 		{
-			Log.ex(e);
+			e.printStackTrace(); // FIX
 		}
 		finally
 		{

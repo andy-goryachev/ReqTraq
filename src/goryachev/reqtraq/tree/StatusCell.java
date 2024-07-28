@@ -24,15 +24,32 @@ public class StatusCell
 	}
 
 
+	@Override
 	public void updateItem(Object item, boolean empty)
 	{
 		super.updateItem(item, empty);
 		
-		String s = CKit.toString(item);
+		String s = CKit.toStringOrNull(item);
 		setText(s);
 		
-		FX.setStyle(this, DONE, Status.DONE.equals(item));
-		FX.setStyle(this, OPEN, Status.OPEN.equals(item));
-		FX.setStyle(this, TBD, Status.TBD.equals(item));
+		FX.style(this, getStyle(item));
+	}
+	
+	
+	private CssStyle getStyle(Object item)
+	{
+		if(item instanceof Status s)
+		{
+			switch(s)
+			{
+			case DONE:
+				return DONE;
+			case OPEN:
+				return OPEN;
+			case TBD:
+				return TBD;
+			}
+		}
+		return null;
 	}
 }

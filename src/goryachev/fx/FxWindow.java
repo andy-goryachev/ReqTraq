@@ -1,253 +1,139 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
-import goryachev.common.util.D;
-import goryachev.fx.internal.FxSchema;
-import goryachev.fx.internal.FxWindowBoundsMonitor;
-import goryachev.fx.internal.LocalBindings;
-import javafx.beans.property.Property;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
+import goryachev.fx.settings.WindowMonitor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 
 
 /**
- * FxWindow.
+ * Convenient FX Stage.
  */
 public class FxWindow
 	extends Stage
 {
-	/** 
-	 * Override to ask the user to confirm closing of window.
-	 * Make sure to check if the argument already has the user's choice and
-	 * perform the necessary action.
-	 * If a dialog must be shown, make sure to call toFront().
-	 */
-	public void confirmClosing(OnWindowClosing choice) { }
-	
-	//
-	
-	public final FxAction closeWindowAction = new FxAction() { public void action() { closeWithConfirmation(); }};
-	private final String name;
-	private final BorderPane pane;
-	private final FxWindowBoundsMonitor normalBoundsMonitor = new FxWindowBoundsMonitor(this);
-	@Deprecated // not sure why this isn't static
-	private final ReadOnlyObjectWrapper<Node> lastFocusOwner = new ReadOnlyObjectWrapper();
-	private final static ReadOnlyObjectWrapper<Node> lastFocusOwnerStatic = new ReadOnlyObjectWrapper();
-	private LocalBindings bindings;
+	private final BorderPane contentPane;
 	
 	
 	public FxWindow(String name)
 	{
-		this.name = name;
-		this.pane = new BorderPane();
+		this.contentPane = new BorderPane();
+		FX.setName(this, name);
 		
-		Scene sc = new Scene(pane);
+		Scene sc = new Scene(contentPane);
 		setScene(sc);
-		
-		sc.focusOwnerProperty().addListener((s,p,val) -> updateFocusOwner(val));
 	}
 	
 	
-	protected void updateFocusOwner(Node n)
+	protected BorderPane getContentPane()
 	{
-		if(n != null)
-		{
-			lastFocusOwner.set(n);
-			lastFocusOwnerStatic.set(n);
-		}
-	}
-	
-	
-	@Deprecated
-	public Node getLastFocusOwner()
-	{
-		return lastFocusOwner.get();
-	}
-	
-	
-	public static Node getLastFocusOwnerStatic()
-	{
-		return lastFocusOwnerStatic.get();
-	}
-	
-	
-	@Deprecated
-	public ReadOnlyObjectProperty<Node> lastFocusOwnerProperty()
-	{
-		return lastFocusOwner.getReadOnlyProperty();
-	}
-	
-	
-	public static ReadOnlyObjectProperty<Node> lastFocusOwnerPropertyStatic()
-	{
-		return lastFocusOwnerStatic.getReadOnlyProperty();
-	}
-	
-	
-	public String getName()
-	{
-		return name;
-	}
-	
-	
-	public double getNormalX()
-	{
-		return normalBoundsMonitor.getX();
-	}
-	
-	
-	public double getNormalY()
-	{
-		return normalBoundsMonitor.getY();
-	}
-	
-	
-	public double getNormalWidth()
-	{
-		return normalBoundsMonitor.getWidth();
-	}
-	
-	
-	public double getNormalHeight()
-	{
-		return normalBoundsMonitor.getHeight();
+		return contentPane;
 	}
 	
 	
 	public void open()
 	{
-		FX.open(this);
+		show();
 	}
 	
 	
 	public void setTop(Node n)
 	{
-		pane.setTop(n);
+		contentPane.setTop(n);
+	}
+	
+	
+	public Node getTop()
+	{
+		return contentPane.getTop();
 	}
 	
 	
 	public void setBottom(Node n)
 	{
-		pane.setBottom(n);
+		contentPane.setBottom(n);
+	}
+	
+	
+	public Node getBottom()
+	{
+		return contentPane.getBottom();
 	}
 	
 	
 	public void setLeft(Node n)
 	{
-		pane.setLeft(n);
+		contentPane.setLeft(n);
+	}
+	
+	
+	public Node getLeft()
+	{
+		return contentPane.getLeft();
 	}
 	
 	
 	public void setRight(Node n)
 	{
-		pane.setRight(n);
+		contentPane.setRight(n);
+	}
+	
+	
+	public Node getRight()
+	{
+		return contentPane.getRight();
 	}
 	
 	
 	public void setCenter(Node n)
 	{
-		pane.setCenter(n);
+		contentPane.setCenter(n);
 	}
 	
 	
 	public Node getCenter()
 	{
-		return pane.getCenter();
+		return contentPane.getCenter();
 	}
 	
 	
-	public void setSize(int width, int height)
+	public void setSize(double width, double height)
 	{
 		setWidth(width);
 		setHeight(height);
 	}
 	
 	
-	public void setMinSize(int width, int height)
+	public void setMinSize(double width, double height)
 	{
 		setMinWidth(width);
 		setMinHeight(height);
 	}
 	
 	
-	public void setMaxSize(int width, int height)
+	public void setMaxSize(double width, double height)
 	{
 		setMaxWidth(width);
 		setMaxHeight(height);
 	}
 	
 	
-	public void closeWithConfirmation()
+	public void setClosingWindowOperation(ClosingWindowOperation op)
 	{
-		OnWindowClosing ch = new OnWindowClosing(false);
-		confirmClosing(ch);
-		if(!ch.isCancelled())
-		{
-			close();
-		}
+		WindowMonitor.setClosingWindowOperation(this, op);
 	}
 	
 	
-	/** bind a property to be saved in window-specific settings using the specified subkey */
-	public <T> void bind(String subKey, Property<T> p)
+	public void setNonEssentialWindow()
 	{
-		bindings().add(subKey, p, null);
+		WindowMonitor.setNonEssentialWindow(this);
 	}
 	
 	
-	/** bind an object with settings to be saved in window-specific settings using the specified subkey */
-	public <T> void bind(String subKey, HasSettings x)
+	@Override
+	public String toString()
 	{
-		bindings().add(subKey, x);
-	}
-	
-	
-	/** bind a property to be saved in window-specific settings using the specified subkey */
-	public <T> void bind(String subKey, Property<T> p, StringConverter<T> c)
-	{
-		bindings().add(subKey, p, c);
-	}
-	
-	
-	/** bind a property to be saved in window-specific settings using the specified subkey */
-	public <T> void bind(String subKey, Property<T> p, SSConverter<T> c)
-	{
-		bindings().add(subKey, c, p);
-	}
-	
-	
-	protected LocalBindings bindings()
-	{
-		if(bindings == null)
-		{
-			bindings = new LocalBindings();
-		}
-		return bindings;
-	}
-	
-
-	/** invoked by the framework after the window and its content is created. */
-	public void loadSettings(String prefix)
-	{
-		if(bindings != null)
-		{
-			String k = prefix + FxSchema.SFX_BINDINGS;
-			bindings.loadValues(k);
-		}
-	}
-
-
-	/** invoked by the framework as necessary to store the window-specific settings */
-	public void storeSettings(String prefix)
-	{
-		if(bindings != null)
-		{
-			String k = prefix + FxSchema.SFX_BINDINGS;
-			bindings.saveValues(k);
-		}
+		return "FxWindow{" + FX.getName(this) + "." + hashCode() + "}";
 	}
 }

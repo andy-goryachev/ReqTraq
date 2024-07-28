@@ -1,23 +1,28 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Window;
 
 
 /**
  * FX Dialogs might be a nice idea, but completely unacceptable:
- * buttons cannot be FxButtons, FxAction cannot be used,
+ * buttons cannot be FxButtons, FxAction cannot be used;
  * too many hoops need to be jumped through to get even a simple dialog 
  * (converters, button types).
  * 
- * This is a different take which uses FxWindow and plugs in into our
- * FX framework.
+ * This class is of a more traditional design which uses a modal FxWindow.
  */
-public class FxDialog
+public class FxDialog<T>
 	extends FxWindow
 {
-	public final FxAction closeDialogAction = new FxAction(this::close);
-	protected FxButtonPane buttonPane;
+	public static final CssStyle PANE = new CssStyle("FxDialog_PANE");
+	private final BorderPane pane;
+	private T result;
 	
 	
 	public FxDialog(Object owner, String name)
@@ -25,40 +30,51 @@ public class FxDialog
 		super(name);
 		
 		initModality(Modality.APPLICATION_MODAL);
-
-		Window win = FX.getParentWindow(owner);
-		initOwner(win);
+		FX.style(getContentPane(), PANE);
 		
-		// TODO center around parent window, but not outside of the current device
-		double x = win.getX();
-		double y = win.getY();
-		double w = win.getWidth();
-		double h = win.getHeight();
+		pane = new BorderPane();
+		setCenter(pane);
+
+		Window w = FX.getParentWindow(owner);
+		initOwner(w);
+		
+		setMinSize(300, 200);
 	}
 	
 	
-	protected FxButtonPane buttonPane()
+	public FxButtonPane buttonPane()
 	{
-		if(buttonPane == null)
+		Node n = getBottom();
+		if(n instanceof FxButtonPane)
 		{
-			buttonPane = new FxButtonPane();
-			setBottom(buttonPane);
+			return (FxButtonPane)n;
 		}
-		return buttonPane;
+		
+		FxButtonPane p = new FxButtonPane();
+		p.setPadding(new Insets(10));
+		setBottom(p);
+		return p;
 	}
 	
 	
-	public FxButton addButton(String text, FxAction a, CssStyle style)
+	protected void setResult(T result)
 	{
-		FxButton b = new FxButton(text, a, style);
+		this.result = result;
+		close();
+	}
+	
+	
+	public FxButton addButton(String text, CssStyle style, T result)
+	{
+		FxButton b = new FxButton(text, style, () -> setResult(result));
 		buttonPane().add(b);
 		return b;
 	}
 	
 	
-	public FxButton addButton(String text, FxAction a)
+	public FxButton addButton(String text, T result)
 	{
-		FxButton b = new FxButton(text, a);
+		FxButton b = new FxButton(text, () -> setResult(result));
 		buttonPane().add(b);
 		return b;
 	}
@@ -78,12 +94,57 @@ public class FxDialog
 	}
 	
 	
-	public void open()
+	public T open(T defaultValue)
 	{
-		double w = getWidth();
-		double h = getHeight();
-		// TODO center over parent, but not to go outside of the screen
+//		double w = getWidth();
+//		double h = getHeight();
 		
-		super.open();
+		// FIX what's going on here? dialog is not yet shown:
+		// x,y,w,h are all NaN's.
+//		if(isInvalid(w))
+//		{
+//			w = 400;
+//			setWidth(w);
+//		}
+//		
+//		if(isInvalid(h))
+//		{
+//			h = 300;
+//			setHeight(h);
+//		}
+		
+		FX.center(this);
+		
+		super.showAndWait();
+		return result == null ? defaultValue : result;
+	}
+	
+	
+	// FIX remove
+	protected static boolean isInvalid(double x)
+	{
+		if(Double.isNaN(x))
+		{
+			return true;
+		}
+		else if(x <= 1)
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	
+	public void closeOnEscape()
+	{
+		KeyMap.onKeyPressed(getContentPane(), KeyCode.ESCAPE, this::close);
+	}
+
+
+	public void setContentText(String text)
+	{
+		Label t = new Label(text);
+		t.setPadding(new Insets(10));
+		pane.setCenter(t);
 	}
 }

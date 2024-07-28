@@ -1,8 +1,8 @@
 // Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import goryachev.common.log.Log;
 import goryachev.common.util.CKit;
 import goryachev.common.util.D;
-import goryachev.common.util.Log;
 import javafx.application.Application;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -21,12 +21,16 @@ import javafx.stage.Stage;
 public class TestFxIconBuilder
 	extends Application
 {
+	private static final Log log = Log.get("TestFxIconBuilder");
+	
+	
 	public static void main(String[] args)
 	{
 		Application.launch(args);
 	}
 	
 	
+	@Override
 	public void start(Stage s) throws Exception
 	{
 		CPane p = new CPane();
@@ -157,7 +161,7 @@ public class TestFxIconBuilder
 		}
 		catch(Exception e)
 		{
-			Log.ex(e);
+			log.error(e);
 		}
 		
 		b.setEffect(null);

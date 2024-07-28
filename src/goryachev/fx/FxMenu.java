@@ -1,4 +1,4 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import javafx.beans.property.Property;
 import javafx.scene.control.Menu;
@@ -25,6 +25,13 @@ public class FxMenu
 	}
 	
 	
+	public FxMenu(String text, Runnable r)
+	{
+		super(text);
+		new FxAction(r).attach(this);
+	}
+	
+	
 	public SeparatorMenuItem separator()
 	{
 		SeparatorMenuItem m = new SeparatorMenuItem();
@@ -41,16 +48,25 @@ public class FxMenu
 	}
 	
 	
-	public FxCheckMenuItem item(String text, Property<Boolean> prop)
+	public FxMenuItem item(String text, Runnable r)
 	{
-		FxCheckMenuItem m = new FxCheckMenuItem(text, prop);
+		FxMenuItem m = new FxMenuItem(text, r);
 		getItems().add(m);
 		return m;
 	}
 	
 	
-	public MenuItem add(MenuItem m)
+	public FxMenu menu(String text)
 	{
+		FxMenu m = new FxMenu(text);
+		getItems().add(m);
+		return m;
+	}
+	
+	
+	public FxCheckMenuItem item(String text, Property<Boolean> prop)
+	{
+		FxCheckMenuItem m = new FxCheckMenuItem(text, prop);
 		getItems().add(m);
 		return m;
 	}
@@ -62,6 +78,13 @@ public class FxMenu
 		FxMenuItem m = new FxMenuItem(text);
 		m.setDisable(true);
 		return add(m);
+	}
+	
+	
+	public <M extends MenuItem> M add(M item)
+	{
+		getItems().add(item);
+		return item;
 	}
 	
 	

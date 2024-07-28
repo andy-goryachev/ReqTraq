@@ -6,12 +6,9 @@ import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
 import goryachev.fx.FxAction;
 import goryachev.fx.FxFormatter;
-import goryachev.fx.table.FxTreeTable;
-import goryachev.fx.table.FxTreeTableColumn;
 import goryachev.reqtraq.Formatters;
 import goryachev.reqtraq.data.Page;
 import javafx.beans.Observable;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -19,6 +16,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
 import javafx.util.Callback;
 
@@ -35,17 +33,17 @@ public class TreeTablePane
 	public final FxAction insertAfterAction = new FxAction(this::insertAfter);
 	public final FxAction insertChildAction = new FxAction(this::insertChild);
 	
-	public final FxTreeTable<Page> tree;
+	public final TreeTableView<Page> tree;
 	public final TreeTableHandler<Page> handler;
 	
 
 	public TreeTablePane()
 	{
-		tree = new FxTreeTable<>();
+		tree = new TreeTableView<>();
 		tree.setShowRoot(false);
 		tree.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		tree.setEditable(true);
-		tree.setAutoResizeMode(true);
+		tree.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY_NEXT_COLUMN);
 		
 		handler = new TreeTableHandler<Page>(tree);
 		
@@ -88,34 +86,35 @@ public class TreeTablePane
 
 	protected void addColumn(Page.Field f, String label)
 	{
-		FxTreeTableColumn<Page> tc = new FxTreeTableColumn<Page>(label, true)
+		TreeTableColumn<Page,Object> tc = new TreeTableColumn<>(" ")
 		{
-			protected ObservableValue getCellValueProperty(Page p)
-			{
-				return FX.toObservableValue(p.getField(f));
-			}
+//			@Override
+//			protected ObservableValue<?> getCellValueProperty(Page p)
+//			{
+//				return FX.toObservableValue(p.getField(f));
+//			}
 		};
-		tc.setAlignment(getAlignment(f));
-		tc.setConverter(getFormatter(f));
+//		tc.setAlignment(getAlignment(f));
+//		tc.setConverter(getFormatter(f));
 		tc.setPrefWidth(getPreferredWidth(f));
 		tc.setMinWidth(getMinWidth(f));
 		tc.setEditable(isColumnEditable(f));
 		tc.setSortable(false);
 		
-		tc.setCellFactory(createCellFactory(tc, f));
+//		tc.setCellFactory(createCellFactory(tc, f));
 		
-		tree.addColumn(tc);
+		tree.getColumns().add(tc);
 	}
 	
 	
-	private Callback<TreeTableColumn<Page,Object>,TreeTableCell<Page,Object>> createCellFactory(FxTreeTableColumn<Page> tc, Page.Field f)
+	private Callback<TreeTableColumn<Page,Object>,TreeTableCell<Page,Object>> createCellFactory(TreeTableColumn<Page,Object> tc, Page.Field f)
 	{
 		switch(f)
 		{
 		case STATUS:
 			return (x) -> new StatusCell();
 		default:
-			return (x) -> new TextFieldTreeTableCell(tc.getConverter());
+			return (x) -> new TextFieldTreeTableCell(getFormatter(f)); //tc.getConverter());
 		}
 	}
 
@@ -302,7 +301,7 @@ public class TreeTablePane
 		
 		FX.later(() -> 
 		{
-			tree.edit(ix, tree.getColumn(0));
+			tree.edit(ix, tree.getColumns().get(0));
 			
 			Node n = tree.lookup(".text-input");
 			if(n == null)

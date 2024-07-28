@@ -1,5 +1,6 @@
-// Copyright © 2009-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2009-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
+import goryachev.common.log.Log;
 import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.SortedMap;
@@ -8,6 +9,7 @@ import java.util.SortedMap;
 public class CEncoding
 	implements HasDisplayName, HasProperty
 {
+	protected static final Log log = Log.get("CEncoding");
 	public static final CEncoding UTF8 = new CEncoding(Charset.forName("UTF-8"));
 	public static final CEncoding UTF16 = new CEncoding(Charset.forName("UTF-16"));
 	
@@ -27,12 +29,14 @@ public class CEncoding
 	}
 
 
+	@Override
 	public String getDisplayName()
 	{
 		return charset.displayName(Locale.getDefault());
 	}
 	
 	
+	@Override
 	public String toString()
 	{
 		return getDisplayName();
@@ -45,6 +49,7 @@ public class CEncoding
 	}
 	
 	
+	@Override
 	public String getProperty()
 	{
 		return getID();
@@ -83,7 +88,7 @@ public class CEncoding
 			}
 			catch(Exception e)
 			{
-				Log.ex(e);
+				log.error(e);
 			}
 		}
 		
@@ -91,6 +96,7 @@ public class CEncoding
 	}
 	
 	
+	@Override
 	public boolean equals(Object x)
 	{
 		if(x == this)
@@ -108,6 +114,7 @@ public class CEncoding
 	}
 	
 	
+	@Override
 	public int hashCode()
 	{
 		return getClass().hashCode() ^ charset.hashCode();

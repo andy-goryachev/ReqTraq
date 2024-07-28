@@ -1,5 +1,6 @@
-// Copyright © 2017-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2017-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
+import goryachev.common.log.Log;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
@@ -11,6 +12,7 @@ import java.util.function.Consumer;
 public class CTask<T>
 	implements Runnable
 {
+	protected static final Log log = Log.get("CTask");
 	protected ValueGenerator<? extends T> generator;
 	protected Consumer<T> onSuccess;
 	protected Consumer<Throwable> onError;
@@ -72,6 +74,7 @@ public class CTask<T>
 	}
 	
 	
+	@Override
 	public void run()
 	{
 		try
@@ -84,7 +87,7 @@ public class CTask<T>
 			}
 			catch(Throwable e)
 			{
-				Log.ex(e);
+				log.error(e);
 			}
 		}
 		catch(Throwable e)
@@ -95,7 +98,7 @@ public class CTask<T>
 			}
 			catch(Throwable err)
 			{
-				Log.ex(e);
+				log.error(e);
 			}
 		}
 		
@@ -105,7 +108,7 @@ public class CTask<T>
 		}
 		catch(Throwable e)
 		{
-			Log.ex(e);
+			log.error(e);
 		}
 	}
 	

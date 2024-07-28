@@ -1,12 +1,12 @@
-// Copyright © 2008-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2008-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util.html;
+import goryachev.common.log.Log;
 import goryachev.common.util.Base64;
 import goryachev.common.util.CComparator;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.common.util.CSet;
 import goryachev.common.util.Hex;
-import goryachev.common.util.Log;
 import goryachev.common.util.SB;
 import java.awt.Color;
 import java.net.URI;
@@ -14,6 +14,7 @@ import java.net.URI;
 
 public class HtmlTools
 {
+	protected static final Log log = Log.get("HtmlTools");
 	private static Html4SymbolEntities html4SymbolEntities;
 	private static CSet<String> htmlTags;
 	
@@ -250,6 +251,7 @@ public class HtmlTools
 	{
 		new CComparator<String>()
 		{
+			@Override
 			public int compare(String a, String b)
 			{
 				return compareAsStrings(a, b);
@@ -367,7 +369,7 @@ public class HtmlTools
 			}
 			catch(Exception e)
 			{
-				Log.ex(e);
+				log.error(e);
 			}
 		}
 		return u;

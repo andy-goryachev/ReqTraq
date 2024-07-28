@@ -1,5 +1,7 @@
 // Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq.data;
+import goryachev.common.util.BKey;
+import goryachev.common.util.GUID;
 
 
 public class Schema
@@ -28,4 +30,11 @@ public class Schema
 	public static final String TIME_MODIFIED = "modified";	
 	/** page title */
 	public static final String TITLE = "title";
+	
+	
+	public static BKey guid()
+	{
+		// TODO use String
+		return new BKey(GUID.generate());
+	}
 }

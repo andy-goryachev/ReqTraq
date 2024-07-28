@@ -1,10 +1,10 @@
-// Copyright © 2011-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2011-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
 
 
 public class Obj
 {
-	private String name;
+	private final String name;
 	
 	
 	public Obj(String name)
@@ -13,9 +13,10 @@ public class Obj
 	}
 	
 	
+	@Override
 	public String toString()
 	{
-		return getName();
+		return name;
 	}
 	
 	

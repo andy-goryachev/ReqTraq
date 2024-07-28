@@ -1,8 +1,9 @@
-// Copyright © 2007-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2007-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 
 public class CList<T>
@@ -61,6 +62,7 @@ public class CList<T>
 	
 	
 	// why ArrayList declares this method as protected is unclear
+	@Override
 	public void removeRange(int fromInclusive, int toExclusive)
 	{
 		super.removeRange(fromInclusive,toExclusive);
@@ -76,6 +78,7 @@ public class CList<T>
 	}
 	
 	
+	@Override
 	public Object clone()
 	{
 		return copyCList();
@@ -88,6 +91,7 @@ public class CList<T>
 	}
 	
 	
+	@Override
 	public boolean equals(Object x)
 	{
 		if(x == this)
@@ -117,6 +121,7 @@ public class CList<T>
 	}
 	
 	
+	@Override
 	public int hashCode()
 	{
 		return CList.class.hashCode() ^ super.hashCode();
@@ -191,6 +196,7 @@ public class CList<T>
 	 * keep in mind this method does not distingush between two scenarios:
 	 * when the list is empty and when the last element is null.
 	 */
+	@Override
 	public T getLast()
 	{
 		if(size() > 0)
@@ -202,6 +208,7 @@ public class CList<T>
 	
 	
 	/** removes last element */
+	@Override
 	public T removeLast()
 	{
 		int ix = size() - 1;
@@ -236,5 +243,47 @@ public class CList<T>
 		{
 			super.add(null);
 		}
+	}
+	
+	
+	/** 
+	 * safely inserts an item into the list, adding an item to the end of the list when index is >= size, 
+	 * or inserting at the position 0 when index is <= 0
+	 */
+	public void insert(int index, T item)
+	{
+		if(index < 0)
+		{
+			index = 0;
+		}
+		
+		if(index >= size())
+		{
+			add(item);
+		}
+		else
+		{
+			add(index, item);
+		}
+	}
+
+
+	public static <V> CList<V> of(V ... a)
+	{
+		return new CList(a);
+	}
+	
+	
+	public static <V> CList<V> copy(Collection<V> items)
+	{
+		if(items == null)
+		{
+			return null;
+		}
+		
+		int sz = items.size();
+		CList<V> rv = new CList(sz);
+		rv.addAll(items);
+		return rv;
 	}
 }

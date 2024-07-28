@@ -1,12 +1,9 @@
-// Copyright © 2013-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2013-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.test;
 import goryachev.common.util.CJob;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CList;
 import goryachev.common.util.CSorter;
-import goryachev.common.util.Log;
-import goryachev.common.util.log.ConsoleLogWriter;
-import goryachev.common.util.log.LogWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -57,10 +54,7 @@ public class TestRunner
 	
 	public static void initLog()
 	{
-		LogWriter wr = new ConsoleLogWriter("console");
-		wr.setAsync(false);
-//		Log.addWriter(wr);
-		Log.addErrorWriter(wr);
+		// TODO
 	}
 
 
@@ -139,6 +133,7 @@ public class TestRunner
 		{
 			CJob job = new CJob("test " + CKit.getSimpleName(c))
 			{
+				@Override
 				protected void process() throws Exception
 				{
 					try
@@ -193,6 +188,7 @@ public class TestRunner
 		{
 			CJob job = new CJob(parent, "test " + CKit.getSimpleName(c) + "." + m)
 			{
+				@Override
 				protected void process() throws Exception
 				{
 					executeInstance(c, m, before, after);
@@ -345,6 +341,7 @@ public class TestRunner
 		}
 		
 	
+		@Override
 		public String toString()
 		{
 			return getName();
@@ -389,6 +386,7 @@ public class TestRunner
 		}
 	
 	
+		@Override
 		public int compareTo(RunEntry x)
 		{
 			return getName().compareTo(x.getName());

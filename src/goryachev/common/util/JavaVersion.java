@@ -1,5 +1,6 @@
-// Copyright © 2018-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2018-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
+import goryachev.common.log.Log;
 
 
 /**
@@ -19,6 +20,7 @@ package goryachev.common.util;
 public class JavaVersion
 	implements Comparable<JavaVersion>
 {
+	protected static final Log log = Log.get("JavaVersion");
 	private final String version;
 	private final int[] ver;
 	
@@ -30,6 +32,7 @@ public class JavaVersion
 	}
 	
 	
+	@Override
 	public boolean equals(Object x)
 	{
 		if(x == this)
@@ -48,12 +51,15 @@ public class JavaVersion
 	}
 	
 	
+	@Override
 	public int hashCode()
 	{
-		return FH.hash(JavaVersion.class, version);
+		int h = FH.hash(JavaVersion.class);
+		return FH.hash(h, version);
 	}
 	
 	
+	@Override
 	public int compareTo(JavaVersion v)
 	{
 		int n = Math.min(ver.length, v.ver.length);
@@ -71,6 +77,7 @@ public class JavaVersion
 	}
 	
 	
+	@Override
 	public String toString()
 	{
 		return version;
@@ -143,7 +150,7 @@ public class JavaVersion
 	}
 	
 	
-	protected static JavaVersion parse(String s)
+	public static JavaVersion parse(String s)
 	{
 		int[] ver;
 		
@@ -159,7 +166,7 @@ public class JavaVersion
 		}
 		catch(Exception e)
 		{
-			Log.ex(e);
+			log.error(e);
 			ver = new int[0];
 		}
 		

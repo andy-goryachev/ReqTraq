@@ -1,8 +1,8 @@
 // Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package goryachev.reqtraq.demo;
 import goryachev.reqtraq.data.AppState;
-import goryachev.reqtraq.data.GUID;
 import goryachev.reqtraq.data.Page;
+import goryachev.reqtraq.data.Schema;
 import goryachev.reqtraq.data.Status;
 
 
@@ -21,7 +21,7 @@ public class Demo
 			String title = "page " + (i + 1);
 			String text = i + "\n" + i + "\n" + i;
 			
-			Page p = new Page(GUID.create(), t, t, title, text, Status.OPEN);
+			Page p = new Page(Schema.guid(), t, t, title, text, Status.OPEN);
 			root.add(p);
 		}
 		

@@ -1,13 +1,14 @@
-// Copyright © 2017-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2017-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import goryachev.common.util.CKit;
 import goryachev.common.util.CMap;
 import goryachev.common.util.FH;
-import goryachev.common.util.Hex;
-import goryachev.common.util.SB;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Window;
 
 
 /**
@@ -44,15 +45,33 @@ public class KeyMap
 	}
 	
 	
+	public static void onKeyPressed(Node n, KeyCode code, int modifiers, FxAction a)
+	{
+		get(n).add(KEY_PRESSED | (modifiers & MASK_MODIFIERS), code, null, a::fire);
+	}
+	
+	
 	public static void onKeyPressed(Node n, KeyCode code, Runnable r)
 	{
 		get(n).add(KEY_PRESSED, code, null, r);
 	}
 	
 	
+	public static void onKeyPressed(Node n, KeyCode code, FxAction a)
+	{
+		get(n).add(KEY_PRESSED, code, null, a::fire);
+	}
+	
+	
 	public static void onKeyReleased(Node n, KeyCode code, int modifiers, Runnable r)
 	{
 		get(n).add(KEY_RELEASED | (modifiers & MASK_MODIFIERS), code, null, r);
+	}
+	
+	
+	public static void onKeyReleased(Window w, KeyCode code, int modifiers, Runnable r)
+	{
+		get(w).add(KEY_RELEASED | (modifiers & MASK_MODIFIERS), code, null, r);
 	}
 	
 	
@@ -91,6 +110,14 @@ public class KeyMap
 	}
 	
 	
+	protected static KeyMap get(Window w)
+	{
+		Scene sc = w.getScene();
+		Parent p = sc.getRoot();
+		return get(p);
+	}
+	
+	
 	protected static KeyMap get(Node n)
 	{
 		Object x = n.getProperties().get(KEY);
@@ -112,35 +139,36 @@ public class KeyMap
 	protected void handleEvent(KeyEvent ev)
 	{
 		// FIX
-		SB sb = new SB();
-		if(ev.isAltDown())
-		{
-			sb.a(" alt");
-		}
-		
-		if(ev.isControlDown())
-		{
-			sb.a(" ctrl");
-		}
-
-		if(ev.isMetaDown())
-		{
-			sb.a(" meta");
-		}
-
-		if(ev.isShiftDown())
-		{
-			sb.a(" shift");
-		}
-		
-		if(ev.isShortcutDown())
-		{
-			sb.a(" shortcut");
-		}
+//		SB sb = new SB();
+//		if(ev.isAltDown())
+//		{
+//			sb.a(" alt");
+//		}
+//		
+//		if(ev.isControlDown())
+//		{
+//			sb.a(" ctrl");
+//		}
+//
+//		if(ev.isMetaDown())
+//		{
+//			sb.a(" meta");
+//		}
+//
+//		if(ev.isShiftDown())
+//		{
+//			sb.a(" shift");
+//		}
+//		
+//		if(ev.isShortcutDown())
+//		{
+//			sb.a(" shortcut");
+//		}
 		
 //		D.print(ev.getEventType(), Hex.toHexString(ev.getCharacter().getBytes()), ev.getCode(), sb); // FIX
 		
-		Runnable a = actions.get(key(ev));
+		KKey k = key(ev);
+		Runnable a = actions.get(k);
 		if(a != null)
 		{
 			a.run();
@@ -262,6 +290,7 @@ public class KeyMap
 		}
 		
 		
+		@Override
 		public boolean equals(Object x)
 		{
 			if(x == this)
@@ -283,6 +312,7 @@ public class KeyMap
 		}
 		
 		
+		@Override
 		public int hashCode()
 		{
 			int h = FH.hash(KKey.class);

@@ -1,26 +1,50 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import goryachev.common.log.Log;
+import goryachev.common.util.CKit;
+import goryachev.common.util.CList;
 import goryachev.common.util.CPlatform;
-import goryachev.common.util.GlobalSettings;
-import goryachev.fx.hacks.FxHacks;
+import goryachev.common.util.IDisconnectable;
+import goryachev.common.util.SystemTask;
 import goryachev.fx.internal.CssTools;
-import goryachev.fx.internal.FxSchema;
-import goryachev.fx.internal.WindowsFx;
+import goryachev.fx.internal.DisconnectableIntegerListener;
+import goryachev.fx.internal.FxStyleHandler;
+import goryachev.fx.internal.ParentWindow;
 import goryachev.fx.table.FxTable;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.IntConsumer;
 import java.util.function.Supplier;
+import javax.imageio.ImageIO;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.beans.WeakListener;
 import javafx.beans.property.Property;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
+import javafx.collections.transformation.TransformationList;
+import javafx.css.Styleable;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -28,11 +52,16 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableView;
@@ -41,39 +70,42 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import javafx.util.StringConverter;
 
 
 /**
- * Making FX-ing easier.
+ * Making JavaFX "easier".
  */
 public final class FX
 {
+	protected static final Log log = Log.get("FX");
 	public static final double TWO_PI = Math.PI + Math.PI;
 	public static final double PI_2 = Math.PI / 2.0;
 	public static final double DEGREES_PER_RADIAN = 180.0 / Math.PI;
 	public static final double GAMMA = 2.2;
 	public static final double ONE_OVER_GAMMA = 1.0 / GAMMA;
-	private static WindowsFx windowsFx = new WindowsFx();
 	private static Text helper;
-
+	private static final Object PROP_TOOLTIP = new Object();
+	
+	// TODO move both to FxSettings?
+	private static final Object PROP_NAME = new Object();
+	private static final Object PROP_SKIP_SETTINGS = new Object();
+	
 	
 	public static FxWindow getWindow(Node n)
 	{
@@ -90,62 +122,35 @@ public final class FX
 	}
 	
 	
-	public static void storeSettings(Node n)
+	/** 
+	 * disables persisting of settings for this node only.  
+	 * the LocalSettings, and the settings for its children will still be persisted.
+	 */
+	public static void setSkipSettings(Node n)
 	{
-		if(n != null)
-		{
-			windowsFx.storeNode(n);
-			GlobalSettings.save();
-		}
+		n.getProperties().put(PROP_SKIP_SETTINGS, Boolean.TRUE);
 	}
 	
 	
-	public static void restoreSettings(Node n)
+	public static boolean isSkipSettings(Node n)
 	{
-		if(n != null)
-		{
-			windowsFx.restoreNode(n);
-		}
+		Object x = n.getProperties().get(PROP_SKIP_SETTINGS);
+		return Boolean.TRUE.equals(x);
 	}
 	
 	
-	public static void storeSettings(FxWindow w)
+	public static void setSkipSettings(Window w)
 	{
-		windowsFx.storeWindow(w);
-		GlobalSettings.save();
+		w.getProperties().put(PROP_SKIP_SETTINGS, Boolean.TRUE);
 	}
 	
 	
-	public static void restoreSettings(FxWindow w)
+	public static boolean isSkipSettings(Window w)
 	{
-		windowsFx.restoreWindow(w);
-		GlobalSettings.save();
+		Object x = w.getProperties().get(PROP_SKIP_SETTINGS);
+		return Boolean.TRUE.equals(x);
 	}
-	
-	
-	public static void open(FxWindow w)
-	{
-		windowsFx.open(w);
-	}
-	
-	
-	public static void close(FxWindow w)
-	{
-		windowsFx.close(w);
-	}
-	
-	
-	public static void exit()
-	{
-		windowsFx.exit();
-	}
-	
-	
-	public static FxAction exitAction()
-	{
-		return windowsFx.exitAction();
-	}
-	
+
 	
 	/** creates a label.  accepts: CssStyle, CssID, FxCtl, Insets, OverrunStyle, Pos, TextAlignment, Color, Node, Background */
 	public static Label label(Object ... attrs)
@@ -158,17 +163,17 @@ public final class FX
 			{
 				// ignore
 			}
-			else if(a instanceof CssStyle)
+			else if(a instanceof CssStyle v)
 			{
-				n.getStyleClass().add(((CssStyle)a).getName());
+				n.getStyleClass().add(v.getName());
 			}
-			else if(a instanceof CssID)
+			else if(a instanceof CssID v)
 			{
-				n.setId(((CssID)a).getID());
+				n.setId(v.getID());
 			}
-			else if(a instanceof FxCtl)
+			else if(a instanceof FxCtl v)
 			{
-				switch((FxCtl)a)
+				switch(v)
 				{
 				case BOLD:
 					n.getStyleClass().add(CssTools.BOLD.getName());
@@ -192,44 +197,44 @@ public final class FX
 					n.setWrapText(true);
 					break;
 				default:
-					throw new Error("?" + a);
+					throw new Error("?" + v);
 				}
 			}
-			else if(a instanceof Insets)
+			else if(a instanceof Insets v)
 			{
-				n.setPadding((Insets)a);
+				n.setPadding(v);
 			}
-			else if(a instanceof OverrunStyle)
+			else if(a instanceof OverrunStyle v)
 			{
-				n.setTextOverrun((OverrunStyle)a);
+				n.setTextOverrun(v);
 			}
-			else if(a instanceof Pos)
+			else if(a instanceof Pos v)
 			{
-				n.setAlignment((Pos)a);
+				n.setAlignment(v);
 			}
-			else if(a instanceof String)
+			else if(a instanceof String s)
 			{
-				n.setText((String)a);
+				n.setText(s);
 			}
-			else if(a instanceof TextAlignment)
+			else if(a instanceof TextAlignment v)
 			{
-				n.setTextAlignment((TextAlignment)a);
+				n.setTextAlignment(v);
 			}
-			else if(a instanceof Color)
+			else if(a instanceof Color v)
 			{
-				n.setTextFill((Color)a);
+				n.setTextFill(v);
 			}
-			else if(a instanceof StringProperty)
+			else if(a instanceof StringProperty v)
 			{
-				n.textProperty().bind((StringProperty)a);
+				n.textProperty().bind(v);
 			}
-			else if(a instanceof Node)
+			else if(a instanceof Node v)
 			{
-				n.setGraphic((Node)a);
+				n.setGraphic(v);
 			}
-			else if(a instanceof Background)
+			else if(a instanceof Background v)
 			{
-				n.setBackground((Background)a);
+				n.setBackground(v);
 			}
 			else
 			{
@@ -252,17 +257,17 @@ public final class FX
 			{
 				// ignore
 			}
-			else if(a instanceof CssStyle)
+			else if(a instanceof CssStyle v)
 			{
-				n.getStyleClass().add(((CssStyle)a).getName());
+				n.getStyleClass().add(v.getName());
 			}
-			else if(a instanceof CssID)
+			else if(a instanceof CssID v)
 			{
-				n.setId(((CssID)a).getID());
+				n.setId(v.getID());
 			}
-			else if(a instanceof FxCtl)
+			else if(a instanceof FxCtl v)
 			{
-				switch((FxCtl)a)
+				switch(v)
 				{
 				case BOLD:
 					n.getStyleClass().add(CssTools.BOLD.getName());
@@ -274,16 +279,16 @@ public final class FX
 					n.setFocusTraversable(false);
 					break;
 				default:
-					throw new Error("?" + a);
+					throw new Error("?" + v);
 				}
 			}
-			else if(a instanceof String)
+			else if(a instanceof String s)
 			{
-				n.setText((String)a);
+				n.setText(s);
 			}
-			else if(a instanceof TextAlignment)
+			else if(a instanceof TextAlignment v)
 			{
-				n.setTextAlignment((TextAlignment)a);
+				n.setTextAlignment(v);
 			}
 			else
 			{
@@ -292,6 +297,51 @@ public final class FX
 		}
 		
 		return n;
+	}
+	
+	
+	/** adds a style to a Styleable */
+	public static void style(Styleable n, CssStyle style)
+	{
+		n.getStyleClass().add(style.getName());
+	}
+	
+	
+	/** adds or removes the specified style, depending on the condition */
+	public static void style(Styleable n, boolean condition, CssStyle st)
+	{
+		if(n == null)
+		{
+			return;
+		}
+		else if(st == null)
+		{
+			return;
+		}
+		
+		String name = st.getName();
+		ObservableList<String> ss = n.getStyleClass();
+		if(condition)
+		{
+			if(!ss.contains(name))
+			{
+				ss.add(st.getName());
+			}
+		}
+		else
+		{
+			ss.remove(name);
+		}
+	}
+	
+	
+	/** removes styles from a Styleable */
+	public static void removeStyles(Styleable n, CssStyle ... styles)
+	{
+		for(CssStyle st: styles)
+		{
+			n.getStyleClass().remove(st.getName());
+		}
 	}
 	
 	
@@ -306,17 +356,17 @@ public final class FX
 				{
 					// ignore
 				}
-				else if(a instanceof CssStyle)
+				else if(a instanceof CssStyle v)
 				{
-					n.getStyleClass().add(((CssStyle)a).getName());
+					n.getStyleClass().add(v.getName());
 				}
-				else if(a instanceof CssID)
+				else if(a instanceof CssID v)
 				{
-					n.setId(((CssID)a).getID());
+					n.setId(v.getID());
 				}
-				else if(a instanceof FxCtl)
+				else if(a instanceof FxCtl v)
 				{
-					switch((FxCtl)a)
+					switch(v)
 					{
 					case BOLD:
 						n.getStyleClass().add(CssTools.BOLD.getName());
@@ -340,13 +390,13 @@ public final class FX
 						n.setFocusTraversable(false);
 						break;
 					case WRAP_TEXT:
-						if(n instanceof Labeled)
+						if(n instanceof Labeled c)
 						{
-							((Labeled)n).setWrapText(true);
+							c.setWrapText(true);
 						}
-						else if(n instanceof TextArea)
+						else if(n instanceof TextArea c)
 						{
-							((TextArea)n).setWrapText(true);
+							c.setWrapText(true);
 						}
 						else
 						{
@@ -354,54 +404,54 @@ public final class FX
 						}
 						break;
 					default:
-						throw new Error("?" + a);
+						throw new Error("?" + v);
 					}
 				}
-				else if(a instanceof Insets)
+				else if(a instanceof Insets v)
 				{
-					((Region)n).setPadding((Insets)a);
+					((Region)n).setPadding(v);
 				}
-				else if(a instanceof OverrunStyle)
+				else if(a instanceof OverrunStyle v)
 				{
-					((Labeled)n).setTextOverrun((OverrunStyle)a);
+					((Labeled)n).setTextOverrun(v);
 				}
-				else if(a instanceof Pos)
+				else if(a instanceof Pos v)
 				{
-					if(n instanceof Labeled)
+					if(n instanceof Labeled c)
 					{
-						((Labeled)n).setAlignment((Pos)a);
+						c.setAlignment(v);
 					}
-					else if(n instanceof TextField)
+					else if(n instanceof TextField c)
 					{
-						((TextField)n).setAlignment((Pos)a);
+						c.setAlignment(v);
 					}
 					else
 					{
 						throw new Error("?" + n);
 					}
 				}
-				else if(a instanceof String)
+				else if(a instanceof String s)
 				{
-					if(n instanceof Labeled)
+					if(n instanceof Labeled c)
 					{
-						((Labeled)n).setText((String)a);
+						c.setText(s);
 					}
-					else if(n instanceof TextInputControl)
+					else if(n instanceof TextInputControl c)
 					{
-						((TextInputControl)n).setText((String)a);
+						c.setText(s);
 					}
 					else
 					{
 						throw new Error("?" + n);
 					}
 				}
-				else if(a instanceof TextAlignment)
+				else if(a instanceof TextAlignment v)
 				{
-					((Labeled)n).setTextAlignment((TextAlignment)a);
+					((Labeled)n).setTextAlignment(v);
 				}
-				else if(a instanceof Background)
+				else if(a instanceof Background v)
 				{
-					((Region)n).setBackground((Background)a);
+					((Region)n).setBackground(v);
 				}
 				else
 				{
@@ -415,13 +465,23 @@ public final class FX
 	/** Creates a simple color background. */
 	public static Background background(Paint c)
 	{
-		return new Background(new BackgroundFill(c, null, null));
+		if(c == null)
+		{
+			return null;
+		}
+		return Background.fill(c);
 	}
 	
 	
 	public static Color gray(int col)
 	{
 		return Color.rgb(col, col, col);
+	}
+	
+	
+	public static Color gray(int col, double alpha)
+	{
+		return Color.rgb(col, col, col, alpha);
 	}
 	
 	
@@ -524,60 +584,75 @@ public final class FX
 	
 	
 	/** 
-	 * returns parent window or null, accepts either a Node or a Window.
-	 * unfortunately, FX Window is not a Node, so we have to lose some type safety 
+	 * Returns parent window or null.
+	 * Accepts either a Node, a Window, or a MenuItem.
 	 */
-	public static Window getParentWindow(Object nodeOrWindow)
+	public static Window getParentWindow(Object x)
 	{
-		if(nodeOrWindow == null)
+		if(x == null)
 		{
 			return null;
 		}
-		else if(nodeOrWindow instanceof Window)
+		else if(x instanceof Window w)
 		{
-			return (Window)nodeOrWindow;
+			return w;
 		}
-		else if(nodeOrWindow instanceof Node)
+		else if(x instanceof Node n)
 		{
-			Scene s = ((Node)nodeOrWindow).getScene();
+			Scene s = n.getScene();
 			if(s != null)
 			{
 				return s.getWindow();
 			}
 			return null;
 		}
+		else if(x instanceof MenuItem m)
+		{
+			ContextMenu cm = m.getParentPopup();
+			return cm == null ? null : cm.getOwnerWindow();
+		}
 		else
 		{
-			throw new Error("node or window");
+			throw new Error("node, window, or menu item " + x);
 		}
-	}
-	
-	
-	/** rounds a double value to int */
-	public static int round(double x)
-	{
-		return (int)Math.round(x);
-	}
-	
-	
-	/** returns int ceiling of a double value */
-	public static int ceil(double x)
-	{
-		return (int)Math.ceil(x);
-	}
-	
-	
-	/** returns int floor of a double value */
-	public static int floor(double x)
-	{
-		return (int)Math.floor(x);
-	}
+	}	
 	
 	
 	/** shortcut for Platform.runLater() */
 	public static void later(Runnable r)
 	{
 		Platform.runLater(r);
+	}
+	
+	
+	/** invokes Platform.runLater() after the specified delay */
+	public static void later(int delay, Runnable r)
+	{
+		SystemTask.schedule(delay, () ->
+		{
+			Platform.runLater(r);
+		});
+	}
+	
+	
+	/** execute in FX application thread directly if called from it, or in runLater() */
+	public static void inFX(Runnable r)
+	{
+		if(Platform.isFxApplicationThread())
+		{
+			r.run();
+		}
+		else
+		{
+			FX.later(r);
+		}
+	}
+	
+	
+	/** alias for Platform.isFxApplicationThread() */
+	public static boolean isFX()
+	{
+		return Platform.isFxApplicationThread();
 	}
 	
 	
@@ -593,6 +668,26 @@ public final class FX
 			FutureTask<T> t = new FutureTask(producer);
 			FX.later(t);
 			return t.get();
+		}
+	}
+	
+	
+	/** swing invokeAndWait() analog.  if called from an FX application thread, simply invokes the producer. */
+	public static void invokeAndWait(Runnable action) throws Exception
+	{
+		if(Platform.isFxApplicationThread())
+		{
+			action.run();
+		}
+		else
+		{
+			FutureTask<Boolean> t = new FutureTask<>(() ->
+			{
+				action.run();
+				return Boolean.TRUE;
+			});
+			FX.later(t);
+			t.get();
 		}
 	}
 
@@ -623,51 +718,6 @@ public final class FX
 		double bottom = w.getY() + w.getHeight() - b.getMaxY();
 
 		return new Insets(top, right, bottom, left);
-	}
-	
-	
-	/** assign a name to the node for the purposes of saving settings */
-	public static void setName(Node n, String name)
-	{
-		FxSchema.setName(n, name);
-	}
-	
-	
-	/** 
-	 * attaches a handler to be notified when settings for the node have been loaded.  
-	 * setting null clears the handler 
-	 */
-	public static void setOnSettingsLoaded(Node n, Runnable r)
-	{
-		FxSchema.setOnSettingsLoaded(n, r);
-	}
-	
-	
-	/** bind a property to be saved as part of FxWindow settings using the specified subkey */
-	public static <T> void bind(Node n, String subKey, Property<T> p)
-	{
-		FxSchema.bindings(n, true).add(subKey, p, null);
-	}
-	
-	
-	/** bind an object with settings to be saved as part of FxWindow settings using the specified subkey */
-	public static <T> void bind(Node n, String subKey, HasSettings x)
-	{
-		FxSchema.bindings(n, true).add(subKey, x);
-	}
-	
-	
-	/** bind a property to be saved as part of FxWindow settings using the specified subkey */
-	public static <T> void bind(Node n, String subKey, Property<T> p, StringConverter<T> c)
-	{
-		FxSchema.bindings(n, true).add(subKey, p, c);
-	}
-	
-	
-	/** bind a property to be saved as part of FxWindow settings using the specified subkey */
-	public static <T> void bind(Node n, String subKey, Property<T> p, SSConverter<T> c)
-	{
-		FxSchema.bindings(n, true).add(subKey, c, p);
 	}
 	
 	
@@ -717,6 +767,22 @@ public final class FX
 		{
 			return base;
 		}
+		
+		if(base == null)
+		{
+			if(over == null)
+			{
+				return null;
+			}
+			else
+			{
+				return new Color(over.getRed(), over.getGreen(), over.getBlue(), over.getOpacity() * fraction);
+			}
+		}
+		else if(over == null)
+		{
+			return base;
+		}
 
 		if(base.isOpaque())
 		{
@@ -762,8 +828,46 @@ public final class FX
 		v = Math.pow(v, ONE_OVER_GAMMA);
 		return clip(v);
 	}
+	
+	
+	public static Color mix(Color[] colors, double gamma)
+	{
+		int sz = colors.length;
+		
+		double red = 0.0;
+		double green = 0.0;
+		double blue = 0.0;
+		
+		for(int i=0; i<sz; i++)
+		{
+			Color c = colors[i];
+			double op = c.getOpacity();
+			
+			double r = c.getRed();
+			red += (Math.pow(r, gamma) * op);
+			
+			double g = c.getGreen();
+			green += (Math.pow(g, gamma) * op);
+			
+			double b = c.getBlue();
+			blue += (Math.pow(b, gamma) * op);
+		}
+		
+		double oneOverGamma = 1.0 / gamma;
+		red = clip(Math.pow(red / sz, oneOverGamma));
+		green = clip(Math.pow(green / sz, oneOverGamma));
+		blue = clip(Math.pow(blue / sz, oneOverGamma));
+
+		return Color.color(red, green, blue);
+	}
 
 	
+	public static Color mix(Color[] colors)
+	{
+		return mix(colors, GAMMA);
+	}
+	
+
 	private static double clip(double c)
 	{
 		if(c < 0)
@@ -795,45 +899,54 @@ public final class FX
 		return new Image(c.getResourceAsStream(resource));
 	}
 
-
-	/** permanently hides the table header */
-	public static void hideHeader(TableView<?> t)
-	{
-		t.skinProperty().addListener((s, p, v) ->
-		{
-			Pane h = (Pane)t.lookup("TableHeaderRow");
-			if(h.isVisible())
-			{
-				h.setMaxHeight(0);
-				h.setMinHeight(0);
-				h.setPrefHeight(0);
-				h.setVisible(false);
-			}
-		});
-	}
-	
 	
 	/** sets a tool tip on the control. */
-	public static void toolTip(Control n, Object tooltip)
+//	@Deprecated
+//	public static void setTooltip(Control n, Object tooltip)
+//	{
+//		if(tooltip == null)
+//		{
+//			n.setTooltip(null);
+//		}
+//		else if(tooltip instanceof Tooltip)
+//		{
+//			n.setTooltip((Tooltip)tooltip);
+//		}
+//		else
+//		{
+//			n.setTooltip(new Tooltip(tooltip.toString()));
+//		}
+//	}
+	
+	
+	/** attaches or removes (text=null) the Node's tooltip */
+	public static void setTooltip(Node n, String text)
 	{
-		if(tooltip == null)
+		if(n != null)
 		{
-			n.setTooltip(null);
-		}
-		else if(tooltip instanceof Tooltip)
-		{
-			n.setTooltip((Tooltip)tooltip);
-		}
-		else
-		{
-			n.setTooltip(new Tooltip(tooltip.toString()));
+			if(text == null)
+			{
+				Tooltip t = getTooltip(n);
+				Tooltip.uninstall(n, t);
+				n.getProperties().remove(PROP_TOOLTIP);
+			}
+			else
+			{
+				Tooltip t = new Tooltip(text);
+				Tooltip.install(n, t);
+				n.getProperties().put(PROP_TOOLTIP, t);
+			}
 		}
 	}
 	
 	
-	public static void storeSettings()
+	private static Tooltip getTooltip(Node n)
 	{
-		windowsFx.storeSettings();
+		if(n != null)
+		{
+			return (Tooltip)n.getProperties().get(PROP_TOOLTIP);
+		}
+		return null;
 	}
 	
 	
@@ -870,119 +983,32 @@ public final class FX
 		}
 	}
 	
-
-	/** adds or removes the specified style */
-	public static void setStyle(Node n, CssStyle st, boolean on)
-	{
-		if(n == null)
-		{
-			return;
-		}
-		else if(st == null)
-		{
-			return;
-		}
-		
-		String name = st.getName();
-		ObservableList<String> ss = n.getStyleClass();
-		if(on)
-		{
-			if(!ss.contains(name))
-			{
-				ss.add(st.getName());
-			}
-		}
-		else
-		{
-			ss.remove(name);
-		}
-	}
-	
 	
 	public static void setDisable(boolean on, Object ... nodes)
 	{
 		for(Object x: nodes)
 		{
-			if(x instanceof Node)
+			if(x instanceof Node n)
 			{
-				((Node)x).setDisable(on);
+				n.setDisable(on);
 			}
-			else if(x instanceof FxAction)
+			else if(x instanceof FxAction a)
 			{
-				((FxAction)x).setDisabled(on);
+				a.setDisabled(on);
 			}
 		}
 	}
 	
-	
-	/** adds a callback which will be invoked before any FxWindow gets shown */
-	public static void addWindowMonitor(Consumer<FxWindow> monitor)
-	{
-		windowsFx.addWindowMonitor(monitor);
-	}
-	
-	
-	/** removes a window monitor */
-	public static void removeWindowMonitor(Consumer<FxWindow> monitor)
-	{
-		windowsFx.removeWindowMonitor(monitor);
-	}
-	
-	
-	/** creates an instance of Insets(horizontal,vertical).  why there is not such a constructor you might ask? */
-	public static Insets insets(double vertical, double horizontal)
-	{
-		return new Insets(vertical, horizontal, vertical, horizontal);
-	}
-	
-	
-	/** adds an invalidation listener to an observable */
-	public static void listen(Runnable handler, Observable prop)
-	{
-		prop.addListener((src) -> handler.run());
-	}
-	
-	
-	/** adds an invalidation listener to an observable */
-	public static void listen(Runnable handler, boolean fireImmediately, Observable prop)
-	{
-		prop.addListener((src) -> handler.run());
-			
-		if(fireImmediately)
-		{
-			handler.run();
-		}
-	}
-	
-	
-	/** adds an invalidation listener to multiple observables */
-	public static void listen(Runnable handler, Observable ... props)
-	{
-		for(Observable prop: props)
-		{
-			prop.addListener((src) -> handler.run());
-		}
-	}
-	
-	
-	/** adds an invalidation listener to multiple observables */
-	public static void listen(Runnable handler, boolean fireImmediately, Observable ... props)
-	{
-		for(Observable prop: props)
-		{
-			prop.addListener((src) -> handler.run());
-		}
-			
-		if(fireImmediately)
-		{
-			handler.run();
-		}
-	}
-
 
 	public static <T> ObservableList<T> observableArrayList()
 	{
 		return FXCollections.observableArrayList();
+	}
+	
+	
+	public static <K,V> ObservableMap<K,V> observableHashMap()
+	{
+		return FXCollections.observableHashMap();
 	}
 
 
@@ -998,15 +1024,36 @@ public final class FX
 	
 	
 	// from http://stackoverflow.com/questions/15593287/binding-textarea-height-to-its-content/19717901#19717901
-	public static FxSize getTextBounds(TextArea t, double width)
+	public static FxSize getTextBounds(TextArea textArea, double targetWidth)
+	{
+		String text = textArea.getText();
+		Font f = textArea.getFont();
+
+		Bounds r = computeTextBounds(text, f, targetWidth);
+		
+		Insets m = textArea.getInsets();
+		Insets p = textArea.getPadding();
+		double w = Math.ceil(r.getWidth() + m.getLeft() + m.getRight());
+		double h = Math.ceil(r.getHeight() + m.getTop() + m.getBottom());
+		
+		return new FxSize(w, h);
+	}
+	
+	
+	public static Bounds computeTextBounds(String text, Font f)
+	{
+		return computeTextBounds(text, f, -1);
+	}
+	
+	
+	public static Bounds computeTextBounds(String text, Font f, double targetWidth)
 	{
 		if(helper == null)
 		{
 			helper = new Text();
 		}
-		
-		String text = t.getText();
-		if(width < 0)
+
+		if(targetWidth < 0)
 		{
 			// Note that the wrapping width needs to be set to zero before
 			// getting the text's real preferred width.
@@ -1014,19 +1061,15 @@ public final class FX
 		}
 		else
 		{
-			helper.setWrappingWidth(width);
+			helper.setWrappingWidth(targetWidth);
 		}
+		
 		helper.setText(text);
-		helper.setFont(t.getFont());
-		Bounds r = helper.getLayoutBounds();
-		
-		Insets m = t.getInsets();
-		Insets p = t.getPadding();
-		double w = Math.ceil(r.getWidth() + m.getLeft() + m.getRight());
-		double h = Math.ceil(r.getHeight() + m.getTop() + m.getBottom());
-		
-		return new FxSize(w, h);
+		helper.setFont(f);
+
+		return helper.getLayoutBounds();
 	}
+
 	
 
 	/** requests focus in Platform.runLater() */
@@ -1037,66 +1080,123 @@ public final class FX
 	
 	
 	/** returns a parent of the specified type, or null.  if comp is an instance of the specified class, returns comp */
-	public static <T> T getAncestorOfClass(Class<T> c, Node comp)
+	public static <T> T getAncestorOfClass(Class<T> c, Node node)
 	{
-		while(comp != null)
+		if(Window.class.isAssignableFrom(c))
 		{
-			if(c.isInstance(comp))
+			Scene sc = node.getScene();
+			if(sc != null)
 			{
-				return (T)comp;
+				Window w = sc.getWindow();
+				while(w != null)
+				{
+					if(w.getClass().isAssignableFrom(c))
+					{
+						return (T)w;
+					}
+					
+					// the window can be a dialog, check the owner
+					if(w instanceof Stage)
+					{
+						Stage stage = (Stage)w;
+						w = stage.getOwner();
+					}
+				}
 			}
-			
-//			if(comp instanceof JPopupMenu)
-//			{
-//				if(comp.getParent() == null)
-//				{
-//					comp = ((JPopupMenu)comp).getInvoker();
-//					continue;
-//				}
-//			}
-			
-			comp = comp.getParent();
+			return null;
+		}
+		else
+		{
+			while(node != null)
+			{
+				if(c.isInstance(node))
+				{
+					return (T)node;
+				}
+				
+	//			if(comp instanceof JPopupMenu)
+	//			{
+	//				if(comp.getParent() == null)
+	//				{
+	//					comp = ((JPopupMenu)comp).getInvoker();
+	//					continue;
+	//				}
+	//			}
+				
+				node = node.getParent();
+			}
 		}
 		return null;
 	}
 	
 	
-	public static List<Window> getWindows()
+	/** 
+	 * attaches a double click handler to a node.
+	 */
+	public static void onDoubleClick(Node owner, Runnable handler)
 	{
-		return FxHacks.get().getWindows();
+		if(owner == null)
+		{
+			throw new NullPointerException("cannot attach a double click handler to null");
+		}
+		
+		owner.addEventHandler(MouseEvent.MOUSE_CLICKED, (ev) ->
+		{
+			if(ev.getClickCount() == 2)
+			{
+				if(ev.getButton() == MouseButton.PRIMARY)
+				{
+					handler.run();
+				}
+			}
+		});
 	}
 	
 	
-	/** attach a popup menu to the node */
-	public static void setPopupMenu(Node owner, Supplier<FxPopupMenu> generator)
+	/** 
+	 * attach a popup menu to a node.
+	 * WARNING: sometimes, as the case is with TableView/FxTable header, 
+	 * the requested node gets created by the skin at some later time.
+	 * In this case, additional dance must be performed, see for example
+	 * FxTable.setHeaderPopupMenu()   
+	 */
+	public static void setPopupMenu(Node owner, Supplier<ContextMenu> generator)
 	{
+		if(owner == null)
+		{
+			throw new NullPointerException("cannot attach popup menu to null");
+		}
+		
 		owner.setOnContextMenuRequested((ev) ->
 		{
 			if(generator != null)
 			{
-				FX.later(() ->
+				ContextMenu m = generator.get();
+				if(m != null)
 				{
-					FxPopupMenu m = generator.get();
-					if(m != null)
+					if(m.getItems().size() > 0)
 					{
-						if(m.getItems().size() > 0)
+						FX.later(() ->
 						{
 							// javafx does not dismiss the popup when the user
 							// clicks on the owner node
 							EventHandler<MouseEvent> li = new EventHandler<MouseEvent>()
 							{
+								@Override
 								public void handle(MouseEvent event)
 								{
 									m.hide();
 									owner.removeEventFilter(MouseEvent.MOUSE_PRESSED, this);
+									event.consume();
 								}
 							};
 							
 							owner.addEventFilter(MouseEvent.MOUSE_PRESSED, li);
 							m.show(owner, ev.getScreenX(), ev.getScreenY());
-						}
+						});
+						ev.consume();
 					}
-				});
+				}
 			}
 			ev.consume();
 		});
@@ -1124,7 +1224,7 @@ public final class FX
 				}
 				else
 				{
-					a.action();
+					a.invokeAction();
 					ev.consume();
 				}
 			}
@@ -1136,6 +1236,7 @@ public final class FX
 	{
 		p.addListener(new ChangeListener<T>()
 		{
+			@Override
 			public void changed(ObservableValue<? extends T> observable, T old, T cur)
 			{
 				c.accept(cur);
@@ -1242,5 +1343,959 @@ public final class FX
 		}
 		
 		return null;
+	}
+	
+	
+	/** adds a ChangeListener to the specified ObservableValue(s) */
+	public static IDisconnectable onChange(Runnable callback, ObservableValue<?> ... props)
+	{
+		return onChange(callback, false, props);
+	}
+	
+	
+	/** adds a ChangeListener to the specified ObservableValue(s) */
+	public static IDisconnectable onChange(Runnable callback, boolean fireImmediately, ObservableValue<?> ... props)
+	{
+		FxChangeListener li = new FxChangeListener(callback);
+		li.listen(props);
+		
+		if(fireImmediately)
+		{
+			li.fire();
+		}
+		
+		return li;
+	}
+	
+	
+	/** adds a ChangeListener to the specified ObservableValue(s).  The callback will be invokedLater() */
+	public static IDisconnectable onChangeLater(Runnable callback, ObservableValue<?> ... props)
+	{
+		FxChangeListener li = new FxChangeListener(callback)
+		{
+			@Override
+			protected void invokeCallback()
+			{
+				later(() ->
+				{
+					super.invokeCallback();
+				});
+			}
+		};
+
+		li.listen(props);
+		
+		return li;
+	}
+	
+	
+	/** adds a ListChangeListener to the specified ObservableValue(s) */
+	public static void onChange(Runnable handler, ObservableList<?> list)
+	{
+		onChange(handler, false, list);
+	}
+	
+	
+	/** adds a ListChangeListener to the specified ObservableValue(s) */
+	public static void onChange(Runnable handler, boolean fireImmediately, ObservableList list)
+	{
+		list.addListener((Change ch) -> handler.run());
+		
+		if(fireImmediately)
+		{
+			handler.run();
+		}
+	}
+	
+	
+	/** adds an invalidation listener to an observable */
+	public static void onInvalidation(Runnable handler, Observable prop)
+	{
+		prop.addListener((src) -> handler.run());
+	}
+	
+	
+	/** adds an invalidation listener to an observable */
+	public static void onInvalidation(Runnable handler, boolean fireImmediately, Observable prop)
+	{
+		prop.addListener((src) -> handler.run());
+			
+		if(fireImmediately)
+		{
+			handler.run();
+		}
+	}
+	
+	
+	/** adds an invalidation listener to multiple observables */
+	public static void onInvalidation(Runnable handler, Observable ... props)
+	{
+		for(Observable prop: props)
+		{
+			prop.addListener((src) -> handler.run());
+		}
+	}
+	
+	
+	/** adds an invalidation listener to multiple observables */
+	public static void onInvalidation(Runnable handler, boolean fireImmediately, Observable ... props)
+	{
+		for(Observable prop: props)
+		{
+			prop.addListener((src) -> handler.run());
+		}
+			
+		if(fireImmediately)
+		{
+			handler.run();
+		}
+	}
+
+
+	/** converts non-null Color to #RRGGBBAA */
+	public static String toFormattedColor(Color c)
+	{
+        int r = toInt8(c.getRed());
+        int g = toInt8(c.getGreen());
+        int b = toInt8(c.getBlue());
+        int a = toInt8(c.getOpacity());
+		return String.format("#%02X%02X%02X%02X", r, g, b, a);
+	}
+	
+	
+	/** converts non-null Color to #RRGGBB */
+	public static String toFormattedColorRGB(Color c)
+	{
+        int r = toInt8(c.getRed());
+        int g = toInt8(c.getGreen());
+        int b = toInt8(c.getBlue());
+		return String.format("#%02X%02X%02X", r, g, b);
+	}
+	
+	
+	/** converts Color to RRGGBBAA, or null */
+	public static String toHexColor(Color c)
+	{
+		if(c == null)
+		{
+			return null;
+		}
+        int r = toInt8(c.getRed());
+        int g = toInt8(c.getGreen());
+        int b = toInt8(c.getBlue());
+        int a = toInt8(c.getOpacity());
+		return String.format("%02X%02X%02X%02X", r, g, b, a);
+	}
+	
+	
+	/** parses "RRGGBBAA" -> Color, or null */
+	public static Color parseHexColor(String s)
+	{
+		if(s != null)
+		{
+			if(s.length() == 8)
+			{
+				try
+				{
+					int r = Integer.parseInt(s, 0, 2, 16);
+					int g = Integer.parseInt(s, 2, 4, 16);
+					int b = Integer.parseInt(s, 4, 6, 16);
+					int a = Integer.parseInt(s, 6, 8, 16);
+					double op = a / 255.0;
+					return Color.rgb(r, g, b, op);
+				}
+				catch(Exception ignore)
+				{ }
+			}
+		}
+		return null;
+	}
+
+	
+	/** converts double value in the range 0.0 ... 1.0 to an int of range 0 ... 255 */
+	private static int toInt8(double value)
+	{
+		if(value < 0.0)
+		{
+			value = 0.0;
+		}
+		else if(value > 1.0)
+		{
+			value = 1.0;
+		}
+		return CKit.round(value * 255.0);
+	}
+
+
+	public static boolean isParentWindowVisible(Node n)
+	{
+		if(n == null)
+		{
+			return false;
+		}
+		
+		Scene s = n.getScene();
+		if(s == null)
+		{
+			return false;
+		}
+		
+		Window w = s.windowProperty().get();
+		if(w == null)
+		{
+			return false;
+		}
+		
+		return w.isShowing();
+	}
+	
+	
+	/** returns a read-only property that tracks parent window of a Node */
+	public static  ReadOnlyObjectProperty<Window> parentWindowProperty(Node n)
+	{
+		return new ParentWindow(n).windowProperty();
+	}
+	
+	
+	/** avoid ambiguous signature warning when using addListener */
+	public static void addInvalidationListener(Observable p, boolean fireImmediately, Runnable r)
+	{
+		p.addListener(new InvalidationListener()
+		{
+			@Override
+			public void invalidated(Observable observable)
+			{
+				r.run();
+			}
+		});
+		
+		if(fireImmediately)
+		{
+			r.run();
+		}
+	}
+	
+	
+	/** avoid ambiguous signature warning when using addListener */
+	public static <T> void addChangeListener(ObservableList<T> list, ListChangeListener<? super T> li)
+	{
+		list.addListener(li);
+	}
+	
+	
+	/** avoid ambiguous signature warning when using addListener */
+	public static <T> void addChangeListener(ObservableList<T> list, Runnable callback)
+	{
+		list.addListener((ListChangeListener.Change<? extends T> ch) -> callback.run());
+	}
+	
+	
+	/** avoid ambiguous signature warning when using addListener */
+	public static <T> void addChangeListener(ObservableList<T> list, boolean fireImmediately, Runnable callback)
+	{
+		list.addListener((ListChangeListener.Change<? extends T> ch) -> callback.run());
+		
+		if(fireImmediately)
+		{
+			callback.run();
+		}
+	}
+	
+
+	public static <T> void addChangeListener(ObservableValue<T> prop, ChangeListener<? super T> li)
+	{
+		prop.addListener(li);
+	}
+	
+	
+	/** simplified version of addChangeListener that only accepts the current value */
+	public static <T> void addChangeListener(ObservableValue<T> prop, Consumer<? super T> li)
+	{
+		prop.addListener((s,p,current) -> li.accept(current));
+	}
+	
+	
+	/** simplified version of addChangeListener that only invokes the callback on change */
+	public static <T> void addChangeListener(ObservableValue<T> prop, Runnable callback)
+	{
+		prop.addListener((s,p,current) -> callback.run());
+	}
+	
+	
+	/** simplified version of addChangeListener that only invokes the callback on change */
+	public static <T> void addChangeListener(ObservableValue<T> prop, boolean fireImmediately, Runnable callback)
+	{
+		prop.addListener((s,p,current) -> callback.run());
+		
+		if(fireImmediately)
+		{
+			callback.run();
+		}
+	}
+	
+	
+	/** simplified version of addChangeListener that only accepts the current value */
+	public static <T> void addChangeListener(ObservableValue<T> prop, boolean fireImmediately, Consumer<? super T> li)
+	{
+		prop.addListener((s,p,current) -> li.accept(current));
+		
+		if(fireImmediately)
+		{
+			li.accept(prop.getValue());
+		}
+	}
+	
+
+	/** converts java fx Color to a 32 bit RGBA integer */
+	public static Integer toRGBA(Color c)
+	{
+        int r = (int)Math.round(c.getRed() * 255.0);
+        int g = (int)Math.round(c.getGreen() * 255.0);
+        int b = (int)Math.round(c.getBlue() * 255.0);
+        int a = (int)Math.round(c.getOpacity() * 255.0);
+		return r | (g << 8) | (b << 16) | (a << 24);
+	}
+	
+	
+	/** copies text to clipboard.  does nothing if text is null */
+	public static void copy(String text)
+	{
+		if(text != null)
+		{
+			ClipboardContent cc = new ClipboardContent();
+            cc.putString(text);
+            Clipboard.getSystemClipboard().setContent(cc);
+		}
+	}
+	
+	
+	public static Insets insets(double top, double right, double bottom, double left)
+	{
+		return new Insets(top, right, bottom, left);
+	}
+	
+	
+	public static Insets insets(double vert, double hor)
+	{
+		return new Insets(vert, hor, vert, hor);
+	}
+	
+	
+	public static Insets insets(double gap)
+	{
+		return new Insets(gap);
+	}
+	
+	
+	// FIX own file
+	public static <S,T> void bindContentWithTransform(ObservableList<? extends S> source, ObservableList<T> target, Function<S,T> converter)
+	{
+		ListContentBinding.bind(source, target, converter);
+	}
+	
+	
+	private static class ListContentBinding<S,T>
+		implements ListChangeListener<S>, WeakListener
+	{
+		private final Function<S,T> converter;
+		private final WeakReference<List<T>> ref;
+		
+
+		public ListContentBinding(List<T> target, Function<S,T> converter)
+		{
+			this.ref = new WeakReference<List<T>>(target);
+			this.converter = converter;
+		}
+		
+		
+		public static <S,T> void bind(ObservableList<? extends S> source, ObservableList<T> target, Function<S,T> converter)
+		{
+			ListContentBinding<S,T> li = new ListContentBinding<S,T>(target, converter);
+			target.setAll(transform(source, converter));
+			source.removeListener(li);
+			source.addListener(li);
+		}
+		
+		
+		protected T transform(S item)
+		{
+			return converter.apply(item);
+		}
+		
+		
+		protected static <S,T> List<T> transform(List<? extends S> items, Function<S,T> converter)
+		{
+			int sz = items.size();
+			CList<T> rv = new CList<T>(sz);
+			for(int i=0; i<sz; i++)
+			{
+				S item = items.get(i);
+				T val = converter.apply(item);
+				rv.add(val);
+			}
+			return rv;
+		}
+
+
+		@Override
+		public void onChanged(Change<? extends S> ch)
+		{
+			List<T> target = ref.get();
+			if(target == null)
+			{
+				ch.getList().removeListener(this);
+				return;
+			}
+			
+			while(ch.next())
+			{
+				if(ch.wasPermutated())
+				{
+					target.subList(ch.getFrom(), ch.getTo()).clear();
+					target.addAll(ch.getFrom(), transform(ch.getList().subList(ch.getFrom(), ch.getTo()), converter));
+				}
+				else
+				{
+					if(ch.wasRemoved())
+					{
+						target.subList(ch.getFrom(), ch.getFrom() + ch.getRemovedSize()).clear();
+					}
+					
+					if(ch.wasAdded())
+					{
+						target.addAll(ch.getFrom(), transform(ch.getAddedSubList(), converter));
+					}
+				}
+			}
+		}
+
+
+		@Override
+		public boolean wasGarbageCollected()
+		{
+			return ref.get() == null;
+		}
+
+
+		@Override
+		public int hashCode()
+		{
+			Object me = ref.get();
+			if(me == null)
+			{
+				return 0;
+			}
+			return me.hashCode();
+		}
+
+
+		@Override
+		public boolean equals(Object x)
+		{
+			if(this == x)
+			{
+				return true;
+			}
+
+			Object me = ref.get();
+			if(me == null)
+			{
+				return false;
+			}
+			else if(x instanceof ListContentBinding)
+			{
+				return me == ((ListContentBinding)x).ref.get();
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
+	
+	
+	/** returns an instance of TransformationList wrapped around the source ObservableList */
+	public static <S,T> ObservableList<T> transform(ObservableList<S> source, Function<S,T> converter)
+	{
+		return new TransformationList<T,S>(source)
+		{
+			@Override
+			public int getSourceIndex(int index)
+			{
+				return index;
+			}
+			
+			
+			@Override
+			public int getViewIndex(int index)
+			{
+				return index;
+			}
+
+
+			@Override
+			public T get(int index)
+			{
+				S src = getSource().get(index);
+				return converter.apply(src);
+			}
+
+
+			@Override
+			public int size()
+			{
+				return getSource().size();
+			}
+			
+			
+			@Override
+			protected void sourceChanged(Change<? extends S> c)
+			{
+				fireChange(new Change<T>(this)
+				{
+					@Override
+					public List<T> getRemoved()
+					{
+						ArrayList<T> rv = new ArrayList<>(c.getRemovedSize());
+						for(S item: c.getRemoved())
+						{
+							rv.add(converter.apply(item));
+						}
+						return rv;
+					}
+					
+
+					@Override
+					public boolean wasAdded()
+					{
+						return c.wasAdded();
+					}
+
+
+					@Override
+					public boolean wasRemoved()
+					{
+						return c.wasRemoved();
+					}
+
+
+					@Override
+					public boolean wasReplaced()
+					{
+						return c.wasReplaced();
+					}
+
+
+					@Override
+					public boolean wasUpdated()
+					{
+						return c.wasUpdated();
+					}
+
+
+					@Override
+					public boolean wasPermutated()
+					{
+						return c.wasPermutated();
+					}
+
+
+					@Override
+					public int getPermutation(int ix)
+					{
+						return c.getPermutation(ix);
+					}
+
+
+					@Override
+					protected int[] getPermutation()
+					{
+						return new int[0];
+					}
+
+
+					@Override
+					public int getFrom()
+					{
+						return c.getFrom();
+					}
+
+
+					@Override
+					public int getTo()
+					{
+						return c.getTo();
+					}
+
+
+					@Override
+					public boolean next()
+					{
+						return c.next();
+					}
+
+
+					@Override
+					public void reset()
+					{
+						c.reset();
+					}
+				});
+			}
+		};
+	}
+	
+	
+	/** returns the first window of the specified type, or null */ 
+	public static <T extends FxWindow> T findFirstWindowOfType(Class<T> type, boolean exact)
+	{
+		for(Window w: Window.getWindows())
+		{
+			if(exact)
+			{
+				if(w.getClass() == type)
+				{
+					return (T)w;
+				}
+			}
+			else
+			{
+				if(type.isAssignableFrom(w.getClass()))
+				{
+					return (T)w;
+				}
+			}
+		}
+		return null;
+	}
+	
+	
+	/** 
+	 * guarantees to open a single instance of the specified type:
+	 * - creates a new instance (using the specified generator) if no instance is currently opened
+	 * - restores and brings to focus an existing instance
+	 */
+	public static <T extends FxWindow> T openSingleWindow(Class<T> type, Supplier<T> gen)
+	{
+		FX.checkThread();
+		
+		T w = findFirstWindowOfType(type, true);
+		if(w == null)
+		{
+			w = gen.get();
+			w.open();
+		}
+		else
+		{
+			if(w.isIconified())
+			{
+				w.setIconified(false);
+			}
+		}
+		
+		w.requestFocus();
+		return w;
+	}
+	
+	
+	/** 
+	 * guarantees to open a single instance of the specified type:
+	 * - creates a new instance (using a no-arg constructor) if no instance is currently opened
+	 * - restores and brings to focus an existing instance
+	 */
+	public static <T extends FxWindow> T openSingleWindow(Class<T> type)
+	{
+		return openSingleWindow(type, () -> 
+		{
+			try
+			{
+				return type.newInstance();
+			}
+			catch(Throwable e)
+			{
+				log.error(e);
+				throw new Error(type + " must declare a no-arg constructor", e);
+			}
+		});
+	}
+	
+	
+	/** returns a boolean property which indicates whether a node is visible in a scene */
+	public static ReadOnlyBooleanProperty getNodeVisibleInSceneProperty(Node node)
+	{
+		ReadOnlyBooleanWrapper showing = new ReadOnlyBooleanWrapper();
+
+		ChangeListener<Window> windowChangeListener = (s,p,win) ->
+		{
+			showing.unbind();
+			
+			if(win != null)
+			{
+				showing.bind(win.showingProperty());
+			}
+			else
+			{
+				showing.set(false);
+			}
+		};
+
+		ChangeListener<Scene> sceneChangeListener = (s,prevScene,currScene) ->
+		{
+			showing.unbind();
+			
+			if(prevScene != null)
+			{
+				prevScene.windowProperty().removeListener(windowChangeListener);
+			}
+			
+			if(currScene == null)
+			{
+				showing.set(false);
+			}
+			else
+			{
+				currScene.windowProperty().addListener(windowChangeListener);
+				
+				if(currScene.getWindow() == null)
+				{
+					showing.set(false);
+				}
+				else
+				{
+					showing.bind(currScene.getWindow().showingProperty());
+				}
+			}
+		};
+
+		node.sceneProperty().addListener(sceneChangeListener);
+		
+		Scene scene = node.getScene();
+		if(scene == null)
+		{
+			showing.set(false);
+		}
+		else
+		{
+			scene.windowProperty().addListener(windowChangeListener);
+			
+			Window w = scene.getWindow();
+			if(w == null)
+			{
+				showing.set(false);
+			}
+			else
+			{
+				showing.bind(w.showingProperty());
+			}
+		}
+
+		return showing.getReadOnlyProperty();
+	}
+	
+	
+	public static void onMousePressed(Node n, Runnable action)
+	{
+		n.addEventHandler(MouseEvent.MOUSE_PRESSED, (ev) ->
+		{
+			action.run();
+		});
+	}
+
+
+	public static void openFile(File file)
+	{
+		String uri = file.toURI().toString();
+		FxApplication.getInstance().getHostServices().showDocument(uri);
+	}
+
+
+	public static IDisconnectable onChange(ReadOnlyIntegerProperty prop, IntConsumer onChange)
+	{
+		return new DisconnectableIntegerListener(prop, onChange);
+	}
+	
+	
+	/** adds a new style */
+	public static void setStyle(Node n, String property, Object value)
+	{
+		if(n != null)
+		{
+			String s = n.getStyle();
+			FxStyleHandler m = new FxStyleHandler(s);
+			m.put(property, value);
+			String s2 = m.toStyleString();
+			n.setStyle(s2);
+		}
+	}
+	
+	
+	public static void removeStyle(Node n, String property)
+	{
+		if(n != null)
+		{
+			String s = n.getStyle();
+			FxStyleHandler m = new FxStyleHandler(s);
+			m.remove(property);
+			String s2 = m.toStyleString();
+			n.setStyle(s2);
+		}
+	}
+	
+	
+	/** applies global stylesheet on top of the javafx one */
+	public static void applyStyleSheet(String old, String cur)
+	{
+		for(Window w: Window.getWindows())
+		{
+			applyStyleSheet(w, old, cur);
+		}
+	}
+	
+	
+	/** applies global stylesheet to a specific window on top of the javafx one */
+	public static void applyStyleSheet(Window w, String old, String cur)
+	{
+		if(cur != null)
+		{
+			Scene scene = w.getScene();
+			if(scene != null)
+			{
+				if(old != null)
+				{
+					scene.getStylesheets().remove(old);
+				}
+				
+				scene.getStylesheets().add(cur);
+			}			
+		}
+	}
+
+
+	public static void writePNG(Image im, File file)
+	{
+		try
+		{
+			BufferedImage bim = SwingFXUtils.fromFXImage(im, null);
+			ImageIO.write(bim, "PNG", file);
+		}
+		catch(Exception e)
+		{
+			log.error(e);
+		}
+	}
+
+	
+	public static void setName(Node n, String name)
+	{
+		n.getProperties().put(PROP_NAME, name);
+	}
+	
+	
+	public static String getName(Node n)
+	{
+		Object x = n.getProperties().get(PROP_NAME);
+		if(x instanceof String s)
+		{
+			return s;
+		}
+		return null;
+	}
+	
+	
+	public static void setName(Window w, String name)
+	{
+		Objects.nonNull(name);
+		w.getProperties().put(PROP_NAME, name);
+	}
+	
+	
+	public static String getName(Window w)
+	{
+		Object x = w.getProperties().get(PROP_NAME);
+		if(x instanceof String s)
+		{
+			return s;
+		}
+		return null;
+	}
+	
+	
+	public static void center(Window window)
+	{
+		if(window instanceof Stage w)
+		{
+			if(w.getOwner() instanceof Stage owner)
+			{
+				Parent root = w.getScene().getRoot(); 
+				root.applyCss();
+				root.layout();
+
+				double width = root.prefWidth(-1);
+				double height = root.prefHeight(width);
+
+				Scene ownerScene = owner.getScene();
+				double ownerWidth = ownerScene.getRoot().prefWidth(-1);
+				double ownerHeight = ownerScene.getRoot().prefHeight(ownerWidth);
+				double cascadeOffset = 20;
+
+				double x;
+				if(width < ownerWidth)
+				{
+					x = owner.getX() + (ownerScene.getWidth() - width) / 2.0;
+				}
+				else
+				{
+					x = owner.getX() + cascadeOffset;
+					w.setWidth(width);
+				}
+
+				double y;
+				if(height < ownerHeight)
+				{
+					double titleBarHeight = ownerScene.getY();
+					y = owner.getY() + (titleBarHeight + ownerScene.getHeight() - height) / 2.0;
+				}
+				else
+				{
+					y = owner.getY() + cascadeOffset;
+				}
+
+				w.setX(x);
+				w.setY(y);
+			}
+		}
+	}
+	
+	
+	/** creates an image with the given color and dimensions */
+	public static Image image(Color color, int width, int height)
+	{
+		Canvas c = new Canvas(width, height);
+		GraphicsContext g = c.getGraphicsContext2D();
+		g.setFill(color);
+		g.fillRect(0, 0, width, height);
+		return c.snapshot(null, null);
+	}
+	
+	
+	/** sets both X/Y scales, node can be null */
+	public static void setScale(Node node, double scale)
+	{
+		if(node != null)
+		{
+			
+			node.setScaleX(scale);
+			node.setScaleY(scale);
+		}
+	}
+
+
+	/**
+	 * Returns the property value, or the default value if the property value is null.
+	 */
+	public static <T> T noNull(Property<T> p, T defaultValue)
+	{
+		T v = p.getValue();
+		return (v == null) ? defaultValue : v;
 	}
 }

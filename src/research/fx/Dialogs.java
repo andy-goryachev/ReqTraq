@@ -1,7 +1,6 @@
 // Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
 package research.fx;
 import goryachev.common.util.D;
-import goryachev.common.util.Log;
 import javafx.stage.Window;
 
 
@@ -20,6 +19,5 @@ public class Dialogs
 	public static void error(Window parent, Throwable e)
 	{
 		D.print();
-		Log.ex(e);
 	}
 }

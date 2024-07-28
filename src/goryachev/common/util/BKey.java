@@ -1,4 +1,4 @@
-// Copyright © 2011-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2011-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
 import java.util.Arrays;
 
@@ -16,6 +16,14 @@ public class BKey
 	}
 	
 	
+	public BKey(BKey other)
+	{
+		this.key = other.key;
+		this.hash = other.hash;
+	}
+	
+	
+	@Override
 	public String toString()
 	{
 		return toHexString();
@@ -82,6 +90,7 @@ public class BKey
 	}
 
 	
+	@Override
 	public boolean equals(Object x)
 	{
 		if(x == this)
@@ -101,11 +110,14 @@ public class BKey
 	}
 	
 	
+	@Override
 	public int hashCode()
 	{
 		if(hash == 0)
 		{
-			hash = FH.hash(BKey.class, key);
+			int h = FH.hash(BKey.class);
+			h = FH.hash(h, key);
+			hash = h;
 		}
 		return hash;
 	}

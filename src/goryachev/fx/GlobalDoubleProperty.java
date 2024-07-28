@@ -1,4 +1,4 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import javafx.beans.property.DoublePropertyBase;
 import javafx.util.StringConverter;
@@ -14,7 +14,7 @@ public class GlobalDoubleProperty
 	private final String key;
 	
 	
-	public GlobalDoubleProperty(String key, int defaultValue)
+	public GlobalDoubleProperty(String key, double defaultValue)
 	{
 		super(defaultValue);
 		this.key = key;
@@ -30,18 +30,21 @@ public class GlobalDoubleProperty
 
 
 	/** who knows what this is for */
+	@Override
 	public Object getBean()
 	{
 		return null;
 	}
 
 
+	@Override
 	public String getName()
 	{
 		return key;
 	}
 	
 	
+	@Override
 	public StringConverter<Number> getConverter()
 	{
 		return Converters.NUMBER_DOUBLE();

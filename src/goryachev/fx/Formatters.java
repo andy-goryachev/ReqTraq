@@ -1,4 +1,4 @@
-// Copyright © 2017-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2017-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 
 
@@ -7,10 +7,11 @@ package goryachev.fx;
  */
 public class Formatters
 {
+	// TODO should these be settable somehow?
 	private static FxDecimalFormatter integerFormatter;
 	
 	
-	public static FxFormatter getIntegerFormat()
+	public static FxDecimalFormatter integerFormatter()
 	{
 		if(integerFormatter == null)
 		{

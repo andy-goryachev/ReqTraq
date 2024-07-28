@@ -1,5 +1,6 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import goryachev.common.util.CSorter;
 import java.util.List;
 import javafx.beans.property.Property;
 import javafx.scene.Node;
@@ -37,6 +38,30 @@ public class FxMenuBar
 	{
 		FxMenu m = new FxMenu(text, a);
 		getMenus().add(m);
+		return m;
+	}
+	
+	
+	public FxCheckMenuItem checkItem(String text, FxAction a)
+	{
+		FxCheckMenuItem m = new FxCheckMenuItem(text, a);
+		add(m);
+		return m;
+	}
+	
+	
+//	public FxCheckMenuItem checkItem(String text, GlobalBooleanProperty p)
+//	{
+//		FxCheckMenuItem m = new FxCheckMenuItem(text, p);
+//		add(m);
+//		return m;
+//	}
+	
+	
+	public FxCheckMenuItem checkItem(String text, Property<Boolean> p)
+	{
+		FxCheckMenuItem m = new FxCheckMenuItem(text, p);
+		add(m);
 		return m;
 	}
 	
@@ -86,9 +111,27 @@ public class FxMenuBar
 	}
 	
 	
+	public FxMenuItem item(String name, HotKey k, FxAction a)
+	{
+		FxMenuItem m = new FxMenuItem(name, a);
+		k.attach(m);
+		add(m);
+		return m;
+	}
+	
+	
 	public FxMenuItem item(String name, Runnable r)
 	{
 		FxMenuItem m = new FxMenuItem(name, r);
+		add(m);
+		return m;
+	}
+	
+	
+	public FxMenuItem item(String name, HotKey k, Runnable r)
+	{
+		FxMenuItem m = new FxMenuItem(name, r);
+		k.attach(m);
 		add(m);
 		return m;
 	}
@@ -110,5 +153,12 @@ public class FxMenuBar
 	public void add(MenuItem m)
 	{
 		lastMenu().add(m);
+	}
+	
+	
+	/** collates the last menu */
+	public void collate()
+	{
+		CSorter.collate(lastMenu().getItems(), (m) -> m.getText());
 	}
 }

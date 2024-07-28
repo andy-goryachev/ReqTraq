@@ -1,4 +1,4 @@
-// Copyright © 2012-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2012-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.common.util;
 
 
@@ -22,6 +22,14 @@ public class SKey
 	}
 	
 	
+	public static SKey format(String format, Object ... args)
+	{
+		String s = String.format(format, args);
+		return new SKey(s);
+	}
+	
+	
+	@Override
 	public String toString()
 	{
 		return key;
@@ -57,6 +65,7 @@ public class SKey
 	}
 	
 	
+	@Override
 	public boolean equals(Object x)
 	{
 		if(x == this)
@@ -74,6 +83,7 @@ public class SKey
 	}
 	
 	
+	@Override
 	public int hashCode()
 	{
 		return FH.hash(SKey.class.hashCode(), key);
@@ -92,6 +102,7 @@ public class SKey
 	}
 
 
+	@Override
 	public int compareTo(SKey x)
 	{
 		return key.compareTo(x.key);

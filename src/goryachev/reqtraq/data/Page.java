@@ -47,7 +47,7 @@ public class Page
 	
 	public Page()
 	{
-		id = GUID.create();
+		id = Schema.guid();
 		created = System.currentTimeMillis();
 		setTimeModified(created);
 	}

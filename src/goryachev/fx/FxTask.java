@@ -1,7 +1,7 @@
-// Copyright © 2017-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2017-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
+import goryachev.common.log.Log;
 import goryachev.common.util.CTask;
-import goryachev.common.util.Log;
 import javafx.application.Platform;
 
 
@@ -16,6 +16,7 @@ public class FxTask<T>
 	}
 	
 	
+	@Override
 	protected void handleSuccess(T result)
 	{
 		if(onSuccess != null)
@@ -25,11 +26,12 @@ public class FxTask<T>
 	}
 	
 	
+	@Override
 	protected void handleError(Throwable e)
 	{
 		if(onError == null)
 		{
-			Log.ex(e);
+			log.error(e);
 		}
 		else
 		{
@@ -38,6 +40,7 @@ public class FxTask<T>
 	}
 	
 	
+	@Override
 	protected void handleFinish()
 	{
 		if(onFinish != null)

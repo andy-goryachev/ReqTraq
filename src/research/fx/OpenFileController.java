@@ -7,6 +7,7 @@ import goryachev.common.util.SStream;
 import goryachev.fx.FX;
 import goryachev.fx.FxAction;
 import goryachev.fx.FxCtl;
+import goryachev.fx.FxFramework;
 import goryachev.fx.FxMenu;
 import goryachev.fx.FxMenuItem;
 import goryachev.fx.HasSettings;
@@ -244,7 +245,7 @@ public abstract class OpenFileController
 					
 					openFilePrivate(f);
 					
-					FX.storeSettings();
+					FxFramework.save();
 				}
 			}
 		}
@@ -421,7 +422,7 @@ public abstract class OpenFileController
 				setModified(false);
 				addRecentFile(f);
 				
-				FX.storeSettings();
+				FxFramework.save();
 			}
 		}
 		catch(Exception e)
@@ -437,6 +438,7 @@ public abstract class OpenFileController
 	}
 	
 	
+	@Override
 	public void storeSettings(String prefix)
 	{
 		GlobalSettings.setFile(KEY_DIR, lastFolder.get());
@@ -444,6 +446,7 @@ public abstract class OpenFileController
 	}
 	
 	
+	@Override
 	public void restoreSettings(String prefix)
 	{
 		lastFolder.set(GlobalSettings.getFile(KEY_DIR));

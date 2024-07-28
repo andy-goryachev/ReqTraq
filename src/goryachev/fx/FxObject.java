@@ -1,13 +1,13 @@
-// Copyright © 2018-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2018-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 
 
 /**
- * Alias for SimpleLongProperty.
+ * Alias for ReadOnlyObjectWrapper.
  */
 public class FxObject<T>
-	extends SimpleObjectProperty<T>
+	extends ReadOnlyObjectWrapper<T>
 {
 	public FxObject(T initialValue)
 	{

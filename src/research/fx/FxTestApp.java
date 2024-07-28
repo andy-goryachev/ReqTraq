@@ -22,7 +22,8 @@ public class FxTestApp
 		Application.launch(FxTestApp.class, args);
 	}
 	
-	
+
+	@Override
 	public void start(Stage s) throws Exception
 	{
 		FxWindow w = new FxWindow("TEST");

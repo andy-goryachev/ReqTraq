@@ -1,6 +1,6 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx.table;
-import javafx.beans.property.ReadOnlyObjectWrapper;
+import goryachev.fx.FxObject;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
@@ -19,9 +19,10 @@ public abstract class FxTreeTableCellValueFactory<T>
 	
 	//
 	
+	@Override
 	public ObservableValue<T> call(CellDataFeatures<T,T> f)
 	{
 		T v = value(f.getValue(), f.getTreeTableColumn(), f.getTreeTableView());
-		return new ReadOnlyObjectWrapper<T>(v);
+		return new FxObject<T>(v);
 	}
 }

@@ -1,4 +1,4 @@
-// Copyright © 2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2019-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import java.util.function.Consumer;
 import javafx.geometry.HPos;
@@ -23,7 +23,7 @@ public class XScrollBar
 	}
 	
 	
-	public void setPainer(Consumer<Canvas> p)
+	public void setPainter(Consumer<Canvas> p)
 	{
 		if(canvas != null)
 		{
@@ -36,6 +36,7 @@ public class XScrollBar
 	}
 	
 	
+	@Override
 	protected void layoutChildren()
 	{
 		super.layoutChildren();

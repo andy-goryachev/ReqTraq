@@ -41,6 +41,7 @@ public class ListTransform<S,T>
 	}
 	
 	
+	@Override
 	public void onChanged(Change<? extends S> ev)
 	{
 		List<T> deleted = new CList();

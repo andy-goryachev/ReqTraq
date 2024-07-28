@@ -1,4 +1,4 @@
-// Copyright © 2016-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2016-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.fx;
 import goryachev.common.util.CPlatform;
 import goryachev.fx.internal.CssTools;
@@ -13,11 +13,11 @@ public class CommonStyles
 	extends FxStyleSheet
 {
 	/** bold type face */
-	public static final CssStyle BOLD = new CssStyle("CommonStyles_BOLD");
+	public static final CssStyle BOLD = new CssStyle("BOLD");
 	/** disables alternative row color */
-	public static final CssStyle DISABLE_ALTERNATIVE_ROW_COLOR = new CssStyle("CommonStyles_DISABLE_ALTERNATIVE_ROW_COLOR");
+	public static final CssStyle DISABLE_ALTERNATIVE_ROW_COLOR = new CssStyle("DISABLE_ALTERNATIVE_ROW_COLOR");
 	
-	private static String TABLE_ROW_HEIGHT = "1.8em";
+//	private static String TABLE_ROW_HEIGHT = "1.8em";
 
 	
 	public CommonStyles()
@@ -38,7 +38,18 @@ public class CommonStyles
 				// focus outline
 				prop("-fx-focus-color", theme.focus),
 				// focus glow
-				prop("-fx-faint-focus-color", TRANSPARENT)
+				prop("-fx-faint-focus-color", TRANSPARENT),
+				
+				selector(".text-input").defines
+				(
+					textFill(theme.textFG)
+				),
+				selector(".text-input", FOCUSED).defines
+				(
+					textFill(theme.textFG)
+				)
+//				".text-input { -fx-text-fill: black; }",
+//				".text-input:focused { -fx-text-fill: black; }"
 			)
 		);
 		
@@ -62,11 +73,13 @@ public class CommonStyles
 //			checkbox(theme),						
 			comboBox(theme),
 			menuBar(theme),
+			popupMenu(theme),
 			scrollBar(theme),
 			scrollPane(theme),
 			table(theme),
-			treeTable(theme),
 			text(theme),
+			treeTable(theme),
+			toolbar(theme),
 			// FIX
 			//radioButton(theme),
 			buttonPane(theme),
@@ -407,6 +420,18 @@ public class CommonStyles
 	}
 	
 	
+	protected Object popupMenu(Theme theme)
+	{
+		return new Object[]
+		{
+			selector(FxPopupMenu.MENU).defines
+			(
+				fontWeight("normal")
+			)
+		};
+	}
+	
+	
 	protected Object radioButton(Theme theme)
 	{
 		// FIX
@@ -577,12 +602,14 @@ public class CommonStyles
 		{
 			selector(".tree-table-cell").defines
 			(
-				prop("-fx-cell-size", TABLE_ROW_HEIGHT)
+//				prop("-fx-cell-size", TABLE_ROW_HEIGHT)
+				padding(0)
 			),
 			
 			selector(".tree-table-row-cell").defines
 			(
-				prop("-fx-cell-size", TABLE_ROW_HEIGHT)
+//				prop("-fx-cell-size", TABLE_ROW_HEIGHT)
+				padding(0)
 			)
 		};
 	}
@@ -595,14 +622,17 @@ public class CommonStyles
 		
 		return new Object[]
 		{
+			// breaks custom renderers
 			selector(".table-cell").defines
 			(
-				prop("-fx-cell-size", TABLE_ROW_HEIGHT)
+				padding(0)
+//				prop("-fx-cell-size", TABLE_ROW_HEIGHT)
 			),
 			
 			selector(".table-row-cell").defines
 			(
-				prop("-fx-cell-size", TABLE_ROW_HEIGHT)
+				padding(0)
+//				prop("-fx-cell-size", TABLE_ROW_HEIGHT)
 			),
 			
 			selector(".table-row-cell:filled:selected").defines
@@ -625,7 +655,12 @@ public class CommonStyles
 			selector(".table-row-cell:empty").defines
 			(
 				backgroundColor(TRANSPARENT),
-				borderColor(TRANSPARENT)
+				borderWidth(0)
+			),
+			selector(".table-row-cell:empty:odd, .table-row-cell:empty:even, .indexed-cell:odd:empty, .indexed-cell:even:empty").defines
+			(
+				backgroundColor(TRANSPARENT),
+				borderWidth(0)
 			),
 			
 			selector(".table-view > .virtual-flow > .clipped-container > .sheet > .table-row-cell .table-cell:selected").defines
@@ -692,14 +727,29 @@ public class CommonStyles
 	}
 	
 	
+	protected Object toolbar(Theme theme)
+	{
+		return new Object[]
+		{
+			// text smoothing
+			selector(FxToolBar.STYLE).defines
+			(
+				prop("-fx-spacing", 1),
+				padding(2, 2, 2, 2)
+			)
+		};
+	}
+	
+	
 	protected Object buttonPane(Theme theme)
 	{
 		return new Object[]
 		{
 			selector(FxButtonPane.PANE).defines
 			(
-				borderColor(TRANSPARENT),
-				borderWidth(10)
+				borderWidth(0),
+				padding(10),
+				backgroundColor(FX.alpha(Color.GRAY, 0.1))
 			)
 		};
 	}
