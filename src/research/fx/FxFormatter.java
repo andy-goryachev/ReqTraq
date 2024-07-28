@@ -9,6 +9,7 @@ import javafx.util.StringConverter;
 public abstract class FxFormatter
 	extends StringConverter<Object>
 {
+	@Override
 	public abstract String toString(Object x);
 	
 	//
@@ -18,6 +19,7 @@ public abstract class FxFormatter
 	}
 	
  
+	@Override
     public Object fromString(String string)
     {
     	throw new Error("FxFormatter: fromString not supported");

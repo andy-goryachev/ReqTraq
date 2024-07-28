@@ -15,6 +15,7 @@ public class Formatters
 	/** formatter uses toString() */
 	public static final FxFormatter ID = new FxFormatter()
 	{
+		@Override
 		public String toString(Object x)
 		{
 			return format(x);

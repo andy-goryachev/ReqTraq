@@ -569,6 +569,7 @@ public class JsonWriter
 	 * Ensures all buffered data is written to the underlying {@link Writer}
 	 * and flushes that writer.
 	 */
+	@Override
 	public void flush() throws IOException
 	{
 		if(stackSize == 0)
@@ -584,6 +585,7 @@ public class JsonWriter
 	 *
 	 * @throws IOException if the JSON document is incomplete.
 	 */
+	@Override
 	public void close() throws IOException
 	{
 		out.close();

@@ -36,6 +36,7 @@ public class Binder
 		}
 		
 		
+		@Override
 		public void invalidated(Observable src)
 		{
 			Runnable r = ref.get();

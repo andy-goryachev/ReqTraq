@@ -286,6 +286,7 @@ public class JsonDecoder
 	}
 	
 	
+	@Override
 	public void close() throws IOException
 	{
 		rd.close();

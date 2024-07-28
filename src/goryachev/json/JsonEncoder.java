@@ -31,6 +31,7 @@ public class JsonEncoder
 	}
 
 
+	@Override
 	public void close() throws IOException
 	{
 		wr.close();

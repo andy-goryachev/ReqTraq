@@ -1433,6 +1433,7 @@ public class JsonReader
 	/**
 	 * Closes this JSON reader and the underlying {@link java.io.Reader}.
 	 */
+	@Override
 	public void close() throws IOException
 	{
 		peeked = PEEKED_NONE;
