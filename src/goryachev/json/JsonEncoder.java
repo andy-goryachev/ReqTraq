@@ -1,4 +1,4 @@
-// Copyright © 2013-2019 Andy Goryachev <andy@goryachev.com>
+// Copyright © 2013-2024 Andy Goryachev <andy@goryachev.com>
 package goryachev.json;
 import goryachev.common.io.CWriter;
 import goryachev.common.util.Base64;
