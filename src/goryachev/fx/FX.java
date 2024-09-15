@@ -298,15 +298,18 @@ public final class FX
 		
 		return n;
 	}
-	
-	
+
+
 	/** adds a style to a Styleable */
 	public static void style(Styleable n, CssStyle style)
 	{
-		n.getStyleClass().add(style.getName());
+		if(style != null)
+		{
+			n.getStyleClass().add(style.getName());
+		}
 	}
-	
-	
+
+
 	/** adds or removes the specified style, depending on the condition */
 	public static void style(Styleable n, boolean condition, CssStyle st)
 	{

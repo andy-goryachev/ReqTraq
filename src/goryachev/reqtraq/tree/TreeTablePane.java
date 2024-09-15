@@ -6,9 +6,11 @@ import goryachev.fx.CssStyle;
 import goryachev.fx.FX;
 import goryachev.fx.FxAction;
 import goryachev.fx.FxFormatter;
+import goryachev.fx.FxObject;
 import goryachev.reqtraq.Formatters;
 import goryachev.reqtraq.data.Page;
 import javafx.beans.Observable;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -16,6 +18,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.TreeTableColumn.CellDataFeatures;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
 import javafx.util.Callback;
@@ -86,35 +89,54 @@ public class TreeTablePane
 
 	protected void addColumn(Page.Field f, String label)
 	{
-		TreeTableColumn<Page,Object> tc = new TreeTableColumn<>(" ")
-		{
+		TreeTableColumn<Page,Object> c = new TreeTableColumn<>(" ");
 //			@Override
 //			protected ObservableValue<?> getCellValueProperty(Page p)
 //			{
 //				return FX.toObservableValue(p.getField(f));
 //			}
-		};
 //		tc.setAlignment(getAlignment(f));
 //		tc.setConverter(getFormatter(f));
-		tc.setPrefWidth(getPreferredWidth(f));
-		tc.setMinWidth(getMinWidth(f));
-		tc.setEditable(isColumnEditable(f));
-		tc.setSortable(false);
+		c.setPrefWidth(getPreferredWidth(f));
+		c.setMinWidth(getMinWidth(f));
+		c.setEditable(isColumnEditable(f));
+		c.setSortable(false);
+		c.setCellFactory(createCellFactory(f));
+		c.setCellValueFactory(createCellValueFactory(f));
 		
-//		tc.setCellFactory(createCellFactory(tc, f));
-		
-		tree.getColumns().add(tc);
+		tree.getColumns().add(c);
 	}
 	
 	
-	private Callback<TreeTableColumn<Page,Object>,TreeTableCell<Page,Object>> createCellFactory(TreeTableColumn<Page,Object> tc, Page.Field f)
+	private Callback<CellDataFeatures<Page,Object>,ObservableValue<Object>> createCellValueFactory(Page.Field f)
+	{
+		switch(f)
+		{
+		case ID:
+			return (d) -> new FxObject(d.getValue().getValue().getID());
+		case STATUS:
+			return (d) -> (ObservableValue)d.getValue().getValue().status;
+		case SYNOPSIS:
+		case TEXT:
+		case TIME_CREATED:
+		case TIME_MODIFIED:
+			return null; // TODO
+		case TITLE:
+			return (d) -> (ObservableValue)d.getValue().getValue().title;
+		default:
+			return null;
+		}
+	}
+	
+	
+	private Callback<TreeTableColumn<Page,Object>,TreeTableCell<Page,Object>> createCellFactory(Page.Field f)
 	{
 		switch(f)
 		{
 		case STATUS:
 			return (x) -> new StatusCell();
 		default:
-			return (x) -> new TextFieldTreeTableCell(getFormatter(f)); //tc.getConverter());
+			return (x) -> new TextFieldTreeTableCell(getFormatter(f));
 		}
 	}
 
@@ -141,7 +163,22 @@ public class TreeTablePane
 		case TIME_MODIFIED:
 			return Formatters.DATE_TIME;
 		default:
-			return null;
+			// TODO field
+			return new FxFormatter()
+			{
+				@Override
+				public String toString(Object v)
+				{
+					return v == null ? null : v.toString();
+				}
+				
+				
+			    @Override
+				public Object fromString(String s)
+			    {
+			    	return s;
+			    }
+			};
 		}
 	}
 	
@@ -262,7 +299,7 @@ public class TreeTablePane
 		sel.setExpanded(true);
 		
 		// TODO move this to PageTreeItem?
-		Page ch = new Page();
+		Page ch = Page.create();
 		sel.getValue().insert(0, ch);
 		
 		edit(ch);
@@ -276,7 +313,7 @@ public class TreeTablePane
 		int ix = p.getChildren().indexOf(sel) + 1;
 		
 		// TODO move this to PageTreeItem?
-		Page ch = new Page();
+		Page ch = Page.create();
 		sel.getValue().insert(ix, ch);
 
 		edit(ch);
@@ -335,4 +372,78 @@ public class TreeTablePane
 		
 		// TODO undo
 	}
+	
+	
+	//
+	
+	
+//		{
+//			TreeTableColumn<FEntry,Long> c = new TreeTableColumn<>("Date Modified");
+//			c.setCellValueFactory((f) ->
+//			{
+//				return f.getValue().getValue().date;
+//			});
+//			c.setCellFactory((f) ->
+//			{
+//				return new TreeTableCell<FEntry,Long>()
+//				{
+//					private final SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+//
+//					
+//					@Override
+//					protected void updateItem(Long item, boolean empty)
+//					{
+//						super.updateItem(item, empty);
+//						if(empty || (item == null))
+//						{
+//							setText(null);
+//						}
+//						else
+//						{
+//							String s = format.format(item);
+//							setText(s);
+//						}
+//					}
+//				};
+//			});
+//			c.setPrefWidth(110);
+//			tree.getColumns().add(c);
+//		}
+//		{
+//			TreeTableColumn<FEntry,Long> c = new TreeTableColumn<>("Size");
+//			c.setCellValueFactory((f) ->
+//			{
+//				return f.getValue().getValue().length;
+//			});
+//			c.setCellFactory((f) ->
+//			{
+//				return new TreeTableCell<FEntry,Long>()
+//				{
+//					private final DecimalFormat format = new DecimalFormat("#,##0");
+//					
+//					
+//					{
+//						setAlignment(Pos.CENTER_RIGHT);
+//					}
+//
+//					
+//					@Override
+//					protected void updateItem(Long item, boolean empty)
+//					{
+//						super.updateItem(item, empty);
+//						if(empty || (item == null))
+//						{
+//							setText(null);
+//						}
+//						else
+//						{
+//							String s = format.format(item);
+//							setText(s);
+//						}
+//					}
+//				};
+//			});
+//			c.setPrefWidth(60);
+//			tree.getColumns().add(c);
+//		}
 }

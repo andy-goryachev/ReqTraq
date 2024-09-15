@@ -2,6 +2,8 @@
 package goryachev.reqtraq.data;
 import goryachev.common.util.Assert;
 import goryachev.common.util.BKey;
+import goryachev.reqtraq.Formatters;
+import java.time.Instant;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -229,5 +231,15 @@ public class Page
 		{
 			children.add(ix, p);
 		}
+	}
+
+
+	public static Page create()
+	{
+		String title = Formatters.DATE_TIME.format(Instant.now().toEpochMilli());
+		
+		Page p = new Page();
+		p.setTitle(title);
+		return p;
 	}
 }
